@@ -71,16 +71,12 @@ function adminAuth() {
   }
 }
 
-# ページタイトルを取得
-function getPageTitle() {
-  global $pageTitle;
-  return PAGE_TITLE."｜$pageTitle";
-}
-
-# ページタイトルを指定
-function setPageTitle($str) {
-  global $pageTitle;
-  $pageTitle = $str;
+/**
+ * オートコールシステムのみ利用
+ */
+function navActive($str) {
+  global $handler;
+  return $handler === $str ? "active" : "link-body-emphasis";
 }
 
 ?>

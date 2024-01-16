@@ -1,11 +1,5 @@
 <?php 
 
-# ログインしなくても使えるルートハンドラ
-$publicHandler = [
-	"login",
-	"loginPost"
-];
-
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("GET", "/", "index");
 	$r->addRoute("GET", "/login", "login");
@@ -30,13 +24,27 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 				$r->addRoute("GET", "/create", "reservesCreate");
 				$r->addGroup("/{reserveId:\d+}", function (FastRoute\RouteCollector $r) {
 					$r->addRoute("GET", "", "reserve");
+					$r->addGroup("/options", function (FastRoute\RouteCollector $r) {
+						$r->addRoute("GET", "", "options");
+						$r->addRoute("GET", "/create", "optionsCreate");
+						$r->addGroup("/{optionId:\d+}", function (FastRoute\RouteCollector $r) {
+							$r->addRoute("GET", "", "option");
+						});
+					});
 				});
 			});
-			$r->addGroup("/result", function (FastRoute\RouteCollector $r) {
+			$r->addGroup("/results", function (FastRoute\RouteCollector $r) {
 				$r->addRoute("GET", "", "results");
 				$r->addGroup("/{reserveId:\d+}", function (FastRoute\RouteCollector $r) {
 					$r->addRoute("GET", "", "result");
 					$r->addRoute("GET", "/calls/{callId:\d+}", "call");
+				});
+			});
+			$r->addGroup("/settings", function (FastRoute\RouteCollector $r) {
+				// $r->addRoute("GET", "", "settings");
+				$r->addRoute("GET", "/create", "settingsCreate");
+				$r->addGroup("/{settingId:\d+}", function (FastRoute\RouteCollector $r) {
+					$r->addRoute("GET", "", "setting");
 				});
 			});
 		});

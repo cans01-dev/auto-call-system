@@ -8,3 +8,6 @@ URL設計
 DB設計
 1/12
 project-baseの改良、Userモデル作成、Authモデル作成、認証周りのコントローラ作成
+1/15
+bootstrap導入, webpack導入, ルーティング実装
+1/16

@@ -1,16 +1,23 @@
 <?php 
 
-function reserves() {
+function reserves($vars) {
+  $month = $_GET["month"] ?? date("n");
+  $year = $_GET["year"] ?? date("Y");
 
-  require_once "./views/pages/survey/reserve/reserves.php";
+  $calendar = new Calendar($month, $year);
+  $current = $calendar->getCurrent();
+  $prev = $calendar->getPrev();
+  $next = $calendar->getNext();
+
+  require_once "./views/pages/reserve/reserves.php";
 }
 
 function reservesCreate() {
-  require_once "./views/pages/survey/reserve/reservesCreate.php";
+  require_once "./views/pages/reserve/reservesCreate.php";
 }
 
 function reserve() {
-  require_once "./views/pages/survey/reserve/reserve.php";
+  require_once "./views/pages/reserve/reserve.php";
 }
 
 

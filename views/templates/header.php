@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title><?php echo getPageTitle(); ?></title>
+	<title><?= PAGE_TITLE ?></title>
 	<!-- css -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous"/>
   <link rel="stylesheet" href="/assets/css/style.css">
@@ -14,35 +14,35 @@
 		<hr>
 		<ul class="nav nav-pills flex-column mb-auto">
 			<li class="nav-item">
-				<a class="nav-link link-body-emphasis" href="/"><i class="fa-solid fa-house me-2 fa-lg"></i>ホーム（ダッシュボード）</a>
+				<a class="nav-link <?= navActive("index") ?>" href="/"><i class="fa-solid fa-house me-2 fa-lg"></i>ホーム（ダッシュボード）</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link link-body-emphasis" href="/surveys"><i class="fa-solid fa-paste me-2 fa-lg"></i>アンケート一覧（設定）</a>
+				<a class="nav-link <?= navActive("surveys") ?>" href="/surveys"><i class="fa-solid fa-paste me-2 fa-lg"></i>アンケート一覧（設定）</a>
 				<ul class="nav nav-pills flex-column">
 					<li class="nav-item">
-						<a class="nav-link link-body-emphasis" href="/surveys/create"><i class="fa-solid fa-square-plus me-2 fa-lg"></i>新規作成</a>
+						<a class="nav-link <?= navActive("surveysCreate") ?>" href="/surveys/create"><i class="fa-solid fa-square-plus me-2 fa-lg"></i>新規作成</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link link-body-emphasis" href="/surveys/1">アンケート1</a>
+						<a class="nav-link <?= navActive("survey") ?>" href="/surveys/1">アンケート1</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link link-body-emphasis" href="/surveys/2">アンケート2</a>
+						<a class="nav-link <?= navActive("survey") ?>" href="/surveys/2">アンケート2</a>
 						<ul class="nav nav-pills flex-column ps-4">
 							<li class="nav-item">
-								<a class="nav-link active" href="/surveys/2/faqs">質問一覧（設定）</a>
+								<a class="nav-link <?= navActive("faqs") ?>" href="/surveys/2/faqs">質問一覧（設定）</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link link-body-emphasis" href="/surveys/2/reserves">予約</a>
+								<a class="nav-link <?= navActive("reserves") ?>" href="/surveys/2/reserves">予約</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link link-body-emphasis" href="/surveys/2/result">結果</a>
+								<a class="nav-link <?= navActive("results") ?>" href="/surveys/2/results">結果</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link link-body-emphasis"><i class="fa-solid fa-circle-question me-2 fa-lg"></i>サポート</a>
+				<a class="nav-link <?= navActive("support") ?>"><i class="fa-solid fa-circle-question me-2 fa-lg"></i>サポート</a>
 			</li>
 		</ul>
 		<hr>

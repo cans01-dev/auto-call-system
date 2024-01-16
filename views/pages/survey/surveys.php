@@ -1,6 +1,6 @@
 <?php require './views/templates/header.php'; ?>
 
-<h2 class="display-1 pt-4 pb-3">アンケート一覧</h2>
+<h2 class="display-1 pt-4 mb-5">アンケート一覧</h2>
 
 <div class="row row-cols-2 g-3">
   <?php for ($i = 0; $i < 10; $i++): ?>

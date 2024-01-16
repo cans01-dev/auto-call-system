@@ -1,6 +1,6 @@
 <?php require './views/templates/header.php'; ?>
 
-<h2 class="display-1 pt-4 pb-3">リフォームのアンケート</h2>
+<h2 class="display-1 pt-4 mb-5">リフォームのアンケート</h2>
 
 <div class="row gx-4">
   <div class="col-8">
@@ -32,9 +32,12 @@
         <label for="exampleFormControlTextarea1" class="form-label">アンケートの説明（任意）</label>
         <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
       </div>
-      <div class="form-check form-switch">
+      <div class="form-check form-switch mb-3">
         <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
         <label class="form-check-label" for="flexSwitchCheckChecked">採用フラグ</label>
+      </div>
+      <div class="text-end">
+        <button type="submit" class="btn btn-dark">更新</button>
       </div>
     </form>
   </div>

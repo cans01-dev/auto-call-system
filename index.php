@@ -1,9 +1,6 @@
 <?php
 
 require "./vendor/autoload.php";
-require "./functions.php";
-require "./config.php";
-require "./router.php";
 require "./models/Fetch.php";
 require "./models/Auth.php";
 require "./models/Session.php";
@@ -15,11 +12,13 @@ require "./controllers/reserveController.php";
 require "./controllers/resultController.php";
 require "./controllers/surveyController.php";
 
+require "./functions.php";
+require "./config.php";
+require "./router.php";
+
 date_default_timezone_set("Asia/Tokyo");
 
 session_start();
-
-$pageTitle = "";
 
 # DB接続
 try {
@@ -29,7 +28,6 @@ try {
 } catch (PDOException $e) {
 	exit($e->getMessage());
 }
-
 
 # 見せかけのHTTPメソッド有効化
 $useExtMethod = $_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["_method"]);
@@ -43,6 +41,9 @@ if (false !== $pos = strpos($uri, "?")) {
 $uri = rawurldecode($uri);
 $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
 
+# ログインしなくても使えるルートハンドラ
+$publicHandlers = ["login", "loginPost"];
+
 # ルーティングの実行
 switch ($routeInfo[0]) {
 	case FastRoute\Dispatcher::NOT_FOUND:
@@ -55,12 +56,9 @@ switch ($routeInfo[0]) {
 	case FastRoute\Dispatcher::FOUND:
 		$handler = $routeInfo[1];
 		$vars = $routeInfo[2];
-		if ($auth->currentUser || in_array($handler, $publicHandler)) {
-			if (!empty($vars)) {
-				echo $handler($vars);
-			} else {
-				echo $handler();
-			}
+
+		if ($auth->currentUser || !in_array($handler, $publicHandlers)) {
+			echo !empty($vars) ? $handler($vars) : $handler();
 		} else {
 			toastMeg("success", "ログインしてください");
 			redirect("/login");
