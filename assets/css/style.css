@@ -1,0 +1,9 @@
+header {
+  width: 300px;
+}
+main {
+  padding-inline: calc(300px + 12px) 12px;
+}
+footer {
+  padding-inline: calc(300px + 12px) 12px;
+}
