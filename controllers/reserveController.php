@@ -1,6 +1,7 @@
 <?php 
 
 function reserves() {
+
   require_once "./views/pages/survey/reserve/reserves.php";
 }
 

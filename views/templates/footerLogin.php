@@ -1,8 +1,3 @@
-</div>
-</main>
-<footer class="bg-dark-subtle text-center py-3">
-	<p class="mb-0">&copy; cans 2024</p>
-</footer>
 <?php if ($toast = Session::get("toast")): ?>
 	<div class="toast-container position-fixed bottom-0 start-50 p-3 translate-middle-x">
 		<div class="toast align-items-center text-bg-<?= $toast["type"] ?> border-0" role="alert" aria-live="assertive" aria-atomic="true">

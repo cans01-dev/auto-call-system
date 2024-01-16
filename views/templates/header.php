@@ -8,7 +8,7 @@
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous"/>
   <link rel="stylesheet" href="/assets/css/style.css">
 <body>
-<header class="position-fixed top-0 start-0 border-end border-4">
+<header class="position-fixed top-0 start-0 border-end border-4 bg-white">
 	<div class="container vh-100 p-3 d-flex flex-column flex-shrink-0">
 		<h1 class="fs-3 fw-bold mb-0">オートコールシステム</h1>
 		<hr>
@@ -47,15 +47,21 @@
 		</ul>
 		<hr>
 		<div class="dropdown">
-			<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-				<?= Session::get("userEmail") ?>
+			<button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+				<i class="fa-solid fa-circle-user me-2 fa-lg"></i><?= Session::get("userEmail") ?>
 			</button>
 			<ul class="dropdown-menu dropdown-menu-dark">
 				<li><a class="dropdown-item active" href="#">アカウント設定</a></li>
 				<li><a class="dropdown-item" href="#">送信先メール一覧</a></li>
 				<li><hr class="dropdown-divider"></li>
-				<li><a class="dropdown-item" href="/logout">ログアウト</a></li>
+				<li>
+					<form action="/logout" method="post">
+						<button class="dropdown-item" href="/logout">ログアウト</button>
+					</form>
+				</li>
 			</ul>
 		</div>
 	</div>
 </header>
+<main>
+<div class="main-container">

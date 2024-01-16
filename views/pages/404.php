@@ -1,6 +1,5 @@
 <?php require "./views/templates/header.php"; ?>
-<main>
-  <p>404 not found</p>
-</main>
+
+<p>404 not found</p>
 
 <?php require './views/templates/footer.php'; ?>

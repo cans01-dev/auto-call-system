@@ -7,6 +7,7 @@ require "./router.php";
 require "./models/Fetch.php";
 require "./models/Auth.php";
 require "./models/Session.php";
+require "./models/Calendar.php";
 require "./controllers/accountController.php";
 require "./controllers/faqController.php";
 require "./controllers/mainController.php";
