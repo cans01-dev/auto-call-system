@@ -14,10 +14,10 @@
 		<hr>
 		<ul class="nav nav-pills flex-column mb-auto">
 			<li class="nav-item">
-				<a class="nav-link <?= navActive("index") ?>" href="/"><i class="fa-solid fa-house me-2 fa-xl"></i>ホーム（ダッシュボード）</a>
+				<a class="nav-link <?= $_SERVER["REQUEST_URI"] === "/" ? "active" : "link-body-emphasis" ?>" href="/"><i class="fa-solid fa-house me-2 fa-xl"></i>ホーム（ダッシュボード）</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link <?= navActive("surveysCreate") ?>" href="/surveys/create"><i class="fa-solid fa-square-plus me-2 fa-xl"></i>新規作成</a>
+				<a class="nav-link <?= $_SERVER["REQUEST_URI"] === "/surveys/create" ? "active" : "link-body-emphasis" ?>" href="/surveys/create"><i class="fa-solid fa-square-plus me-2 fa-xl"></i>新規作成</a>
 			</li>
 			<li class="nav-item">
 				<ul class="nav nav-pills flex-column">
@@ -41,7 +41,9 @@
 				</ul>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link <?= navActive("support") ?>"><i class="fa-solid fa-circle-question me-2 fa-xl"></i>サポート</a>
+				<a class="nav-link <?= $_SERVER["REQUEST_URI"] === "/support" ? "active" : "link-body-emphasis" ?>">
+					<i class="fa-solid fa-circle-question me-2 fa-xl"></i>サポート
+				</a>
 			</li>
 		</ul>
 		<hr>

@@ -1,6 +1,8 @@
 <?php
 
 require "./vendor/autoload.php";
+use FastRoute\Dispatcher;
+
 require "./models/Fetch.php";
 require "./models/Auth.php";
 require "./models/Session.php";
@@ -51,14 +53,14 @@ $publicHandlers = ["login", "loginPost"];
 
 # ルーティングの実行
 switch ($routeInfo[0]) {
-	case FastRoute\Dispatcher::NOT_FOUND:
+	case Dispatcher::NOT_FOUND:
 		require_once "./views/pages/404.php";
 		break;
-	case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
+	case Dispatcher::METHOD_NOT_ALLOWED:
 		$allowedMethods = $routeInfo[1];
 		require_once "./views/pages/405.php";
 		break;
-	case FastRoute\Dispatcher::FOUND:
+	case Dispatcher::FOUND:
 		$handler = $routeInfo[1];
 		$vars = $routeInfo[2];
 
