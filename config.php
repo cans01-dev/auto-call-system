@@ -6,4 +6,3 @@ define("DB_PASSWORD", "");
 
 define("PAGE_TITLE", "オートコールシステム");
 
-?>

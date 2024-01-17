@@ -50,8 +50,7 @@
 				<i class="fa-solid fa-circle-user me-2 fa-xl"></i><?= Session::get("userEmail") ?>
 			</button>
 			<ul class="dropdown-menu dropdown-menu-dark">
-				<li><a class="dropdown-item active" href="#">アカウント設定</a></li>
-				<li><a class="dropdown-item" href="#">送信先メール一覧</a></li>
+				<li><a class="dropdown-item" href="/account">アカウント設定</a></li>
 				<li><hr class="dropdown-divider"></li>
 				<li>
 					<form action="/logout" method="post">

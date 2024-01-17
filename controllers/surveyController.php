@@ -1,7 +1,7 @@
 <?php 
 
 function surveys() {
-  require_once "./views/pages/survey/surveys.php";
+  require_once "./views/pages/surveys.php";
 }
 
 function survey($vars) {
@@ -15,11 +15,9 @@ function survey($vars) {
   $prev = $calendar->getPrev();
   $next = $calendar->getNext();
 
-  require_once "./views/pages/survey/survey.php";
+  require_once "./views/pages/survey.php";
 }
 
 function surveysCreate() {
-  require_once "./views/pages/survey/surveysCreate.php";
+  require_once "./views/pages/surveysCreate.php";
 }
-
-?>

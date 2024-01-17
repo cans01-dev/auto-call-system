@@ -47,28 +47,11 @@ function url($path = '') {
   return $url;
 }
 
-# トーストメッセージを作成、ページ遷移を表示される
-function toastMeg($type, $text) {
-  Session::set("toast", ['type' => $type, 'text' => $text]);
-}
-
 # 指定したページにリダイレクト
 function redirect($path) {
   $url = url($path);
   header("Location: $url");
   exit;
-}
-
-# 管理者権限がない場合はログインページにリダイレクト
-function adminAuth() {
-  if (isset($_SESSION["admin"])) {
-    return true;
-  } else {
-    toastMeg("warning", "ログインしてください");
-    $url = url("/admin/login");
-    header("Location: $url");
-    exit;
-  }
 }
 
 /**
@@ -83,4 +66,3 @@ function navActiveSurvey($int) {
   return $surveyId == $int ? "active" : "link-body-emphasis";
 }
 
-?>

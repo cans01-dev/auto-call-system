@@ -16,7 +16,18 @@
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _toast_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./toast.js */ \"./src/toast.js\");\n/* harmony import */ var _toast_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_toast_js__WEBPACK_IMPORTED_MODULE_0__);\n\n\n//# sourceURL=webpack://script/./src/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _toast_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./toast.js */ \"./src/toast.js\");\n/* harmony import */ var _toast_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_toast_js__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _submitCheck_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./submitCheck.js */ \"./src/submitCheck.js\");\n\r\n\r\n\n\n//# sourceURL=webpack://script/./src/index.js?");
+
+/***/ }),
+
+/***/ "./src/submitCheck.js":
+/*!****************************!*\
+  !*** ./src/submitCheck.js ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   submitCheck: () => (/* binding */ submitCheck)\n/* harmony export */ });\nfunction check() {\r\n  if (window.confirm(\"送信してよろしいですか？\")) {\r\n    // 確認ダイアログを表示\r\n\r\n    return true; // 「OK」時は送信を実行\r\n  } else {\r\n    // 「キャンセル」時の処理\r\n\r\n    window.alert(\"キャンセルされました\"); // 警告ダイアログを表示\r\n    return false; // 送信を中止\r\n  }\r\n}\r\n\r\nconst submitCheck = (msg) => {\r\n  return window.confirm(msg);\r\n};\r\n\n\n//# sourceURL=webpack://script/./src/submitCheck.js?");
 
 /***/ }),
 

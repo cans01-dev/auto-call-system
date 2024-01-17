@@ -34,7 +34,9 @@ try {
 
 # 見せかけのHTTPメソッド有効化
 $useExtMethod = $_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["_method"]);
-$httpMethod = $useExtMethod ? $_POST["_method"] : $_SERVER["REQUEST_METHOD"];
+$httpMethod = $_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["_method"])
+							? $_POST["_method"]
+							: $_SERVER["REQUEST_METHOD"];
 
 # URLの解析
 $uri = $_SERVER["REQUEST_URI"];
@@ -63,11 +65,10 @@ switch ($routeInfo[0]) {
 		# 認証が必要な場合はログインページにリダイレクト
 		if ($auth->currentUser || in_array($handler, $publicHandlers)) {
 			echo !empty($vars) ? $handler($vars) : $handler();
+			Session::delete("toast");
 		} else {
-			toastMeg("success", "ログインしてください");
+			Session::set("toast", ["success", "ログインしてください"]);
 			redirect("/login");
 		}
 		break;
 }
-
-?>

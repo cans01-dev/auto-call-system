@@ -12,10 +12,10 @@ function login() {
 function loginPost() {
   if ($_POST["token"] === Session::get("token")) {
     if (Auth::login($_POST["email"], $_POST["password"])) {
-      toastMeg("success", "ログインしました");
+      Session::set("toast", ["success", "ログインしました"]);
       redirect("/");
     } else {
-      toastMeg("danger", "メールアドレスもしくはパスワードが異なります");
+      Session::set("toast", ["danger", "メールアドレスもしくはパスワードが異なります"]);
       redirect("/login");
     }
   } else {
@@ -25,8 +25,7 @@ function loginPost() {
 
 function logout() {
   Auth::logout();
-  toastMeg("success", "ログアウトしました");
+  Session::set("toast", ["success", "ログアウトしました"]);
   redirect("/login");
 }
 
-?>

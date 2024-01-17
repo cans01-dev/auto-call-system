@@ -1,15 +1,9 @@
 <?php 
 
 function account() {
-  require_once "./views/pages/account/account.php";
+  require_once "./views/pages/account.php";
 }
 
 function sendEmail() {
-  require_once "./views/pages/account/sendEmail.php";
+  require_once "./views/pages/sendEmail.php";
 }
-
-// function sendEmailCreate() {
-//   require_once "./views/pages/account/sendEmailCreate.php";
-// }
-
-?>

@@ -9,16 +9,15 @@ function options($vars) {
   $prev = $calendar->getPrev();
   $next = $calendar->getNext();
 
-  require_once "./views/pages/option/options.php";
+  require_once "./views/pages/options.php";
 }
 
 function optionsCreate() {
-  require_once "./views/pages/option/optionsCreate.php";
+  require_once "./views/pages/optionsCreate.php";
 }
 
 function option() {
-  require_once "./views/pages/option/option.php";
+  require_once "./views/pages/option.php";
 }
 
 
-?>

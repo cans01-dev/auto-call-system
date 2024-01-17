@@ -4,23 +4,25 @@
 
 <section id="summary">
   <?= Components::h3("設定"); ?>
-  <form action="/surveys" method="post">
-    <div class="mb-3">
-      <label for="exampleFormControlInput1" class="form-label">質問のタイトル</label>
-      <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="〇〇に関する質問">
-    </div>
-    <div class="mb-3">
-      <label for="exampleFormControlTextarea1" class="form-label">質問の読み上げ文章</label>
-      <textarea class="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
-    </div>
-    <div class="form-check form-switch mb-3">
-      <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
-      <label class="form-check-label" for="flexSwitchCheckChecked">採用フラグ</label>
-    </div>
-    <div class="text-end">
-      <button type="submit" class="btn btn-dark">更新</button>
-    </div>
-  </form>
+  <div style="max-width: 480px;">
+    <form action="/surveys" method="post">
+      <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">質問のタイトル</label>
+        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="〇〇に関する質問">
+      </div>
+      <div class="mb-3">
+        <label for="exampleFormControlTextarea1" class="form-label">質問の読み上げ文章</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
+      </div>
+      <div class="form-check form-switch mb-3">
+        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
+        <label class="form-check-label" for="flexSwitchCheckChecked">採用フラグ</label>
+      </div>
+      <div class="text-end">
+        <button type="submit" class="btn btn-dark">更新</button>
+      </div>
+    </form>
+  </div>
 </section>
 <?= Components::hr() ?>
 <section id="options">

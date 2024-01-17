@@ -3,20 +3,11 @@
 function result($vars) {
   ["reserveId" => $reserveId] = $vars;
 
-  require_once "./views/pages/result/result.php";
+  require_once "./views/pages/result.php";
 }
 
 function call($vars) {
   ["reserveId" => $reserveId, "callId" => $callId] = $vars;
 
-  require_once "./views/pages/result/call.php.php";
+  require_once "./views/pages/call.php.php";
 }
-
-// function results($vars) {
-//   ["surveyId" => $surveyId] = $vars;
-
-//   require_once "./views/pages/result/results.php";
-// }
-
-
-?>
