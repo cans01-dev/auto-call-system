@@ -3,7 +3,7 @@
         'name' => '__root__',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '6383f7dbbbd2c7352dfc5a2299a22e3891d528aa',
+        'reference' => 'cf4e480f97dec5551dea3e7b0d6e5dd253138948',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         '__root__' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '6383f7dbbbd2c7352dfc5a2299a22e3891d528aa',
+            'reference' => 'cf4e480f97dec5551dea3e7b0d6e5dd253138948',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -110,21 +110,6 @@
             'dev_requirement' => false,
             'provided' => array(
                 0 => '2.3|3.0',
-            ),
-        ),
-        'twbs/bootstrap' => array(
-            'pretty_version' => 'v5.3.0',
-            'version' => '5.3.0.0',
-            'reference' => '60098ac499d30aa50575b0b7137391c06ef25429',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../twbs/bootstrap',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
-        'twitter/bootstrap' => array(
-            'dev_requirement' => false,
-            'replaced' => array(
-                0 => 'v5.3.0',
             ),
         ),
     ),

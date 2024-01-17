@@ -5,12 +5,15 @@ require "./models/Fetch.php";
 require "./models/Auth.php";
 require "./models/Session.php";
 require "./models/Calendar.php";
+require "./models/Components.php";
 require "./controllers/accountController.php";
 require "./controllers/faqController.php";
 require "./controllers/mainController.php";
 require "./controllers/reserveController.php";
 require "./controllers/resultController.php";
 require "./controllers/surveyController.php";
+require "./controllers/settingController.php";
+require "./controllers/optionController.php";
 
 require "./functions.php";
 require "./config.php";
@@ -57,7 +60,8 @@ switch ($routeInfo[0]) {
 		$handler = $routeInfo[1];
 		$vars = $routeInfo[2];
 
-		if ($auth->currentUser || !in_array($handler, $publicHandlers)) {
+		# 認証が必要な場合はログインページにリダイレクト
+		if ($auth->currentUser || in_array($handler, $publicHandlers)) {
 			echo !empty($vars) ? $handler($vars) : $handler();
 		} else {
 			toastMeg("success", "ログインしてください");

@@ -9,5 +9,6 @@ DB設計
 1/12
 project-baseの改良、Userモデル作成、Authモデル作成、認証周りのコントローラ作成
 1/15
-bootstrap導入, webpack導入, ルーティング実装
+project-baseの改良、URI設計、ページ構成決め、ルーティング実装, Bootstrap, webpack
 1/16
+UI実装->サイドバー, ログイン, アンケート一覧, アンケート個別, 予約一覧（完了

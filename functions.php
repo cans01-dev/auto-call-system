@@ -78,5 +78,9 @@ function navActive($str) {
   global $handler;
   return $handler === $str ? "active" : "link-body-emphasis";
 }
+function navActiveSurvey($int) {
+  global $surveyId;
+  return $surveyId == $int ? "active" : "link-body-emphasis";
+}
 
 ?>

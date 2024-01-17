@@ -14,41 +14,40 @@
 		<hr>
 		<ul class="nav nav-pills flex-column mb-auto">
 			<li class="nav-item">
-				<a class="nav-link <?= navActive("index") ?>" href="/"><i class="fa-solid fa-house me-2 fa-lg"></i>ホーム（ダッシュボード）</a>
+				<a class="nav-link <?= navActive("index") ?>" href="/"><i class="fa-solid fa-house me-2 fa-xl"></i>ホーム（ダッシュボード）</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link <?= navActive("surveys") ?>" href="/surveys"><i class="fa-solid fa-paste me-2 fa-lg"></i>アンケート一覧（設定）</a>
+				<a class="nav-link <?= navActive("surveysCreate") ?>" href="/surveys/create"><i class="fa-solid fa-square-plus me-2 fa-xl"></i>新規作成</a>
+			</li>
+			<li class="nav-item">
 				<ul class="nav nav-pills flex-column">
 					<li class="nav-item">
-						<a class="nav-link <?= navActive("surveysCreate") ?>" href="/surveys/create"><i class="fa-solid fa-square-plus me-2 fa-lg"></i>新規作成</a>
+						<a class="nav-link <?= $surveyId == 1 ? "active" : "link-body-emphasis" ?>" href="/surveys/1">アンケート1</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link <?= navActive("survey") ?>" href="/surveys/1">アンケート1</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link <?= navActive("survey") ?>" href="/surveys/2">アンケート2</a>
+						<a class="nav-link <?= $surveyId == 2 ? "active" : "link-body-emphasis" ?>" href="/surveys/2">アンケート2</a>
 						<ul class="nav nav-pills flex-column ps-4">
 							<li class="nav-item">
-								<a class="nav-link <?= navActive("faqs") ?>" href="/surveys/2/faqs">質問一覧（設定）</a>
+								<a class="nav-link link-body-emphasis" href="/surveys/2#faqs">質問一覧</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link <?= navActive("reserves") ?>" href="/surveys/2/reserves">予約</a>
+								<a class="nav-link link-body-emphasis" href="/surveys/2#calendar">カレンダー</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link <?= navActive("results") ?>" href="/surveys/2/results">結果</a>
+								<a class="nav-link link-body-emphasis" href="/surveys/2#area">エリア</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link <?= navActive("support") ?>"><i class="fa-solid fa-circle-question me-2 fa-lg"></i>サポート</a>
+				<a class="nav-link <?= navActive("support") ?>"><i class="fa-solid fa-circle-question me-2 fa-xl"></i>サポート</a>
 			</li>
 		</ul>
 		<hr>
 		<div class="dropdown">
 			<button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-				<i class="fa-solid fa-circle-user me-2 fa-lg"></i><?= Session::get("userEmail") ?>
+				<i class="fa-solid fa-circle-user me-2 fa-xl"></i><?= Session::get("userEmail") ?>
 			</button>
 			<ul class="dropdown-menu dropdown-menu-dark">
 				<li><a class="dropdown-item active" href="#">アカウント設定</a></li>

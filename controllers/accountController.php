@@ -8,8 +8,8 @@ function sendEmail() {
   require_once "./views/pages/account/sendEmail.php";
 }
 
-function sendEmailCreate() {
-  require_once "./views/pages/account/sendEmailCreate.php";
-}
+// function sendEmailCreate() {
+//   require_once "./views/pages/account/sendEmailCreate.php";
+// }
 
 ?>

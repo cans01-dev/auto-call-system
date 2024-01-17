@@ -1,5 +1,7 @@
 html {
   height: 100%;
+  scroll-behavior: auto !important;
+  scroll-padding: 48px;
 }
 body {
   margin-left: 300px;
@@ -23,4 +25,7 @@ main {
 .calendar-table {
   table-layout: fixed;
   caret-color: transparent;
+}
+.nav-link {
+  padding-block: 10px;
 }

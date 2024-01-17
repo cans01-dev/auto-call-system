@@ -1,11 +1,5 @@
 <?php 
 
-function results($vars) {
-  ["surveyId" => $surveyId] = $vars;
-
-  require_once "./views/pages/result/results.php";
-}
-
 function result($vars) {
   ["reserveId" => $reserveId] = $vars;
 
@@ -17,6 +11,12 @@ function call($vars) {
 
   require_once "./views/pages/result/call.php.php";
 }
+
+// function results($vars) {
+//   ["surveyId" => $surveyId] = $vars;
+
+//   require_once "./views/pages/result/results.php";
+// }
 
 
 ?>
