@@ -4,19 +4,19 @@ class Components
 {
   public static function h2($text) {
     return <<<EOM
-      <h2 class="display-1 pt-4 mb-5">{$text}</h2>
+      <h2 class="display-4 mb-4">{$text}</h2>
     EOM;
   }
 
   public static function h3($text) {
     return <<<EOM
-      <h3 class="display-6 mb-4">{$text}</h3>
+      <h3 class="mb-3">{$text}</h3>
     EOM;
   }
 
   public static function h4($text) {
     return <<<EOM
-      <h4>{$text}</h4>
+      <h4 class="mb-2">{$text}</h4>
     EOM;
   }
 

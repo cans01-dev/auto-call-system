@@ -1,8 +1,6 @@
 </div>
 </main>
-<footer class="bg-dark-subtle text-center py-3">
-	<p class="mb-0">&copy; cans 2024</p>
-</footer>
+</div>
 
 <?= ($toast = Session::get("toast")) ? Components::toast($toast): ""; ?>
 

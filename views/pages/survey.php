@@ -1,9 +1,9 @@
 <?php require './views/templates/header.php'; ?>
 
-<h2 class="display-1 pt-4 mb-5">リフォームのアンケート</h2>
+<?= Components::h2("リフォームのアンケート") ?>
 
-<div class="row gx-4">
-  <div class="col-8">
+<div class="d-flex gap-3">
+  <div class="">
     <section id="faqs">
       <?= Components::h3("質問一覧") ?>
       <div>
@@ -91,8 +91,8 @@
       </table>
     </section>
   </div>
-  <div class="col-4">
-    <div class="sticky-top py-4">
+  <div style="min-width: 300px;">
+    <div class="sticky-top">
       <section id="summary">
         <?= Components::h4("設定"); ?>
         <form action="/surveys" method="post">

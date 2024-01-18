@@ -1,26 +1,27 @@
+/* @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap"); */
+
 html {
   height: 100%;
   scroll-behavior: auto !important;
   scroll-padding: 48px;
 }
 body {
-  margin-left: 300px;
-  min-height: 100%;
+  /* font-family: "Noto Sans JP"; */
+}
+.flex-container {
   display: flex;
-  flex-direction: column;
+  width: 1340px;
+  max-width: 100%;
+  margin-inline: auto;
+  min-height: 100%;
 }
 header {
   width: 300px;
+  flex-shrink: 0;
 }
 main {
-  flex: 1;
-  padding-bottom: 120px;
-}
-.main-container {
-  padding-inline: 16px;
-  width: 1040px;
-  max-width: 100%;
-  margin-inline: auto;
+  padding: 16px;
+  width: 100%;
 }
 .calendar-table {
   table-layout: fixed;
