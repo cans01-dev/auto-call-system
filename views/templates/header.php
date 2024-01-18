@@ -53,7 +53,7 @@
 		</ul>
 		<hr>
 		<div class="dropdown">
-			<button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+			<button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
 				<?= Session::get("userEmail") ?>
 			</button>
 			<ul class="dropdown-menu dropdown-menu-dark">
