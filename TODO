@@ -2,6 +2,8 @@ SESSIONやtoast_msgを管理するクラスを作成
 モジュラーJSを導入する
 URL設計
 
+https://low-melon-caf.notion.site/3e4a64ea5003479e8b27db2f5f4bce39
+
 データページ /surveys/:id/result
 - 有効コール一覧
 - コール検索（電話番号、回答）
