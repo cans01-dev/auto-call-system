@@ -6,6 +6,9 @@
   <?= Components::h3("設定"); ?>
   <div style="max-width: 480px;">
     <form action="" method="post">
+      <div class="form-text mb-2 vstack gap-1">
+        <span>開始・終了時間やエリアの設定の変更は既に登録済の予約に影響することはありません。</span>
+      </div>
       <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">予約パターンのタイトル</label>
         <input type="text" class="form-control" id="exampleFormControlInput1">
@@ -23,7 +26,7 @@
         <ul class="list-group">
           <?php for ($i = 0; $i < 10; $i++): ?>
           <li class="list-group-item">
-            <input class="form-check-input me-1" type="checkbox" value="" id="firstCheckboxStretched<?= $i ?>">
+            <input class="form-check-input me-1" name="areas" type="checkbox" value="<?= $i ?>" id="firstCheckboxStretched<?= $i ?>">
             <label class="form-check-label stretched-link" for="firstCheckboxStretched<?= $i ?>">エリア <?= $i ?></label>
           </li>
           <?php endfor; ?>

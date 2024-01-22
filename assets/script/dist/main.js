@@ -16,18 +16,17 @@
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _toast_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./toast.js */ \"./src/toast.js\");\n/* harmony import */ var _toast_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_toast_js__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _submitCheck_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./submitCheck.js */ \"./src/submitCheck.js\");\n\r\n\r\n\n\n//# sourceURL=webpack://script/./src/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _toast_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./toast.js */ \"./src/toast.js\");\n/* harmony import */ var _toast_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_toast_js__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _modal_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modal.js */ \"./src/modal.js\");\n/* harmony import */ var _modal_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_modal_js__WEBPACK_IMPORTED_MODULE_1__);\n\n\n\n\n//# sourceURL=webpack://script/./src/index.js?");
 
 /***/ }),
 
-/***/ "./src/submitCheck.js":
-/*!****************************!*\
-  !*** ./src/submitCheck.js ***!
-  \****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ "./src/modal.js":
+/*!**********************!*\
+  !*** ./src/modal.js ***!
+  \**********************/
+/***/ (() => {
 
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   submitCheck: () => (/* binding */ submitCheck)\n/* harmony export */ });\nfunction check() {\r\n  if (window.confirm(\"送信してよろしいですか？\")) {\r\n    // 確認ダイアログを表示\r\n\r\n    return true; // 「OK」時は送信を実行\r\n  } else {\r\n    // 「キャンセル」時の処理\r\n\r\n    window.alert(\"キャンセルされました\"); // 警告ダイアログを表示\r\n    return false; // 送信を中止\r\n  }\r\n}\r\n\r\nconst submitCheck = (msg) => {\r\n  return window.confirm(msg);\r\n};\r\n\n\n//# sourceURL=webpack://script/./src/submitCheck.js?");
+eval("const dayModal = document.getElementById('dayModal');\r\nif (dayModal) {\r\n  dayModal.addEventListener('show.bs.modal', event => {\r\n    const button = event.relatedTarget\r\n    const recipient = button.getAttribute('data-bs-whatever');\r\n    const modalTitle = dayModal.querySelector('.modalBodyMsg');\r\n    modalTitle.textContent = `New message to ${recipient}`;\r\n  })\r\n}\r\n\r\nif (location.pathname === \"/home\") {\r\n  console.log('/home');\r\n  const surveysCreateModalEl = document.getElementById('surveysCreateModal');\r\n  const surveysCreateModal = new bootstrap.Modal(surveysCreateModalEl);\r\n  surveysCreateModalEl.addEventListener('hide.bs.modal', function() {\r\n    location.hash = '';\r\n  });\r\n\r\n  if (location.hash === '#create') {\r\n    surveysCreateModal.show();\r\n  }\r\n\r\n  window.addEventListener('hashchange', function() {\r\n    if (location.hash === '#create') {\r\n      surveysCreateModal.show();\r\n    }\r\n  });\r\n}\n\n//# sourceURL=webpack://script/./src/modal.js?");
 
 /***/ }),
 
@@ -37,7 +36,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \**********************/
 /***/ (() => {
 
-eval("const toastElList = document.querySelectorAll(\".toast\");\r\nconst toastList = [...toastElList].map((toastEl) => {\r\n  const toast = new bootstrap.Toast(toastEl);\r\n  toast.show();\r\n});\r\n\r\nconsole.log(\"toast.js imported\");\n\n//# sourceURL=webpack://script/./src/toast.js?");
+eval("const toastElList = document.querySelectorAll(\".toast\");\nconst toastList = [...toastElList].map((toastEl) => {\n  const toast = new bootstrap.Toast(toastEl);\n  toast.show();\n});\n\nconsole.log(\"toast.js imported\");\n\n//# sourceURL=webpack://script/./src/toast.js?");
 
 /***/ })
 

@@ -30,3 +30,22 @@ main {
 .nav-link {
   padding-block: 10px;
 }
+.day-modal-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  border: none;
+  opacity: 0;
+}
+.day-modal-button:hover {
+  opacity: .6;
+}
+.day-modal-button i {
+  padding: 18px 6px;
+  border: 4px solid #000;
+  border-radius: 8px;
+  transform: translateY(8px);
+}

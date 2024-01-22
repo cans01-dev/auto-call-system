@@ -15,13 +15,17 @@
 		<hr>
 		<ul class="nav nav-pills flex-column mb-auto">
 			<li class="nav-item">
-				<a class="nav-link <?= $_SERVER["REQUEST_URI"] === "/" ? "active" : "link-body-emphasis" ?>" href="/">
-					<i class="fa-solid fa-house d-inline-block fa-lg" style="width: 28px;"></i>ホーム（ダッシュボード）
+				<a class="nav-link <?= $_SERVER["REQUEST_URI"] === "/" ? "active" : "link-body-emphasis" ?>" href="/home">
+					<span class="text-center d-inline-block me-2" style="width: 24px;">
+						<i class="fa-solid fa-house fa-lg"></i>
+					</span>ホーム（ダッシュボード）
 				</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link <?= $_SERVER["REQUEST_URI"] === "/surveys/create" ? "active" : "link-body-emphasis" ?>" href="/surveys/create">
-					<i class="fa-solid fa-square-plus d-inline-block fa-lg" style="width: 28px;"></i>新規作成
+				<a class="nav-link <?= $_SERVER["REQUEST_URI"] === "/surveys/create" ? "active" : "link-body-emphasis" ?>" href="/home#create">
+					<span class="text-center d-inline-block me-2" style="width: 24px;">
+						<i class="fa-solid fa-square-plus fa-lg"></i>
+					</span>新規作成
 				</a>
 			</li>
 			<li class="nav-item">
@@ -47,7 +51,9 @@
 			</li>
 			<li class="nav-item">
 				<a class="nav-link <?= $_SERVER["REQUEST_URI"] === "/support" ? "active" : "link-body-emphasis" ?>">
-					<i class="fa-solid fa-circle-question d-inline-block fa-lg" style="width: 28px;"></i>サポート
+					<span class="text-center d-inline-block me-2" style="width: 24px;">
+						<i class="fa-solid fa-circle-question fa-lg"></i>
+					</span>サポート
 				</a>
 			</li>
 		</ul>

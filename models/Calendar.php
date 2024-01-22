@@ -5,27 +5,36 @@ class Calendar
   private $calendar = [];
   private $month, $year;
 
-  public function __construct($month, $year)
+  public function __construct($month, $year, $schedules=[])
   {
     $this->month = $month;
     $this->year = $year;
 
     # 空の配列を生成
     for ($i = 0; $i < 6; $i++) {
-      $week = array_fill(0, 6, null);
+      $week = array_fill(0, 7, null);
       array_push($this->calendar, $week);
     }
 
     # 月の全ての日のタイムスタンプに
-    $week = 0;
+    $days = [];
     $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $this->month, $this->year);
     foreach (range(1, $daysInMonth) as $day) {
       $timestamp = mktime(0, 0, 0, $this->month, $day, $this->year);
-      $w = date("w", $timestamp);
-      $this->calendar[$week][$w] = [
-        "timestamp" => $timestamp,
-        "today" => date("Y-m-d") === date("Y-m-d", $timestamp)
-      ];
+      array_push($days, new Day(
+        mktime(0, 0, 0, $this->month, $day, $this->year),
+        date("Y-m-d") === date("Y-m-d", $timestamp)
+      ));
+    }
+
+    foreach ($schedules as $date => $schedule) {
+      $days[$date - 1]->setSchedule($schedule);
+    }
+      
+    $week = 0;
+    foreach ($days as $day) {
+      $w = date("w", $day->timestamp);
+      $this->calendar[$week][$w] = $day;
       if ($w === "6") $week++;
     }
 
@@ -60,3 +69,25 @@ class Calendar
   }
 }
 
+class Day
+{
+  public $timestamp, $today, $schedule;
+
+  public function __construct($timestamp, $today) {
+    $this->timestamp = $timestamp;
+    $this->today = $today;
+  }
+
+  public function setSchedule($schedule) {
+    $this->schedule = $schedule;
+  }
+
+  public function getSchedule()
+  {
+    if ($schedule = $this->schedule) {
+      return $schedule;
+    } else {
+      return false;
+    }
+  }
+}

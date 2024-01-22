@@ -3,7 +3,7 @@
 <?= Components::h2("リフォームのアンケート") ?>
 
 <div class="d-flex gap-3">
-  <div class="">
+  <div class="w-100">
     <section id="faqs">
       <?= Components::h3("質問一覧") ?>
       <div>
@@ -52,9 +52,31 @@
           <?php foreach ($calendar->getCalendar() as $week): ?>
             <tr>
               <?php foreach ($week as $day): ?>
-                <td style="height: 100px;">
+                <td class="position-relative" style="height: 100px;">
                   <?php if ($day): ?>
-                    <p class="text-center"><span class="<?= $day["today"] ? "text-bg-primary badge" : ""; ?>"><?= date("j", $day["timestamp"]); ?></span></p>
+                    <div class="text-center mb-2">
+                      <span class="<?= $day->today ? "text-bg-primary badge" : ""; ?>">
+                        <?= date("j", $day->timestamp); ?>
+                      </span>
+                    </div>
+                    <?php if ($schedule = $day->schedule): ?>
+                      <a
+                      class="badge text-bg-<?= $schedule["status"]? "secondary": "primary"; ?> text-wrap w-100" style="text-decoration: none;"
+                      href="/reserves/1<?= $schedule["status"]? "/result": null; ?>"
+                      >
+                        17:00 - 21:00<br>関東・甲信越
+                      </a>
+                    <?php else: ?>
+                      <button
+                      type="button"
+                      class="day-modal-button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#dayModal"
+                      data-bs-whatever="<?= date("j", $day->timestamp); ?>"
+                      >
+                        <i class="fa-solid fa-plus fa-2xl"></i>
+                      </button>
+                    <?php endif; ?>
                   <?php endif; ?>
                 </td>
               <?php endforeach; ?>
@@ -91,7 +113,7 @@
       </table>
     </section>
   </div>
-  <div style="min-width: 300px;">
+  <div class="flex-shrink-0" style="width: 300px;">
     <div class="sticky-top">
       <section id="summary">
         <?= Components::h4("設定"); ?>
@@ -116,6 +138,10 @@
       <?= Components::hr() ?>
       <section id="settings">
         <?= Components::h4("予約パターン"); ?>
+        <div class="form-text mb-2 vstack gap-1">
+          <span>開始・終了時間やエリア設定のテンプレートを利用してスムーズに予約の指定ができます。</span>
+          <span>予約パターンの適用後に各日付ごとに設定を変更することも可能です。</span>
+        </div>
         <?php for ($i = 0; $i < 3; $i++): ?>
           <div class="card mb-2">
             <div class="card-body">
@@ -141,6 +167,43 @@
   </div>
 </div>
 
+<!-- dayModal -->
+<div class="modal fade" id="dayModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">予約を追加: 1月23日</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <?php for ($i = 0; $i < 3; $i++): ?>
+          <div class="card mb-2">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="badge text-bg-warning me-2"> </span>  
+                Primary card title
+              </h5>
+              <table>
+                <tbody>
+                  <tr><th>時間</th><td>17:00 - 21:00</td></tr>
+                  <tr><th>エリア</th><td>関東・甲信越</td></tr>
+                </tbody>
+              </table>
+              <div class="position-absolute top-0 end-0 p-3">
+                <form action="/reserves" method="post">
+                  <input type="hidden" name="timestamp" value="">
+                  <input type="hidden" name="setting_id" value="">
+                  <button type="submit" class="btn btn-primary">このパターンで予約</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        <?php endfor; ?>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- faqsCreateModal -->
 <div class="modal fade" id="faqsCreateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -159,7 +222,6 @@
             <input type="hidden" name="surveyId" value="<?= $surveyId ?>">
             <button type="submit" class="btn btn-primary">作成</button>
           </div>
-        </form>
         </form>
       </div>
     </div>
@@ -184,7 +246,6 @@
             <input type="hidden" name="surveyId" value="<?= $surveyId ?>">
             <button type="submit" class="btn btn-primary">作成</button>
           </div>
-        </form>
         </form>
       </div>
     </div>

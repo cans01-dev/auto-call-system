@@ -1,7 +1,11 @@
 <?php 
 
 function index() {
-  require_once './views/pages/top.php';
+  redirect("/home");
+}
+
+function home() {
+  require_once "./views/pages/home.php";
 }
 
 function login() {
