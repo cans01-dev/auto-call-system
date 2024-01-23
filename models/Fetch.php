@@ -83,6 +83,13 @@ class Fetch
     $stmt->execute([":faq_id" => $faq_id]);
     return $stmt->fetchAll();
   }
+
+  public static function maxDialInFaqId($faq_id) {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT MAX(dial) FROM options WHERE faq_id = :faq_id");
+    $stmt->execute([":faq_id" => $faq_id]);
+    return $stmt->fetchColumn();
+  }
 }
 
 

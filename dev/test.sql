@@ -51,7 +51,7 @@ CREATE TABLE options (
   id int(11) NOT NULL AUTO_INCREMENT,
   faq_id int(11) NOT NULL,
   title varchar(255) NOT NULL,
-  text text(65535),
+  dial int(11) NOT NULL,
   is_last boolean NOT NULL,
   next_faq_id int(11),
   PRIMARY KEY (id),
@@ -104,3 +104,5 @@ CREATE TABLE stations (
 
 INSERT INTO users (email, password) VALUES
 ('test@example.com', '$2y$10$smM.1r.LkbkvktimMdr14ufFph9Wb97w2t5/wZVuXCeW0z3MLi8iW');
+
+ALTER TABLE options ADD dial int(11) UNIQUE;

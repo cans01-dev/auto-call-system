@@ -5,21 +5,35 @@
 <section id="summary">
   <?= Components::h3("設定"); ?>
   <div style="max-width: 480px;">
-    <form action="" method="post">
+    <form action="/options/<?= $option["id"] ?>" method="post">
+      <?= csrf() ?>
+      <?= method("PUT") ?>
       <div class="mb-3">
         <label class="form-label">選択肢のタイトル</label>
-        <input type="text" class="form-control" required>
+        <input type="text" name="title" class="form-control" value="<?= $option["title"] ?>" required>
       </div>
       <div class="mb-3">
         <label class="form-label">NEXT</label>
-        <select class="form-select" aria-label="Default select example" required>
-          <option selected value="">選択してください</option>
-          <option value="1">質問AAA</option>
-          <option value="2">質問あああ</option>
-          <option value="3">終了</option>
+        <select class="form-select" name="next_faq_id" required>
+          <option value="0" <?= !$option["next_faq_id"] ? "selected" : ""; ?>>終了</option>
+          <?php foreach ($surveyFaqs as $surveyFaq): ?>
+          <option
+          value="<?= $surveyFaq["id"] ?>"
+          <?= $option["next_faq_id"] === $surveyFaq["id"] ? "selected" : ""; ?>
+          >
+          <?= $surveyFaq["title"] ?>
+          </option>
+          <?php endforeach; ?>
         </select>
         <div id="passwordHelpBlock" class="form-text">
           この選択肢が選択された場合の次の操作を指定してください
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">ダイヤル番号</label>
+        <input type="number" class="form-control" value="<?= $option["dial"] ?>" disabled>
+        <div id="passwordHelpBlock" class="form-text">
+          ダイヤル番号は質問ページの選択肢一覧から変更できます
         </div>
       </div>
       <div class="form-check form-switch mb-3">

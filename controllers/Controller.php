@@ -53,6 +53,7 @@ function faq($vars) {
   $faq = Fetch::find("faqs", $id);
   $survey = Fetch::find("surveys", $faq["survey_id"]);
   $options = Fetch::optionsByFaqId($faq["id"]);
+  $maxDial = Fetch::maxDialInFaqId($faq["id"]);
   if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
 
   require_once "./views/pages/faq.php";
@@ -61,6 +62,12 @@ function faq($vars) {
 function option($vars) {
   $id = $vars["id"];
   $option = Fetch::find("options", $id);
+  $faq = Fetch::find("faqs", $option["faq_id"]);
+  $survey = Fetch::find("surveys", $faq["survey_id"]);
+  $surveyFaqs = array_filter(Fetch::faqsBySurveyId($survey["id"]), function($surveyFaq) use($faq) {
+    return $surveyFaq["id"] !== $faq["id"];
+  });
+  if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
   require_once "./views/pages/option.php";
 }
 

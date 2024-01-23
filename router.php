@@ -32,9 +32,11 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("POST", "/faqs", "storeFaq");
 	$r->addRoute("PUT", "/faqs/{id:\d+}", "updateFaq");
 	// $r->addRoute("DELETE", "/faqs/{id:\d+}", "deleteFaq");
-
+	
 	$r->addRoute("POST", "/options", "storeOption");
 	$r->addRoute("PUT", "/options/{id:\d+}", "updateOption");
 	// $r->addRoute("DELETE", "/options/{id:\d+}", "deleteOption");
+	$r->addRoute("POST", "/options/{id:\d+}/up", "upOption");
+	$r->addRoute("POST", "/options/{id:\d+}/down", "downOption");
 });
 

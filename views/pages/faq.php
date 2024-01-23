@@ -41,18 +41,28 @@
     <tbody>
       <?php foreach ($options as $option): ?>
       <tr>
-        <th scope="row"><span class=""><?= $option["id"] ?></span></th>
+        <th scope="row"><span class=""><?= $option["dial"] ?></span></th>
         <td><?= $option["title"] ?></td>
-        <td><a class="badge text-bg-secondary"><?= $option["next_faq_id"] ?></a></td>
+        <td>
+          <?php if ($option["next_faq_id"]): ?>
+          <a href="/faqs/<?= $option["next_faq_id"] ?>" class="badge text-bg-info"><?= $option["next_faq_id"] ?></a>
+          <?php else: ?>
+          <span class="badge text-bg-secondary">終了</span>
+          <?php endif; ?>
+        </td>
         <td>
           <a href="/options/<?= $option["id"] ?>" class="btn btn-primary me-2">編集</a>
           <div class="btn-group" role="group" aria-label="Basic outlined example">
-            <button type="button" class="btn btn-outline-primary">
-              <i class="fa-solid fa-angle-up"></i>
-            </button>
-            <button type="button" class="btn btn-outline-primary">
-              <i class="fa-solid fa-angle-down"></i>
-            </button>
+            <form action="/options/<?= $option["id"] ?>/up" method="post">
+              <button type="submit" class="btn btn-outline-primary" <?= !$option["dial"] ? "disabled" : ""; ?>>
+                <i class="fa-solid fa-angle-up"></i>
+              </button>
+            </form>
+            <form action="/options/<?= $option["id"] ?>/down" method="post">
+              <button type="submit" class="btn btn-outline-primary" <?= $option["dial"] === $maxDial ? "disabled" : ""; ?>>
+                <i class="fa-solid fa-angle-down"></i>
+              </button>
+            </form>
           </div>
         </td>
       </tr>
