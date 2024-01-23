@@ -1,13 +1,15 @@
+USE auto_call_system;
+
 DROP TABLE send_emails;
+DROP TABLE options;
+DROP TABLE stations;
+DROP TABLE reserves_areas;
+DROP TABLE areas;
+DROP TABLE favorites;
+DROP TABLE reserves;
 DROP TABLE faqs;
 DROP TABLE surveys;
 DROP TABLE users;
-DROP TABLE options;
-DROP TABLE stations;
-DROP TABLE areas;
-DROP TABLE reserves_areas;
-DROP TABLE favorites;
-DROP TABLE reserves;
 
 
 CREATE TABLE users (
@@ -76,6 +78,12 @@ CREATE TABLE favorites (
   FOREIGN KEY (reserve_id) REFERENCES reserves (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE areas (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  title varchar(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+
 CREATE TABLE reserves_areas (
   id int(11) NOT NULL AUTO_INCREMENT,
   reserve_id int(11) NOT NULL,
@@ -83,12 +91,6 @@ CREATE TABLE reserves_areas (
   PRIMARY KEY (id),
   FOREIGN KEY (reserve_id) REFERENCES reserves (id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (area_id) REFERENCES areas (id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE areas (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  title varchar(255) NOT NULL,
-  PRIMARY KEY (id),
 );
 
 CREATE TABLE stations (
@@ -100,5 +102,5 @@ CREATE TABLE stations (
 );
 
 
-INSERT INTO users (id, email, password) VALUES
-(1, 'test@example.com', '$2y$10$Rs0rWPNCAXghz4x21oxk8upWv8ttVhflvh3Pos64rHItgHlJfA9Xu');
+INSERT INTO users (email, password) VALUES
+('test@example.com', '$2y$10$smM.1r.LkbkvktimMdr14ufFph9Wb97w2t5/wZVuXCeW0z3MLi8iW');

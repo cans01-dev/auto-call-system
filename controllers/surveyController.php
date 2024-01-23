@@ -1,29 +1,29 @@
 <?php 
 
-function surveys() {
-  require_once "./views/pages/surveys.php";
+function storeSurvey() {
+  global $pdo;
+  $stmt = $pdo->prepare("INSERT INTO surveys (user_id, title, note) VALUES (:user_id, :title, :note)");
+  $stmt->execute([
+    ":user_id" => Auth::user()["id"],
+    ":title" => $_POST["title"],
+    ":note" => $_POST["note"]
+  ]);
+  $id = $pdo->lastInsertId();
+  Session::set("toast", ["success", "アンケートを新規作成しました"]);
+  redirect("/surveys/{$id}");
 }
 
-function survey($vars) {
-  ["surveyId" => $surveyId] = $vars;
-
-  $month = $_GET["month"] ?? date("n");
-  $year = $_GET["year"] ?? date("Y");
-
-  $schedulesSample = [
-    12 => ["text" => "vavdavdavdvad", "status" => 1],
-    14 => ["text" => "vavdavdavdvad", "status" => 1],
-    25 => ["text" => "vavdavdavdvad", "status" => 0]
-  ];
-
-  $calendar = new Calendar($month, $year, $schedulesSample);
-  $current = $calendar->getCurrent();
-  $prev = $calendar->getPrev();
-  $next = $calendar->getNext();
-
-  require_once "./views/pages/survey.php";
-}
-
-function surveysCreate() {
-  require_once "./views/pages/surveysCreate.php";
+function updateSurvey($vars) {
+  $id = $vars["id"];
+  $survey = Fetch::find("surveys", $id);
+  if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
+  global $pdo;
+  $stmt = $pdo->prepare("UPDATE surveys SET title = :title, note = :note WHERE id = :id");
+  $stmt->execute([
+    ":id" => $id,
+    ":title" => $_POST["title"],
+    ":note" => $_POST["note"]
+  ]);
+  Session::set("toast", ["success", "アンケートの設定を変更しました"]);
+  back();
 }

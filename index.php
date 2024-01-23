@@ -8,6 +8,7 @@ require "./models/Auth.php";
 require "./models/Session.php";
 require "./models/Calendar.php";
 require "./models/Components.php";
+require "./controllers/Controller.php";
 require "./controllers/accountController.php";
 require "./controllers/faqController.php";
 require "./controllers/mainController.php";
@@ -28,17 +29,26 @@ session_start();
 # DB接続
 try {
 	$pdo = new PDO(DB_DSN, DB_USERNAME, DB_PASSWORD);
-	$fetch = new Fetch($pdo);
-	$auth = new Auth();
 } catch (PDOException $e) {
 	exit($e->getMessage());
 }
 
-# 見せかけのHTTPメソッド有効化
-$useExtMethod = $_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["_method"]);
-$httpMethod = $_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["_method"])
-							? $_POST["_method"]
-							: $_SERVER["REQUEST_METHOD"];
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+	# CSRF検証
+	if ($_POST["token"] !== Session::get("token")) abort(419);
+	# 見せかけのHTTPメソッド有効化
+	$httpMethod = isset($_POST["_method"]) ? $_POST["_method"] : $_SERVER["REQUEST_METHOD"];
+} else {
+	$httpMethod = $_SERVER["REQUEST_METHOD"];
+}
+
+# CSRFトークン発行
+if (!Session::get("token")) {
+	$token = bin2hex(openssl_random_pseudo_bytes(24));
+	Session::set("token", $token);
+} else {
+	$token = Session::get("token");
+}
 
 # URLの解析
 $uri = $_SERVER["REQUEST_URI"];
@@ -65,7 +75,7 @@ switch ($routeInfo[0]) {
 		$vars = $routeInfo[2];
 
 		# 認証が必要な場合はログインページにリダイレクト
-		if ($auth->currentUser || in_array($handler, $publicHandlers)) {
+		if (Auth::check() || in_array($handler, $publicHandlers)) {
 			echo !empty($vars) ? $handler($vars) : $handler();
 			Session::delete("toast");
 		} else {

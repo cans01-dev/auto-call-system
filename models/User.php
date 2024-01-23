@@ -4,11 +4,13 @@ class User
 {
   public $id, $email, $password;
 
-  public function __construct($id, $email, $password)
+  public static function find($id) {
+    
+  }
+
+  public function __construct()
   {
-    $this->id = $id;
-    $this->email = $email;
-    $this->password = $password;
+    //
   }
 
   public function create() {

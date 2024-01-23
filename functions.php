@@ -1,15 +1,24 @@
 <?php
 
+/**
+ * オートコールシステムのみ利用
+ */
+function navActive($str) {
+  global $handler;
+  return $handler === $str ? "active" : "link-body-emphasis";
+}
+function navActiveSurvey($int) {
+  global $surveyId;
+  return $surveyId == $int ? "active" : "link-body-emphasis";
+}
+/**
+ * ーーここまでーー
+ */
+
 function escape($str) {
   return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
 }
 
-/**
- * URLパラメータを書き換え・追加・削除する
- * 引用元: https://dgcolor.info/blog/87/
- * @param Array | 書き換え・追加・削除するパラメータの配列
- * @return string | 変更後のURLパラメータ
- */
 function url_param_change($par=Array(),$op=0){
   $url = parse_url($_SERVER["REQUEST_URI"]);
   if(isset($url["query"])) parse_str($url["query"],$query);
@@ -23,7 +32,6 @@ function url_param_change($par=Array(),$op=0){
   return $query ? (!$op ? "?" : "").htmlspecialchars($query, ENT_QUOTES) : "";
 }
 
-# ページネーションに関する情報を取得する
 function get_page_numbers($posts_par_page, $posts_sum, $page) {
   $first = 1;
   $last = ceil($posts_sum / $posts_par_page);
@@ -40,29 +48,44 @@ function get_page_numbers($posts_par_page, $posts_sum, $page) {
   ];
 }
 
-# サイト内のパスを指定してURLを取得
 function url($path = '') {
   $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
   $url = $protocol . '://' . $_SERVER['HTTP_HOST'] . $path;
   return $url;
 }
 
-# 指定したページにリダイレクト
 function redirect($path) {
   $url = url($path);
   header("Location: $url");
   exit;
 }
 
-/**
- * オートコールシステムのみ利用
- */
-function navActive($str) {
-  global $handler;
-  return $handler === $str ? "active" : "link-body-emphasis";
-}
-function navActiveSurvey($int) {
-  global $surveyId;
-  return $surveyId == $int ? "active" : "link-body-emphasis";
+function back() {
+  $url = $_SERVER["HTTP_REFERER"];
+  header("Location: $url");
+  exit;
 }
 
+function abort($code) {
+  switch ($code) {
+    case 419:
+      header("HTTP/1.1 419 Page Expired");
+      exit;
+    case 403:
+      header("HTTP/1.1 403 Forbidden");
+      exit;
+  }
+}
+
+function csrf() {
+  global $token;
+  return <<<EOM
+    <input type="hidden" name="token" value="{$token}">
+  EOM;
+}
+
+function method($method) {
+  return <<<EOM
+    <input type="hidden" name="_method" value="{$method}">
+  EOM;
+}

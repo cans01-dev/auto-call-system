@@ -10,11 +10,11 @@
         <span>開始・終了時間やエリアの設定の変更は既に登録済の予約に影響することはありません。</span>
       </div>
       <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">予約パターンのタイトル</label>
-        <input type="text" class="form-control" id="exampleFormControlInput1">
+        <label class="form-label">予約パターンのタイトル</label>
+        <input type="text" class="form-control" required>
       </div>
       <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">開始時間・終了時間</label>
+        <label class="form-label">開始時間・終了時間</label>
         <div class="input-group">
           <input type="time" class="form-control" placeholder="Username" aria-label="Username" required>
           <span class="input-group-text">~</span>
@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">エリア指定</label>
+        <label class="form-label">エリア指定</label>
         <ul class="list-group">
           <?php for ($i = 0; $i < 10; $i++): ?>
           <li class="list-group-item">
@@ -36,8 +36,8 @@
         </div>
       </div>
       <div class="form-check form-switch mb-3">
-        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
-        <label class="form-check-label" for="flexSwitchCheckChecked">採用フラグ</label>
+        <input class="form-check-input" type="checkbox" role="switch" checked>
+        <label class="form-check-label">採用フラグ</label>
       </div>
       <div class="text-end">
         <button type="submit" class="btn btn-dark">更新</button>

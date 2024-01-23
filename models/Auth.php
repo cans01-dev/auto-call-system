@@ -4,30 +4,22 @@ require "./models/User.php";
 
 class Auth
 {
-  public $currentUser;
-
-  public function __construct() {
-    if ($userId = Session::get("userId")) {
-      $this->currentUser = Fetch::User($userId);
-    } else {
-      $this->currentUser = false;
-    }
+  public static function check() {
+    return Session::get("userId");
   }
 
-  public static function login($email, $password) {
-    global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
-    $stmt->execute([":email" => $email]);
-    $result = $stmt->fetch();
-    $user = new User($result["id"], $result["email"], $result["password"]);
-    if (password_verify($password, $user->password)) {
-      session_regenerate_id(true);
-      Session::set("userId", $user->id);
-      Session::set("userEmail", $user->email);
+  public static function user() {
+    return Fetch::find("users", Session::get("userId"));
+  }
+
+  public static function attempt($email, $password) {
+    $user = Fetch::userByEmail($email);
+    if (password_verify($password, $user["password"])) {
+      Session::set("userId", $user["id"]);
+      Session::set("userEmail", $user["email"]);
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   public static function logout() {

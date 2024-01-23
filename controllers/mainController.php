@@ -1,30 +1,13 @@
-<?php 
-
-function index() {
-  redirect("/home");
-}
-
-function home() {
-  require_once "./views/pages/home.php";
-}
-
-function login() {
-  Session::set("token", bin2hex(random_bytes(32)));
-  require_once "./views/pages/login.php";
-}
-
+<?php
+ 
 function loginPost() {
-  if ($_POST["token"] === Session::get("token")) {
-    if (Auth::login($_POST["email"], $_POST["password"])) {
-      Session::set("toast", ["success", "ログインしました"]);
-      redirect("/");
-    } else {
-      Session::set("toast", ["danger", "メールアドレスもしくはパスワードが異なります"]);
-      redirect("/login");
-    }
-  } else {
-    // トークンエラー
+  if (Auth::attempt($_POST["email"], $_POST["password"])) {
+    session_regenerate_id(true);
+    Session::set("toast", ["success", "ログインしました"]);
+    redirect("/");
   }
+  Session::set("toast", ["danger", "メールアドレスもしくはパスワードが異なります"]);
+  redirect("/login");
 }
 
 function logout() {

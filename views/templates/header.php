@@ -31,10 +31,10 @@
 			<li class="nav-item">
 				<ul class="nav nav-pills flex-column">
 					<li class="nav-item">
-						<a class="nav-link <?= $surveyId == 1 ? "active" : "link-body-emphasis" ?>" href="/surveys/1">アンケート1</a>
+						<a class="nav-link <?= @$surveyId == 1 ? "active" : "link-body-emphasis" ?>" href="/surveys/1">アンケート1</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link <?= $surveyId == 2 ? "active" : "link-body-emphasis" ?>" href="/surveys/2">アンケート2</a>
+						<a class="nav-link <?= @$surveyId == 2 ? "active" : "link-body-emphasis" ?>" href="/surveys/2">アンケート2</a>
 						<ul class="nav nav-pills flex-column ps-4">
 							<li class="nav-item">
 								<a class="nav-link link-body-emphasis" href="/surveys/2#faqs">質問一覧</a>
@@ -60,13 +60,14 @@
 		<hr>
 		<div class="dropdown">
 			<button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-				<?= Session::get("userEmail") ?>
+				<?= Auth::user()["email"] ?>
 			</button>
 			<ul class="dropdown-menu dropdown-menu-dark">
 				<li><a class="dropdown-item" href="/account">アカウント設定</a></li>
 				<li><hr class="dropdown-divider"></li>
 				<li>
 					<form action="/logout" method="post">
+						<?= csrf() ?>
 						<button class="dropdown-item" href="/logout">ログアウト</button>
 					</form>
 				</li>

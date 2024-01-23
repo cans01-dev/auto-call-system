@@ -5,10 +5,12 @@
 <section id="summary">
   <?= Components::h3("設定"); ?>
   <div style="max-width: 480px;">
-    <form action="/surveys" method="post">
+    <form action="/account/email" method="post">
+      <?= csrf() ?>
+      <?= method('PUT') ?>
       <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">メールアドレス</label>
-        <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="foobar@example.com">
+        <label class="form-label">メールアドレス</label>
+        <input type="email" name="email" class="form-control" value="<?= Auth::user()["email"] ?>">
       </div>
       <div class="mb-3">
         <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
@@ -25,16 +27,16 @@
 <section id="sendEmails">
   <?= Components::h3("送信先メールアドレス") ?>
   <div style="max-width: 480px;">
-    <?php for ($i = 0; $i < 3; $i++): ?>
+    <?php foreach ($sendEmails as $sendEmail): ?>
       <div class="card mb-2">
         <div class="card-body">
-          <span class="fw-bold me-2">test@test.com</span><span class="badge text-bg-dark">有効</span>
+          <span class="fw-bold me-2"><?= $sendEmail["email"] ?></span><span class="badge text-bg-dark">有効</span>
           <div class="position-absolute top-0 end-0 p-3">
-            <a href="/send-emails/<?= $i ?>" class="card-link">編集</a>
+            <a href="/send-emails/<?= $sendEmail["id"] ?>" class="card-link">編集</a>
           </div>
         </div>
       </div>
-    <?php endfor; ?>
+    <?php endforeach; ?>
     <?= Components::modalOpenButton("sendEmailsCreateModal"); ?>
   </div>
 </section>
@@ -48,18 +50,20 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="/options" method="post">
+        <form action="/account/password" method="post">
+          <?= csrf() ?>
+          <?= method("PUT") ?>
           <div class="mb-3">
-            <label for="exampleFormControlInput1" class="form-label">現在のパスワード</label>
-            <input type="password" class="form-control" id="exampleFormControlInput1">
+            <label class="form-label">現在のパスワード</label>
+            <input type="password" name="old_password" class="form-control" required>
           </div>
           <div class="mb-3">
-            <label for="exampleFormControlInput1" class="form-label">新しいパスワード</label>
-            <input type="password" class="form-control" id="exampleFormControlInput1">
+            <label class="form-label">新しいパスワード</label>
+            <input type="password" name="new_password" class="form-control" required>
           </div>
           <div class="mb-3">
-            <label for="exampleFormControlInput1" class="form-label">新しいパスワード（再入力）</label>
-            <input type="password" class="form-control" id="exampleFormControlInput1">
+            <label class="form-label">新しいパスワード（再入力）</label>
+            <input type="password" name="new_password_confirm" class="form-control" required>
           </div>
           <div class="text-end">
             <button type="submit" class="btn btn-primary">更新</button>
@@ -80,10 +84,11 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="/options" method="post">
+        <form action="/send-emails" method="post">
+          <?= csrf() ?>
           <div class="mb-3">
-            <label for="exampleFormControlInput1" class="form-label">メールアドレス</label>
-            <input type="email" class="form-control" id="exampleFormControlInput1">
+            <label class="form-label">メールアドレス</label>
+            <input type="email" name="email" class="form-control" required>
           </div>
           <div class="text-end">
             <button type="submit" class="btn btn-primary">登録</button>

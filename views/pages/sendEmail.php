@@ -1,25 +1,28 @@
 <?php require './views/templates/header.php'; ?>
 
-<?= Components::h2("送信先メールアドレス: hoge@example.com") ?>
+<?= Components::h2("送信先メールアドレス: {$sendEmail["email"]}") ?>
 
 <section id="summary">
   <?= Components::h3("設定"); ?>
   <div style="max-width: 480px;">
-    <form action="" method="post">
+    <form action="/send-emails/<?= $sendEmail["id"] ?>" method="post">
+      <?= csrf() ?>
+      <?= method("PUT") ?>
       <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">メールアドレス</label>
-        <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="foobar@example.com">
+        <label class="form-label">メールアドレス</label>
+        <input type="email" name="email" class="form-control" value="<?= $sendEmail["email"] ?>">
       </div>
       <div class="form-check form-switch mb-3">
-        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
-        <label class="form-check-label" for="flexSwitchCheckChecked">有効化</label>
+        <input class="form-check-input" type="checkbox" role="switch" checked>
+        <label class="form-check-label">有効化</label>
       </div>
       <div class="text-end">
         <button type="submit" class="btn btn-dark">更新</button>
       </div>
     </form>
-    <form action="" method="post" onsubmit="return window.confirm('本当に削除しますか？')">
-      <input type="hidden" name="_method" value="delete">
+    <form action="/send-emails/<?= $sendEmail["id"] ?>" method="post" onsubmit="return window.confirm('本当に削除しますか？')">
+      <?= csrf() ?>
+      <?= method("DELETE") ?>
       <div class="text-end">
         <input type="submit" class="btn btn-link" value="この送信先メールアドレスを削除">
       </div>

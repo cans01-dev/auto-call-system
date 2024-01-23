@@ -1,26 +1,26 @@
 <?php require './views/templates/header.php'; ?>
 
-<?= Components::h2("リフォームのアンケート") ?>
+<?= Components::h2($survey["title"]) ?>
 
 <div class="d-flex gap-3">
   <div class="w-100">
     <section id="faqs">
       <?= Components::h3("質問一覧") ?>
       <div>
-        <?php for ($i = 1; $i < 6; $i++): ?>
+        <?php foreach ($faqs as $faq): ?>
           <div class="card mb-2">
             <div class="card-body">
-              <h5 class="card-title"><span class="badge bg-secondary me-2">ID: <?= $i ?></span>質問タイトル</h5>
-              <h6 class="card-subtitle mb-2 text-body-secondary">Card subtitle</h6>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              <a href="/faqs/<?= $i ?>" class="btn btn-primary me-2">設定</a>
-              <a href="" class="btn btn-outline-primary">
+              <h5 class="card-title"><span class="badge bg-secondary me-2">ID: <?= $faq["id"] ?></span><?= $faq["title"] ?></h5>
+              <h6 class="card-subtitle mb-2 text-body-secondary">---</h6>
+              <p class="card-text"><?= $faq["text"] ?></p>
+              <a href="/faqs/<?= $faq["id"] ?>" class="btn btn-primary me-2">設定</a>
+              <button href="" class="btn btn-outline-primary" disabled>
                 <i class="fa-solid fa-volume-high"></i>
                 音声
-              </a>
+              </button>
             </div>
           </div>
-        <?php endfor; ?>
+        <?php endforeach; ?>
         <?= Components::modalOpenButton("faqsCreateModal"); ?>
       </div>
     </section>
@@ -117,18 +117,20 @@
     <div class="sticky-top">
       <section id="summary">
         <?= Components::h4("設定"); ?>
-        <form action="/surveys" method="post">
+        <form action="/surveys/<?= $survey["id"] ?>" method="post">
+          <?= csrf() ?>
+          <?= method("PUT") ?>
           <div class="mb-3">
-            <label for="exampleFormControlInput1" class="form-label">アンケートのタイトル</label>
-            <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="〇〇のアンケート">
+            <label class="form-label">アンケートのタイトル</label>
+            <input type="text" name="title" class="form-control" value="<?= $survey["title"] ?>" required>
           </div>
           <div class="mb-3">
-            <label for="exampleFormControlTextarea1" class="form-label">アンケートの説明（任意）</label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+            <label class="form-label">アンケートの説明（任意）</label>
+            <textarea class="form-control" name="note" rows="3"><?= $survey["note"] ?></textarea>
           </div>
           <div class="form-check form-switch mb-3">
-            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
-            <label class="form-check-label" for="flexSwitchCheckChecked">採用フラグ</label>
+            <input class="form-check-input" type="checkbox" role="switch" checked>
+            <label class="form-check-label">採用フラグ</label>
           </div>
           <div class="text-end">
             <button type="submit" class="btn btn-dark">更新</button>
@@ -214,12 +216,13 @@
       </div>
       <div class="modal-body">
         <form action="/faqs" method="post">
+          <?= csrf() ?>
           <div class="mb-3">
-            <label for="exampleFormControlInput1" class="form-label">質問のタイトル</label>
-            <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="〇〇に関する質問">
+            <label class="form-label">質問のタイトル</label>
+            <input type="text" name="title" class="form-control" placeholder="〇〇に関する質問">
           </div>
           <div class="text-end">
-            <input type="hidden" name="surveyId" value="<?= $surveyId ?>">
+            <input type="hidden" name="survey_id" value="<?= $survey["id"] ?>">
             <button type="submit" class="btn btn-primary">作成</button>
           </div>
         </form>
@@ -239,8 +242,8 @@
       <div class="modal-body">
         <form action="/settings" method="post">
           <div class="mb-3">
-            <label for="exampleFormControlInput1" class="form-label">予約パターンのタイトル</label>
-            <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="〇〇の予約パターン">
+            <label class="form-label">予約パターンのタイトル</label>
+            <input type="text" class="form-control" placeholder="〇〇の予約パターン">
           </div>
           <div class="text-end">
             <input type="hidden" name="surveyId" value="<?= $surveyId ?>">

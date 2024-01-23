@@ -1,22 +1,24 @@
 <?php require './views/templates/header.php'; ?>
 
-<?= Components::h2("〇〇に関する質問") ?>
+<?= Components::h2($faq["title"]) ?>
 
 <section id="summary">
   <?= Components::h3("設定"); ?>
   <div style="max-width: 480px;">
-    <form action="/surveys" method="post">
+    <form action="/faqs/<?= $faq["id"] ?>" method="post">
+      <?= csrf() ?>
+      <?= method("PUT") ?>
       <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">質問のタイトル</label>
-        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="〇〇に関する質問">
+        <label class="form-label">質問のタイトル</label>
+        <input type="text" name="title" class="form-control" value="<?= $faq["title"] ?>">
       </div>
       <div class="mb-3">
-        <label for="exampleFormControlTextarea1" class="form-label">質問の読み上げ文章</label>
-        <textarea class="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
+        <label class="form-label">質問の読み上げ文章</label>
+        <textarea class="form-control" name="text" rows="5"><?= $faq["text"] ?></textarea>
       </div>
       <div class="form-check form-switch mb-3">
-        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
-        <label class="form-check-label" for="flexSwitchCheckChecked">採用フラグ</label>
+        <input class="form-check-input" type="checkbox" role="switch" checked>
+        <label class="form-check-label">採用フラグ</label>
       </div>
       <div class="text-end">
         <button type="submit" class="btn btn-dark">更新</button>
@@ -37,13 +39,13 @@
       </tr>
     </thead>
     <tbody>
-      <?php for ($i = 0; $i < 4; $i++): ?>
+      <?php foreach ($options as $option): ?>
       <tr>
-        <th scope="row"><span class=""><?= $i ?></span></th>
-        <td>回答あああ</td>
-        <td><a class="badge text-bg-secondary">〇△に関する質問</a></td>
+        <th scope="row"><span class=""><?= $option["id"] ?></span></th>
+        <td><?= $option["title"] ?></td>
+        <td><a class="badge text-bg-secondary"><?= $option["next_faq_id"] ?></a></td>
         <td>
-          <a href="/options/<?= $i ?>" class="btn btn-primary me-2">編集</a>
+          <a href="/options/<?= $option["id"] ?>" class="btn btn-primary me-2">編集</a>
           <div class="btn-group" role="group" aria-label="Basic outlined example">
             <button type="button" class="btn btn-outline-primary">
               <i class="fa-solid fa-angle-up"></i>
@@ -54,7 +56,7 @@
           </div>
         </td>
       </tr>
-      <?php endfor; ?>
+      <?php endforeach; ?>
     </tbody>
   </table>
   <?= Components::modalOpenButton("optionsCreateModal"); ?>
@@ -70,12 +72,13 @@
       </div>
       <div class="modal-body">
         <form action="/options" method="post">
+          <?= csrf() ?>
           <div class="mb-3">
-            <label for="exampleFormControlInput1" class="form-label">選択肢のタイトル</label>
-            <input type="email" class="form-control" id="exampleFormControlInput1">
+            <label class="form-label">選択肢のタイトル</label>
+            <input type="text" name="title" class="form-control" required>
           </div>
           <div class="text-end">
-            <input type="hidden" name="faqId" value="<?= $faqId ?>">
+            <input type="hidden" name="faq_id" value="<?= $faq["id"] ?>">
             <button type="submit" class="btn btn-primary">作成</button>
           </div>
         </form>

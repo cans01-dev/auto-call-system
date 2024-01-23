@@ -9,18 +9,18 @@
   <div class="flex-shrink-0" style="width: 300px;">
     <div class="sticky-top">
       <?= Components::h4("アンケート一覧") ?>
-      <?php for ($i = 0; $i < 3; $i++): ?>
+      <?php foreach ($surveys as $survey): ?>
         <div class="card mb-2">
           <div class="card-body">
-            <h5 class="card-title">リフォームのアンケート</h5>
-            <h6 class="card-subtitle mb-2 text-body-secondary">コール済: 4631</h6>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <h5 class="card-title"><?= $survey["title"] ?></h5>
+            <h6 class="card-subtitle mb-2 text-body-secondary">コール済: ---</h6>
+            <p class="card-text"><?= $survey["note"] ?></p>
             <div class="position-absolute top-0 end-0 p-3">
-              <a href="/surveys/<?= $i ?>" class="card-link">編集</a>
+              <a href="/surveys/<?= $survey["id"] ?>" class="card-link">編集</a>
             </div>
           </div>
         </div>
-      <?php endfor; ?>
+      <?php endforeach; ?>
       <?= Components::modalOpenButton("surveysCreateModal") ?>
     </div>
   </div>
@@ -37,9 +37,14 @@
       </div>
       <div class="modal-body">
         <form action="/surveys" method="post">
+          <?= csrf() ?>
           <div class="mb-3">
-            <label for="exampleFormControlInput1" class="form-label">アンケートのタイトル</label>
-            <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="〇〇のアンケート">
+            <label class="form-label">アンケートのタイトル</label>
+            <input type="text" name="title" class="form-control" placeholder="〇〇のアンケート"  required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">アンケートの説明（任意）</label>
+            <textarea class="form-control" name="note" rows="3"></textarea>
           </div>
           <div class="text-end">
             <input type="hidden" name="surveyId" value="<?= $surveyId ?>">
