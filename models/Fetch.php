@@ -9,13 +9,6 @@ class Fetch
     return $stmt->fetch();
   }
 
-  public static function user($id) {
-    global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :id");
-    $stmt->execute([":id" => $id]);
-    return $stmt->fetch();
-  }
-
   public static function userByEmail($email) {
     global $pdo;
     $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
@@ -37,37 +30,11 @@ class Fetch
     return $stmt->fetchAll();
   }
 
-  public static function sendEmail($id) {
-    global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM send_emails WHERE id = :id");
-    $stmt->execute([":id" => $id]);
-    $sendEmail = $stmt->fetch();
-    if ($sendEmail["user_id"] !== Auth::user()["id"]) abort(403);
-    return $sendEmail;
-  }
-
   public static function surveysByUserId($user_id) {
     global $pdo;
     $stmt = $pdo->prepare("SELECT * FROM surveys WHERE user_id = :user_id");
     $stmt->execute([":user_id" => $user_id]);
     return $stmt->fetchAll();
-  }
-
-  public static function survey($id) {
-    global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM surveys WHERE id = :id");
-    $stmt->execute([":id" => $id]);
-    $survey = $stmt->fetch();
-    if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
-    return $survey;
-  }
-
-  public static function faq($id) {
-    global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM faqs WHERE id = :id");
-    $stmt->execute([":id" => $id]);
-    $faq = $stmt->fetch();
-    return $faq;
   }
 
   public static function faqsBySurveyId($survey_id) {
@@ -79,7 +46,7 @@ class Fetch
 
   public static function optionsByFaqId($faq_id) {
     global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM options WHERE faq_id = :faq_id");
+    $stmt = $pdo->prepare("SELECT * FROM options WHERE faq_id = :faq_id ORDER BY dial");
     $stmt->execute([":faq_id" => $faq_id]);
     return $stmt->fetchAll();
   }
@@ -89,6 +56,16 @@ class Fetch
     $stmt = $pdo->prepare("SELECT MAX(dial) FROM options WHERE faq_id = :faq_id");
     $stmt->execute([":faq_id" => $faq_id]);
     return $stmt->fetchColumn();
+  }
+
+  public static function optionByDialAndFaq($dial, $faq_id) {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT * FROM options WHERE dial = :dial AND faq_id = :faq_id");
+    $stmt->execute([
+      ":dial" => $dial,
+      ":faq_id" => $faq_id
+    ]);
+    return $stmt->fetch();
   }
 }
 

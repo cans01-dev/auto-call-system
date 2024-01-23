@@ -4,7 +4,6 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("GET", "/", "index");
 	$r->addRoute("GET", "/home", "home");
 	$r->addRoute("GET", "/login", "login");
-	$r->addRoute("GET", "/surveys/create", "surveysCreate");
 	$r->addRoute("GET", "/surveys/{id:\d+}", "survey");
 	$r->addRoute("GET", "/reserves/{id:\d+}", "reserve");
 	$r->addRoute('GET', "/reserves/{id:\d+}/result", "result");
@@ -36,7 +35,6 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("POST", "/options", "storeOption");
 	$r->addRoute("PUT", "/options/{id:\d+}", "updateOption");
 	// $r->addRoute("DELETE", "/options/{id:\d+}", "deleteOption");
-	$r->addRoute("POST", "/options/{id:\d+}/up", "upOption");
-	$r->addRoute("POST", "/options/{id:\d+}/down", "downOption");
+	$r->addRoute("POST", "/options/{id:\d+}/order", "orderOption");
 });
 

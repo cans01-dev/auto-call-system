@@ -15,38 +15,47 @@
 		<hr>
 		<ul class="nav nav-pills flex-column mb-auto">
 			<li class="nav-item">
-				<a class="nav-link <?= $_SERVER["REQUEST_URI"] === "/" ? "active" : "link-body-emphasis" ?>" href="/home">
+				<a
+				class="nav-link <?= $_SERVER["REQUEST_URI"] === "/home" ? "active" : "link-body-emphasis" ?>"
+				href="/home"
+				>
 					<span class="text-center d-inline-block me-2" style="width: 24px;">
 						<i class="fa-solid fa-house fa-lg"></i>
 					</span>ホーム（ダッシュボード）
 				</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link <?= $_SERVER["REQUEST_URI"] === "/surveys/create" ? "active" : "link-body-emphasis" ?>" href="/home#create">
+				<a class="nav-link link-body-emphasis" href="/home#create">
 					<span class="text-center d-inline-block me-2" style="width: 24px;">
 						<i class="fa-solid fa-square-plus fa-lg"></i>
 					</span>新規作成
 				</a>
 			</li>
-			<li class="nav-item">
+			<li class="nav-item my-2 p-1 border border-2 rounded-2">
 				<ul class="nav nav-pills flex-column">
+					<?php foreach (Fetch::surveysByUserId(Auth::user()["id"]) as $sv): ?>
 					<li class="nav-item">
-						<a class="nav-link <?= @$surveyId == 1 ? "active" : "link-body-emphasis" ?>" href="/surveys/1">アンケート1</a>
+						<a
+						class="nav-link <?= $_SERVER["REQUEST_URI"] === "/surveys/{$sv["id"]}" ? "active" : "link-body-emphasis" ?>"
+						href="/surveys/<?= $sv["id"] ?>"
+						>
+						<?= $sv["title"] ?>
+						</a>
+						<?php if ($_SERVER["REQUEST_URI"] === "/surveys/{$sv["id"]}"): ?>
+							<ul class="nav nav-pills flex-column ps-4">
+								<li class="nav-item">
+									<a class="nav-link link-body-emphasis" href="/surveys/<?= $sv["id"] ?>#faqs">質問一覧</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link link-body-emphasis" href="/surveys/<?= $sv["id"] ?>#calendar">カレンダー</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link link-body-emphasis" href="/surveys/<?= $sv["id"] ?>#area">エリア</a>
+								</li>
+							</ul>
+						<?php endif; ?>
 					</li>
-					<li class="nav-item">
-						<a class="nav-link <?= @$surveyId == 2 ? "active" : "link-body-emphasis" ?>" href="/surveys/2">アンケート2</a>
-						<ul class="nav nav-pills flex-column ps-4">
-							<li class="nav-item">
-								<a class="nav-link link-body-emphasis" href="/surveys/2#faqs">質問一覧</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link link-body-emphasis" href="/surveys/2#calendar">カレンダー</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link link-body-emphasis" href="/surveys/2#area">エリア</a>
-							</li>
-						</ul>
-					</li>
+					<?php endforeach ?>
 				</ul>
 			</li>
 			<li class="nav-item">

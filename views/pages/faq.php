@@ -52,17 +52,29 @@
         </td>
         <td>
           <a href="/options/<?= $option["id"] ?>" class="btn btn-primary me-2">編集</a>
+          <form action="/options/<?= $option["id"] ?>/order" id="upOption<?= $option["id"] ?>" method="post" hidden>
+            <?= csrf() ?>
+            <input type="hidden" name="to" value="up">
+          </form>
+          <form action="/options/<?= $option["id"] ?>/order" id="downOption<?= $option["id"] ?>" method="post" hidden>
+            <?= csrf() ?>
+            <input type="hidden" name="to" value="down">
+          </form>
           <div class="btn-group" role="group" aria-label="Basic outlined example">
-            <form action="/options/<?= $option["id"] ?>/up" method="post">
-              <button type="submit" class="btn btn-outline-primary" <?= !$option["dial"] ? "disabled" : ""; ?>>
-                <i class="fa-solid fa-angle-up"></i>
-              </button>
-            </form>
-            <form action="/options/<?= $option["id"] ?>/down" method="post">
-              <button type="submit" class="btn btn-outline-primary" <?= $option["dial"] === $maxDial ? "disabled" : ""; ?>>
-                <i class="fa-solid fa-angle-down"></i>
-              </button>
-            </form>
+            <button
+            type="submit"
+            class="btn btn-outline-primary" <?= !$option["dial"] ? "disabled" : ""; ?>
+            form="upOption<?= $option["id"] ?>"
+            >
+              <i class="fa-solid fa-angle-up"></i>
+            </button>
+            <button
+            type="submit"
+            class="btn btn-outline-primary" <?= $option["dial"] === $maxDial ? "disabled" : ""; ?>
+            form="downOption<?= $option["id"] ?>"
+            >
+              <i class="fa-solid fa-angle-down"></i>
+            </button>
           </div>
         </td>
       </tr>
