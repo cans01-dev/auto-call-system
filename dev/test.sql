@@ -1,3 +1,8 @@
+SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT;
+SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS;
+SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION;
+SET NAMES utf8mb4;
+
 USE auto_call_system;
 
 DROP TABLE send_emails;
@@ -98,6 +103,7 @@ CREATE TABLE stations (
   id int(11) NOT NULL AUTO_INCREMENT,
   area_id int(11) NOT NULL,
   title varchar(255) NOT NULL,
+  prefix varchar(255) NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (area_id) REFERENCES areas (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -116,7 +122,12 @@ INSERT INTO faqs (survey_id, title, text) VALUES
 
 INSERT INTO options (faq_id, title, is_last, next_faq_id, dial) VALUES
 (1, 'あああ選択肢a', 0, 2, 0),
+(1, 'いい選択肢e', 0, 2, 2),
 (1, 'たたた', 0, NULL, 1);
 
 INSERT INTO send_emails (user_id, email) VALUES
 (1, 'test2@example.com');
+
+SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT;
+SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS;
+SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION;

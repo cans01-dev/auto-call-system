@@ -16,13 +16,6 @@ class Fetch
     return $stmt->fetch();
   }
 
-  public static function allUsers() {
-    global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM users");
-    $stmt->execute();
-    return $stmt->fetchAll();
-  }
-
   public static function sendEmailsByUserId($user_id) {
     global $pdo;
     $stmt = $pdo->prepare("SELECT * FROM send_emails WHERE user_id = :user_id");
@@ -64,6 +57,22 @@ class Fetch
     $stmt->execute([
       ":dial" => $dial,
       ":faq_id" => $faq_id
+    ]);
+    return $stmt->fetch();
+  }
+
+  public static function allAreas() {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT * FROM areas");
+    $stmt->execute();
+    return $stmt->fetchAll();
+  }
+
+  public static function areaByTitle($title) {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT * FROM areas WHERE title = :title");
+    $stmt->execute([
+      ":title" => $title
     ]);
     return $stmt->fetch();
   }

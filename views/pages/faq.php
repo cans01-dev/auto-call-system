@@ -16,10 +16,6 @@
         <label class="form-label">質問の読み上げ文章</label>
         <textarea class="form-control" name="text" rows="5"><?= $faq["text"] ?></textarea>
       </div>
-      <div class="form-check form-switch mb-3">
-        <input class="form-check-input" type="checkbox" role="switch" checked>
-        <label class="form-check-label">採用フラグ</label>
-      </div>
       <div class="text-end">
         <button type="submit" class="btn btn-dark">更新</button>
       </div>

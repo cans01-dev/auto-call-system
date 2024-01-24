@@ -11,7 +11,7 @@
 <div class="flex-container">
 <header class="border-end border-2 text-bg-white">
 	<div class="sticky-top container vh-100 p-3 d-flex flex-column">
-		<h1 class="fs-3 fw-bold mb-0">オートコールシステム</h1>
+		<h1 class="fs-3 fw-bold mb-0"><?= PAGE_TITLE ?></h1>
 		<hr>
 		<ul class="nav nav-pills flex-column mb-auto">
 			<li class="nav-item">

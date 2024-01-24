@@ -2,9 +2,9 @@
 
 function storeFaq() {
   global $pdo;
-  $stmt = $pdo->prepare("INSERT INTO faqs (survey_id, title) VALUES (:survey_id, :title)");
   $survey = Fetch::find("surveys", $_POST["survey_id"]);
   if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
+  $stmt = $pdo->prepare("INSERT INTO faqs (survey_id, title) VALUES (:survey_id, :title)");
   $stmt->execute([
     ":survey_id" => $survey["id"],
     ":title" => $_POST["title"]

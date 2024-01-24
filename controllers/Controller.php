@@ -37,7 +37,7 @@ function survey($vars) {
   $schedulesSample = [
     12 => ["text" => "vavdavdavdvad", "status" => 1],
     14 => ["text" => "vavdavdavdvad", "status" => 1],
-    25 => ["text" => "vavdavdavdvad", "status" => 0]
+    22 => ["text" => "vavdavdavdvad", "status" => 0]
   ];
 
   $calendar = new Calendar($month, $year, $schedulesSample);
@@ -76,7 +76,6 @@ function reserve() {
 }
 
 function result($vars) {
-  ["reserveId" => $reserveId] = $vars;
 
   require_once "./views/pages/result.php";
 }

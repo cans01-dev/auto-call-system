@@ -67,15 +67,17 @@
                         17:00 - 21:00<br>関東・甲信越
                       </a>
                     <?php else: ?>
-                      <button
-                      type="button"
-                      class="day-modal-button"
-                      data-bs-toggle="modal"
-                      data-bs-target="#dayModal"
-                      data-bs-whatever="<?= date("j", $day->timestamp); ?>"
-                      >
-                        <i class="fa-solid fa-plus fa-2xl"></i>
-                      </button>
+                      <?php if (time() < $day->timestamp + RESERVATION_DEADLINE_HOUR * 3600): ?>
+                        <button
+                        type="button"
+                        class="day-modal-button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#dayModal"
+                        data-bs-whatever="<?= $day->timestamp ?>"
+                        >
+                          <i class="fa-solid fa-plus fa-2xl"></i>
+                        </button>
+                      <?php endif; ?>
                     <?php endif; ?>
                   <?php endif; ?>
                 </td>
@@ -171,13 +173,14 @@
 
 <!-- dayModal -->
 <div class="modal fade" id="dayModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">予約を追加: 1月23日</h1>
+        <h1 class="modal-title fs-5"></h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body pb-5">
+        <?= Components::h4("予約パターンから自動で予約") ?>
         <?php for ($i = 0; $i < 3; $i++): ?>
           <div class="card mb-2">
             <div class="card-body">
@@ -201,6 +204,35 @@
             </div>
           </div>
         <?php endfor; ?>
+        <?= Components::hr(4) ?>
+        <?= Components::h4("手動で個別に予約") ?>
+        <form action="/reserves" method="post">
+          <div class="mb-3">
+            <label class="form-label">開始時間・終了時間</label>
+            <div class="input-group">
+              <input type="time" name="start" class="form-control" required>
+              <span class="input-group-text">~</span>
+              <input type="time" name="end" class="form-control" required>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">エリア指定</label>
+            <ul class="list-group">
+              <?php for ($i = 0; $i < 10; $i++): ?>
+              <li class="list-group-item">
+                <input class="form-check-input me-1" name="areas[]" type="checkbox" value="<?= $i ?>" id="firstCheckboxStretched<?= $i ?>">
+                <label class="form-check-label stretched-link" for="firstCheckboxStretched<?= $i ?>">エリア <?= $i ?></label>
+              </li>
+              <?php endfor; ?>
+            </ul>
+            <div class="form-text">
+              指定されたエリアからランダムで電話番号が指定されコールされます
+            </div>
+          </div>
+          <div class="text-end">
+            <button type="submit" class="btn btn-dark">予約</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
