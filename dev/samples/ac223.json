@@ -1,0 +1,39 @@
+{
+  "ac_id": 223,
+  "date": "2024-01-24",
+  "start": "17:00",
+  "end": "21:00",
+  "greeting": "greeting223.wav",
+  "ending": "ending223.wav",
+  "faqs(script)": [
+    {
+      "label": "stage1",
+      "voice": "voice3121.wav",
+      "options": {"0": "ending", "1": "stage2", "2": "stage3"}
+    },
+    {
+      "label": "stage2",
+      "voice": "voice3121.wav",
+      "options": {"0": "ending", "1": "stage2", "2": "stage3"}
+    },
+    {
+      "label": "stage3",
+      "voice": "voice3121.wav",
+      "options": {"0": "ending", "1": "stage2", "2": "stage3"}
+    }
+  ],
+  "numbers": [
+    "080-1234-5678",
+    "080-1234-5623",
+    "080-1234-5645",
+    "080-1234-5621",
+    "080-1234-5632",
+    "080-1234-5653",
+    "080-1234-5342",
+    "080-1234-5642",
+    "080-1234-5613",
+    "080-1234-5461",
+    "080-1234-4166",
+    "080-1234-4166"
+  ]
+}

@@ -13,59 +13,61 @@
 	<div class="sticky-top container vh-100 p-3 d-flex flex-column">
 		<h1 class="fs-3 fw-bold mb-0"><?= PAGE_TITLE ?></h1>
 		<hr>
-		<ul class="nav nav-pills flex-column mb-auto">
-			<li class="nav-item">
-				<a
-				class="nav-link <?= $_SERVER["REQUEST_URI"] === "/home" ? "active" : "link-body-emphasis" ?>"
-				href="/home"
-				>
-					<span class="text-center d-inline-block me-2" style="width: 24px;">
-						<i class="fa-solid fa-house fa-lg"></i>
-					</span>ホーム（ダッシュボード）
-				</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link link-body-emphasis" href="/home#create">
-					<span class="text-center d-inline-block me-2" style="width: 24px;">
-						<i class="fa-solid fa-square-plus fa-lg"></i>
-					</span>新規作成
-				</a>
-			</li>
-			<li class="nav-item my-2 p-1 border border-2 rounded-2">
-				<ul class="nav nav-pills flex-column">
-					<?php foreach (Fetch::surveysByUserId(Auth::user()["id"]) as $sv): ?>
-					<li class="nav-item">
-						<a
-						class="nav-link <?= $_SERVER["REQUEST_URI"] === "/surveys/{$sv["id"]}" ? "active" : "link-body-emphasis" ?>"
-						href="/surveys/<?= $sv["id"] ?>"
-						>
-						<?= $sv["title"] ?>
-						</a>
-						<?php if ($_SERVER["REQUEST_URI"] === "/surveys/{$sv["id"]}"): ?>
-							<ul class="nav nav-pills flex-column ps-4">
-								<li class="nav-item">
-									<a class="nav-link link-body-emphasis" href="/surveys/<?= $sv["id"] ?>#faqs">質問一覧</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link link-body-emphasis" href="/surveys/<?= $sv["id"] ?>#calendar">カレンダー</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link link-body-emphasis" href="/surveys/<?= $sv["id"] ?>#area">エリア</a>
-								</li>
-							</ul>
-						<?php endif; ?>
-					</li>
-					<?php endforeach ?>
-				</ul>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link <?= $_SERVER["REQUEST_URI"] === "/support" ? "active" : "link-body-emphasis" ?>">
-					<span class="text-center d-inline-block me-2" style="width: 24px;">
-						<i class="fa-solid fa-circle-question fa-lg"></i>
-					</span>サポート
-				</a>
-			</li>
-		</ul>
+		<nav id="navbar-example2">
+			<ul class="nav nav-pills flex-column mb-auto">
+				<li class="nav-item">
+					<a
+					class="nav-link <?= $_SERVER["REQUEST_URI"] === "/home" ? "active" : "link-body-emphasis" ?>"
+					href="/home"
+					>
+						<span class="text-center d-inline-block me-2" style="width: 24px;">
+							<i class="fa-solid fa-house fa-lg"></i>
+						</span>ホーム（ダッシュボード）
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link link-body-emphasis" href="/home#create">
+						<span class="text-center d-inline-block me-2" style="width: 24px;">
+							<i class="fa-solid fa-square-plus fa-lg"></i>
+						</span>新規作成
+					</a>
+				</li>
+				<li class="nav-item my-2 p-1 border border-2 rounded-2">
+					<ul class="nav nav-pills flex-column">
+						<?php foreach (Fetch::surveysByUserId(Auth::user()["id"]) as $sv): ?>
+						<li class="nav-item">
+							<a
+							class="nav-link <?= $_SERVER["REQUEST_URI"] === "/surveys/{$sv["id"]}" ? "active" : "link-body-emphasis" ?>"
+							href="/surveys/<?= $sv["id"] ?>"
+							>
+							<?= $sv["title"] ?>
+							</a>
+							<?php if ($_SERVER["REQUEST_URI"] === "/surveys/{$sv["id"]}"): ?>
+								<ul class="nav nav-pills flex-column ps-4 pt-1">
+									<li class="nav-item">
+										<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#faqs">質問一覧</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#calendar">カレンダー</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#area">エリア</a>
+									</li>
+								</ul>
+							<?php endif; ?>
+						</li>
+						<?php endforeach ?>
+					</ul>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link <?= $_SERVER["REQUEST_URI"] === "/support" ? "active" : "link-body-emphasis" ?>">
+						<span class="text-center d-inline-block me-2" style="width: 24px;">
+							<i class="fa-solid fa-circle-question fa-lg"></i>
+						</span>サポート
+					</a>
+				</li>
+			</ul>
+		</nav>
 		<hr>
 		<div class="dropdown">
 			<button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">

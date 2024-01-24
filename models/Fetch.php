@@ -76,6 +76,15 @@ class Fetch
     ]);
     return $stmt->fetch();
   }
+
+  public static function areasByReserveId($reserve_id) {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT * FROM areas WHERE id IN (SELECT area_id FROM reserves_areas WHERE reserve_id = :reserve_id)");
+    $stmt->execute([
+      ":reserve_id" => $reserve_id
+    ]);
+    return $stmt->fetchAll();
+  }
 }
 
 

@@ -3,7 +3,7 @@
 <?= Components::h2($survey["title"]) ?>
 
 <div class="d-flex gap-3">
-  <div class="w-100">
+  <div class="w-100" data-bs-spy="scroll" data-bs-target="#navbar-example2" tabindex="0">
     <section id="faqs">
       <?= Components::h3("質問一覧") ?>
       <div>
@@ -207,31 +207,10 @@
         <?= Components::hr(4) ?>
         <?= Components::h4("手動で個別に予約") ?>
         <form action="/reserves" method="post">
-          <div class="mb-3">
-            <label class="form-label">開始時間・終了時間</label>
-            <div class="input-group">
-              <input type="time" name="start" class="form-control" required>
-              <span class="input-group-text">~</span>
-              <input type="time" name="end" class="form-control" required>
-            </div>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">エリア指定</label>
-            <ul class="list-group">
-              <?php for ($i = 0; $i < 10; $i++): ?>
-              <li class="list-group-item">
-                <input class="form-check-input me-1" name="areas[]" type="checkbox" value="<?= $i ?>" id="firstCheckboxStretched<?= $i ?>">
-                <label class="form-check-label stretched-link" for="firstCheckboxStretched<?= $i ?>">エリア <?= $i ?></label>
-              </li>
-              <?php endfor; ?>
-            </ul>
-            <div class="form-text">
-              指定されたエリアからランダムで電話番号が指定されコールされます
-            </div>
-          </div>
-          <div class="text-end">
-            <button type="submit" class="btn btn-dark">予約</button>
-          </div>
+          <?= csrf() ?>
+          <input type="hidden" name="survey_id" value="<?= $survey["id"] ?>">
+          <input type="hidden" name="date" id="recipient-name">
+          <button type="submit" class="btn btn-secondary">ページを移動して時間とエリアを設定</button>
         </form>
       </div>
     </div>

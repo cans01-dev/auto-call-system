@@ -36,5 +36,9 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("PUT", "/options/{id:\d+}", "updateOption");
 	// $r->addRoute("DELETE", "/options/{id:\d+}", "deleteOption");
 	$r->addRoute("POST", "/options/{id:\d+}/order", "orderOption");
+
+	$r->addRoute("POST", "/reserves", "storeReserve");
+	$r->addRoute("PUT", "/reserves/{id:\d+}", "updateReserve");
+	// $r->addRoute("DELETE", "/reserves/{id:\d+}", "deleteReserve");
 });
 

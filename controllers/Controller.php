@@ -71,7 +71,11 @@ function option($vars) {
   require_once "./views/pages/option.php";
 }
 
-function reserve() {
+function reserve($vars) {
+  $id = $vars["id"];
+  $reserve = Fetch::find("reserves", $id);
+  // $selectedAreas = Fetch::areasByReserveId($reserve["id"]);
+
   require_once "./views/pages/reserve.php";
 }
 
