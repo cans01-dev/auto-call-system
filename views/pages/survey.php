@@ -1,5 +1,11 @@
 <?php require './views/templates/header.php'; ?>
 
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">ホーム</a></li>
+    <li class="breadcrumb-item active"><?= $survey["title"] ?></li>
+  </ol>
+</nav>
 <?= Components::h2($survey["title"]) ?>
 
 <div class="d-flex gap-3">
@@ -59,12 +65,15 @@
                         <?= date("j", $day->timestamp); ?>
                       </span>
                     </div>
-                    <?php if ($schedule = $day->schedule): ?>
+                    <?php if ($reserve = $day->schedule): ?>
                       <a
-                      class="badge text-bg-<?= $schedule["status"]? "secondary": "primary"; ?> text-wrap w-100" style="text-decoration: none;"
-                      href="/reserves/1<?= $schedule["status"]? "/result": null; ?>"
+                      class="badge text-bg-<?= RESERVATION_STATUS[$reserve["status"]]["bg"] ?> bg-gradient text-wrap w-100" style="text-decoration: none;"
+                      href="/reserves/<?= $reserve["id"] ?><?= $reserve["status"]? "/result": null; ?>"
                       >
-                        17:00 - 21:00<br>関東・甲信越
+                        <?= date("H:i", strtotime($reserve["start"])) ?> - <?= date("H:i", strtotime($reserve["end"])) ?><br>
+                        <?php foreach ($reserve["areas"] as $area): ?>
+                        <?= $area["title"] ?>
+                        <?php endforeach; ?>
                       </a>
                     <?php else: ?>
                       <?php if (time() < $day->timestamp + RESERVATION_DEADLINE_HOUR * 3600): ?>
@@ -86,6 +95,16 @@
           <?php endforeach; ?>
         </tbody>
       </table>
+      <div class="form-text">
+        <div class="d-flex align-items-center gap-2">
+          ステータスの凡例: 
+          <?php foreach (RESERVATION_STATUS as $status): ?>
+            <span class="badge text-bg-<?= $status["bg"] ?> bg-gradient" style="font-size: 14px;">
+              <?= $status["text"] ?>
+            </span>
+          <?php endforeach; ?>
+        </div>
+      </div>
     </section>
     <?= Components::hr() ?>
     <section id="area">
@@ -146,26 +165,36 @@
           <span>開始・終了時間やエリア設定のテンプレートを利用してスムーズに予約の指定ができます。</span>
           <span>予約パターンの適用後に各日付ごとに設定を変更することも可能です。</span>
         </div>
-        <?php for ($i = 0; $i < 3; $i++): ?>
+        <?php foreach ($favoriteReserves as $reserve): ?>
           <div class="card mb-2">
             <div class="card-body">
               <h5 class="card-title">
-                <span class="badge text-bg-warning me-2"> </span>  
-                Primary card title
+                <span class="badge me-2 p-2" style="background-color: <?= $reserve["color"] ?>;"> </span>  
+                <?= $reserve["title"] ?>
               </h5>
               <table>
                 <tbody>
-                  <tr><th>時間</th><td>17:00 - 21:00</td></tr>
-                  <tr><th>エリア</th><td>関東・甲信越</td></tr>
+                  <tr>
+                    <th>時間</th>
+                    <td><?= date("H:i", strtotime($reserve["start"])) ?> - <?= date("H:i", strtotime($reserve["end"])) ?></td>
+                  </tr>
+                  <tr>
+                    <th>エリア</th>
+                    <td>
+                      <?php foreach (Fetch::areasByReserveId($reserve["id"]) as $area): ?>
+                        <?= $area["title"] ?>
+                      <?php endforeach; ?>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
               <div class="position-absolute top-0 end-0 p-3">
-                <a href="/settings/<?= $i ?>" class="card-link">編集</a>
+                <a href="/favorites/<?= $reserve["f_id"] ?>" class="card-link">編集</a>
               </div>
             </div>
           </div>
-        <?php endfor; ?>
-        <?= Components::modalOpenButton("settingsCreateModal"); ?>
+        <?php endforeach; ?>
+        <?= Components::modalOpenButton("favoritesCreateModal"); ?>
       </section>
     </div>
   </div>
@@ -242,8 +271,8 @@
   </div>
 </div>
 
-<!-- settingsCreateModal -->
-<div class="modal fade" id="settingsCreateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<!-- favoritesCreateModal -->
+<div class="modal fade" id="favoritesCreateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -251,13 +280,18 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="/settings" method="post">
+        <form action="/favorites" method="post">
+          <?= csrf() ?>
           <div class="mb-3">
             <label class="form-label">予約パターンのタイトル</label>
-            <input type="text" class="form-control" placeholder="〇〇の予約パターン">
+            <input type="text" name="title" class="form-control" placeholder="〇〇の予約パターン" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">ラベルカラーを選択</label>
+            <input type="color" name="color" class="form-control form-control-color" value="#563d7c" title="Choose your color">
           </div>
           <div class="text-end">
-            <input type="hidden" name="surveyId" value="<?= $surveyId ?>">
+            <input type="hidden" name="survey_id" value="<?= $survey["id"] ?>">
             <button type="submit" class="btn btn-primary">作成</button>
           </div>
         </form>

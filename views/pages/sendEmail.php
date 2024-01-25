@@ -1,5 +1,12 @@
 <?php require './views/templates/header.php'; ?>
 
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">ホーム</a></li>
+    <li class="breadcrumb-item"><a href="/account">アカウント</a></li>
+    <li class="breadcrumb-item active">送信先メールアドレス: <?= $sendEmail["email"] ?></li>
+  </ol>
+</nav>
 <?= Components::h2("送信先メールアドレス: {$sendEmail["email"]}") ?>
 
 <section id="summary">
@@ -20,7 +27,7 @@
         <button type="submit" class="btn btn-dark">更新</button>
       </div>
     </form>
-    <form action="/send-emails/<?= $sendEmail["id"] ?>" method="post" onsubmit="return window.confirm('本当に削除しますか？')">
+    <form method="post" onsubmit="return window.confirm('本当に削除しますか？')">
       <?= csrf() ?>
       <?= method("DELETE") ?>
       <div class="text-end">

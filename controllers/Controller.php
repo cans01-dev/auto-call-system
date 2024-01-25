@@ -27,20 +27,23 @@ function sendEmail($vars) {
 
 function survey($vars) {
   $id = $vars["id"];
-  $survey = Fetch::find("surveys", $id);
-  $faqs = Fetch::faqsBySurveyId($survey["id"]);
-  if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
-
   $month = $_GET["month"] ?? date("n");
   $year = $_GET["year"] ?? date("Y");
 
-  $schedulesSample = [
-    12 => ["text" => "vavdavdavdvad", "status" => 1],
-    14 => ["text" => "vavdavdavdvad", "status" => 1],
-    22 => ["text" => "vavdavdavdvad", "status" => 0]
-  ];
+  $survey = Fetch::find("surveys", $id);
+  $faqs = Fetch::faqsBySurveyId($survey["id"]);
+  $reserves = Fetch::reservesBySurveyIdAndYearMonth($survey["id"], $month, $year);
+  $favoriteReserves = Fetch::favoriteReservesBySurveyId($survey["id"]);
+  if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
 
-  $calendar = new Calendar($month, $year, $schedulesSample);
+  $schedules = [];
+  foreach ($reserves as $reserve) {
+    $reserve["areas"] = Fetch::areasByReserveId($reserve["id"]);
+    $ts = strtotime($reserve["date"]);
+    $schedules[date("d", $ts)] = $reserve;
+  }
+
+  $calendar = new Calendar($month, $year, $schedules);
   $current = $calendar->getCurrent();
   $prev = $calendar->getPrev();
   $next = $calendar->getNext();
@@ -74,20 +77,33 @@ function option($vars) {
 function reserve($vars) {
   $id = $vars["id"];
   $reserve = Fetch::find("reserves", $id);
-  // $selectedAreas = Fetch::areasByReserveId($reserve["id"]);
+  $selectedAreas = Fetch::reservesAreasByReserveId($reserve["id"]);
+  $notSelectedAreas = Fetch::areasByReserveId($reserve["id"], true);
+  $survey = Fetch::find("surveys", $reserve["survey_id"]);
 
+  if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
   require_once "./views/pages/reserve.php";
 }
 
 function result($vars) {
+  $id = $vars["id"];
+  $reserve = Fetch::find("reserves", $id);
+  $selectedAreas = Fetch::reservesAreasByReserveId($reserve["id"]);
+  $survey = Fetch::find("surveys", $reserve["survey_id"]);
 
+  if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
   require_once "./views/pages/result.php";
 }
 
-// function call($vars) {
-//   require_once "./views/pages/call.php.php";
-// }
+function call($vars) {
+  require_once "./views/pages/call.php.php";
+}
 
-function setting() {
-  require_once "./views/pages/setting.php";
+function favorite($vars) {
+  $id = $vars["id"];
+  $favorite = Fetch::find("favorites", $id);
+  $reserve = Fetch::find("reserves", $favorite["reserve_id"]);
+  $survey = Fetch::find("surveys", $favorite["survey_id"]);
+
+  require "./views/pages/favorite.php";
 }

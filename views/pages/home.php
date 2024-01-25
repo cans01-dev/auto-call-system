@@ -1,5 +1,10 @@
 <?php require './views/templates/header.php'; ?>
 
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active">ホーム</li>
+  </ol>
+</nav>
 <?= Components::h2("ホーム") ?>
 
 <div class="d-flex gap-3">

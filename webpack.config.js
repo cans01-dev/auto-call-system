@@ -7,4 +7,15 @@ module.exports = {
     path: path.resolve(__dirname, 'assets/script/dist/'), // 出力されるディレクトリの指定
     filename: 'main.js' // 出力されるファイル名の指定
   },
+  module: {
+    rules: [
+      {
+        test: /\.css/,
+        use: [
+          {loader: 'style-loader'},
+          {loader: 'css-loader'}
+        ]
+      }
+    ]
+}
 }

@@ -3,13 +3,12 @@
 /**
  * オートコールシステムのみ利用
  */
-function navActive($str) {
-  global $handler;
-  return $handler === $str ? "active" : "link-body-emphasis";
-}
-function navActiveSurvey($int) {
-  global $surveyId;
-  return $surveyId == $int ? "active" : "link-body-emphasis";
+function array_print($array, $key) {
+  $str = "";
+  foreach ($array as $item) {
+    $str .= $item[$key];
+  }
+  return $str;
 }
 /**
  * ーーここまでーー
@@ -19,7 +18,7 @@ function escape($str) {
   return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
 }
 
-function url_param_change($par=Array(),$op=0){
+function url_param_change($par=Array(),$op=0) {
   $url = parse_url($_SERVER["REQUEST_URI"]);
   if(isset($url["query"])) parse_str($url["query"],$query);
   else $query = Array();
@@ -32,26 +31,14 @@ function url_param_change($par=Array(),$op=0){
   return $query ? (!$op ? "?" : "").htmlspecialchars($query, ENT_QUOTES) : "";
 }
 
-function get_page_numbers($posts_par_page, $posts_sum, $page) {
-  $first = 1;
-  $last = ceil($posts_sum / $posts_par_page);
-  $offset = $posts_par_page * ($page - 1);
-  return [
-    "current" => $page,
-    "prev" => $page - 1 < $first ? false : $page - 1,
-    "next" => $page + 1 > $last ? false : $page + 1,
-    "first" => $page - 2 < $first ? false : $first,
-    "last" => $page + 2 > $last ? false : $last,
-    "offset" => $offset,
-    "current_start" => $offset + 1,
-    "current_end" => $posts_sum < $offset + $posts_par_page ? $posts_sum : $offset + $posts_par_page,
-  ];
-}
-
 function url($path = '') {
   $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
   $url = $protocol . '://' . $_SERVER['HTTP_HOST'] . $path;
   return $url;
+}
+
+function asset($path) {
+  return url("assets/{$path}");
 }
 
 function redirect($path) {

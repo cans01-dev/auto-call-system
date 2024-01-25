@@ -4,17 +4,16 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title><?= PAGE_TITLE ?></title>
-	<!-- css -->
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous"/>
-  <link rel="stylesheet" href="/assets/css/style.css">
+	<link rel="stylesheet" href="/assets/css/bootstrap.css">
+	<link rel="stylesheet" href="/assets/css/style.css">
 <body>
 <div class="flex-container">
 <header class="border-end border-2 text-bg-white">
 	<div class="sticky-top container vh-100 p-3 d-flex flex-column">
 		<h1 class="fs-3 fw-bold mb-0"><?= PAGE_TITLE ?></h1>
 		<hr>
-		<nav id="navbar-example2">
-			<ul class="nav nav-pills flex-column mb-auto">
+		<nav id="navbar-example2" class="mb-auto">
+			<ul class="nav nav-pills flex-column">
 				<li class="nav-item">
 					<a
 					class="nav-link <?= $_SERVER["REQUEST_URI"] === "/home" ? "active" : "link-body-emphasis" ?>"
@@ -22,7 +21,7 @@
 					>
 						<span class="text-center d-inline-block me-2" style="width: 24px;">
 							<i class="fa-solid fa-house fa-lg"></i>
-						</span>ホーム（ダッシュボード）
+						</span>ホーム
 					</a>
 				</li>
 				<li class="nav-item">

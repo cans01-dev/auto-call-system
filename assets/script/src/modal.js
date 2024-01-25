@@ -1,3 +1,5 @@
+import bootstrap from './bootstrap.bundle.js';
+
 const dayModal = document.getElementById('dayModal');
 if (dayModal) {
   dayModal.addEventListener('show.bs.modal', event => {

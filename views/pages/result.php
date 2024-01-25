@@ -1,17 +1,31 @@
 <?php require './views/templates/header.php'; ?>
 
-<?= Components::h2("結果: 1/28") ?>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">ホーム</a></li>
+    <li class="breadcrumb-item"><a href="/surveys/<?= $survey["id"] ?>"><?= $survey["title"] ?></a></li>
+    <li class="breadcrumb-item active">結果: <?= date("n月d日", strtotime($reserve["date"])) ?></li>
+  </ol>
+</nav>
+<?= Components::h2("結果: " . date("n月d日", strtotime($reserve["date"]))) ?>
 
 <div style="max-width: 480px;">
   <section class="mb-5" id="summary">
     <?= Components::h3("概要"); ?>
     <dl>
-      <dt>開始 ~ 終了時間</dt><dd>17:00 ~ 21:00</dd>
+      <dt>ステータス</dt>
+      <dd>
+        <span class="badge text-bg-<?= RESERVATION_STATUS[$reserve["status"]]["bg"] ?> bg-gradient fs-6 me-1">
+          <?= RESERVATION_STATUS[$reserve["status"]]["text"] ?>
+        </span>
+      </dd>
+      <dt>開始 ~ 終了時間</dt>
+      <dd><?= date("H:i", strtotime($reserve["start"])) ?> ~ <?= date("H:i", strtotime($reserve["end"])) ?></dd>
       <dt>エリア</dt>
       <dd>
-        <?php for ($i = 0; $i < 3; $i++): ?>
-          <span class="badge text-bg-secondary me-1">関東・甲信越</span>
-        <?php endfor; ?>
+        <?php foreach ($selectedAreas as $area): ?>
+          <span class="badge text-bg-secondary fs-6 me-1"><?= $area["title"] ?></span>
+        <?php endforeach; ?>
       </dd>
     </dl>
   </section>

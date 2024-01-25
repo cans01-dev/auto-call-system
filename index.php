@@ -15,7 +15,7 @@ require "./controllers/mainController.php";
 require "./controllers/reserveController.php";
 require "./controllers/resultController.php";
 require "./controllers/surveyController.php";
-require "./controllers/settingController.php";
+require "./controllers/favoriteController.php";
 require "./controllers/optionController.php";
 
 require "./functions.php";

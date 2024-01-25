@@ -1,5 +1,13 @@
 <?php require './views/templates/header.php'; ?>
 
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">ホーム</a></li>
+    <li class="breadcrumb-item"><a href="/surveys/<?= $survey["id"] ?>"><?= $survey["title"] ?></a></li>
+    <li class="breadcrumb-item"><a href="/faqs/<?= $faq["id"] ?>"><?= $faq["title"] ?></a></li>
+    <li class="breadcrumb-item active">選択肢: <?= $option["title"] ?></li>
+  </ol>
+</nav>
 <?= Components::h2("選択肢: {$option["title"]}") ?>
 
 <section id="summary">
@@ -42,6 +50,13 @@
       </div>
       <div class="text-end">
         <button type="submit" class="btn btn-dark">更新</button>
+      </div>
+    </form>
+    <form method="post" onsubmit="return window.confirm('本当に削除しますか？')">
+      <?= csrf() ?>
+      <?= method("DELETE") ?>
+      <div class="text-end">
+        <input type="submit" class="btn btn-link" value="この選択肢を削除">
       </div>
     </form>
   </div>

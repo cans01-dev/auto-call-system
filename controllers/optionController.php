@@ -66,3 +66,14 @@ function orderOption($vars) {
   Session::set("toast", ["success", "選択肢のダイヤルを変更しました"]);
   redirect("/faqs/{$faq["id"]}#options");
 }
+
+function deleteOption($vars) {
+  $id = $vars["id"];
+  $option = Fetch::find("options", $id);
+  $faq = Fetch::find("faqs", $option["faq_id"]);
+  global $pdo;
+  $stmt = $pdo->prepare("DELETE FROM options WHERE id = :id");
+  $stmt->execute([":id" => $id]);
+  Session::set("toast", ["info", "選択肢を削除しました"]);
+  redirect("/faqs/{$faq["id"]}");
+}

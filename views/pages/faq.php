@@ -1,5 +1,12 @@
 <?php require './views/templates/header.php'; ?>
 
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">ホーム</a></li>
+    <li class="breadcrumb-item"><a href="/surveys/<?= $survey["id"] ?>"><?= $survey["title"] ?></a></li>
+    <li class="breadcrumb-item active"><?= $faq["title"] ?></li>
+  </ol>
+</nav>
 <?= Components::h2($faq["title"]) ?>
 
 <section id="summary">
@@ -18,6 +25,13 @@
       </div>
       <div class="text-end">
         <button type="submit" class="btn btn-dark">更新</button>
+      </div>
+    </form>
+    <form method="post" onsubmit="return window.confirm('本当に削除しますか？\r\n質問を削除すると関連する選択肢などのデータも削除されます')">
+      <?= csrf() ?>
+      <?= method("DELETE") ?>
+      <div class="text-end">
+        <input type="submit" class="btn btn-link" value="この質問を削除">
       </div>
     </form>
   </div>

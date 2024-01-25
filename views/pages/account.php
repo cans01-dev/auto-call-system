@@ -1,5 +1,11 @@
 <?php require './views/templates/header.php'; ?>
 
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">ホーム</a></li>
+    <li class="breadcrumb-item active">アカウント</li>
+  </ol>
+</nav>
 <?= Components::h2("アカウント") ?>
 
 <section id="summary">

@@ -29,3 +29,14 @@ function updatefaq($vars) {
   Session::set("toast", ["success", "質問の設定を変更しました"]);
   back();
 }
+
+function deleteFaq($vars) {
+  $id = $vars["id"];
+  $faq = Fetch::find("faqs", $id);
+  $survey = Fetch::find("surveys", $faq["survey_id"]);
+  global $pdo;
+  $stmt = $pdo->prepare("DELETE FROM faqs WHERE id = :id");
+  $stmt->execute([":id" => $id]);
+  Session::set("toast", ["info", "選択肢を削除しました"]);
+  redirect("/surveys/{$survey["id"]}");
+}

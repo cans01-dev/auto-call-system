@@ -79,6 +79,7 @@ CREATE TABLE favorites (
   survey_id int(11) NOT NULL,
   reserve_id int(11) NOT NULL,
   title varchar(255) NOT NULL,
+  color char(7) NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (survey_id) REFERENCES surveys (id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (reserve_id) REFERENCES reserves (id) ON DELETE CASCADE ON UPDATE CASCADE
