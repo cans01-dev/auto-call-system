@@ -55,7 +55,9 @@
         <td><?= $option["title"] ?></td>
         <td>
           <?php if ($option["next_faq_id"]): ?>
-          <a href="/faqs/<?= $option["next_faq_id"] ?>" class="badge text-bg-info"><?= $option["next_faq_id"] ?></a>
+          <a href="/faqs/<?= $option["next_faq_id"] ?>" class="badge text-bg-info" style="text-decoration: none;">
+            <?= $option["next_faq"]["title"] ?>
+          </a>
           <?php else: ?>
           <span class="badge text-bg-secondary">終了</span>
           <?php endif; ?>

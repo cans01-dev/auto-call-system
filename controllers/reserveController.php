@@ -21,6 +21,8 @@ function storeReserve() {
         "area_id" => $area["id"]
       ]);
     }
+    Session::set("toast", ["success", "パターンから予約を作成しました"]);
+    redirect("/surveys/{$_POST["survey_id"]}#calendar");
   }
   Session::set("toast", ["success", "予約を作成しました"]);
   redirect("/reserves/{$id}");

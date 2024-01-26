@@ -46,7 +46,7 @@
         <?php foreach ($survey["faqs"] as $faq): ?>
           <div class="card mb-2">
             <div class="card-body">
-              <h5 class="card-title"><span class="badge bg-secondary me-2">質問: <?= $faq["id"] ?></span><?= $faq["title"] ?></h5>
+              <h5 class="card-title"><span class="badge bg-secondary me-2">質問</span><?= $faq["title"] ?></h5>
               <h6 class="card-subtitle mb-2 text-body-secondary">---</h6>
               <p class="card-text"><?= $faq["text"] ?></p>
               <a href="/faqs/<?= $faq["id"] ?>" class="btn btn-primary me-2">設定</a>

@@ -56,6 +56,12 @@ function faq($vars) {
   $faq = Fetch::find("faqs", $id);
   $survey = Fetch::find("surveys", $faq["survey_id"]);
   $options = Fetch::get("options", $faq["id"], "faq_id", "dial");
+  foreach ($options as $option) {
+    if ($option["next_faq_id"]) {
+      $index = array_search($option, $options);
+      $options[$index]["next_faq"] = Fetch::find("faqs", $option["next_faq_id"]);
+    }
+  }
   $maxDial = count($options) > 0 ? max(array_column($options, "dial")) : null;
   if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
 

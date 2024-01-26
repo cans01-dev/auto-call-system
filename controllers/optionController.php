@@ -8,11 +8,11 @@ function storeOption() {
   DB::insert("options", [
     "faq_id" => $faq["id"],
     "title" => $_POST["title"],
-    "dial" => max(array_column($options, "dial")) + 1
+    "dial" => count($options) ? max(array_column($options, "dial")) + 1 : 0
   ]);
   $id = DB::lastInsertId();
   Session::set("toast", ["success", "選択肢を新規作成しました"]);
-  redirect("/options/{$id}");
+  back();
 }
 
 function updateoption($vars) {
@@ -27,7 +27,7 @@ function updateoption($vars) {
     "next_faq_id" => $_POST["next_faq_id"] ? $_POST["next_faq_id"] : null
   ]);
   Session::set("toast", ["success", "選択肢の設定を変更しました"]);
-  back();
+  redirect("/faqs/{$faq["id"]}");
 }
 
 function orderOption($vars) {
