@@ -33,7 +33,7 @@
 				</li>
 				<li class="nav-item my-2 p-1 border border-2 rounded-2">
 					<ul class="nav nav-pills flex-column">
-						<?php foreach (Fetch::surveysByUserId(Auth::user()["id"]) as $sv): ?>
+						<?php foreach (Fetch::get("surveys", Auth::user()["id"], "user_id") as $sv): ?>
 						<li class="nav-item">
 							<a
 							class="nav-link <?= $_SERVER["REQUEST_URI"] === "/surveys/{$sv["id"]}" ? "active" : "link-body-emphasis" ?>"

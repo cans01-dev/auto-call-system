@@ -6,11 +6,28 @@ function storeReserve() {
   $stmt->execute([
     ":survey_id" => $_POST["survey_id"],
     ":date" => $_POST["date"],
-    ":start" => DEFAULT_START_TIME,
-    ":end" => DEFAULT_END_TIME
+    ":start" => $_POST["start"],
+    ":end" => $_POST["end"]
   ]);
-  Session::set("toast", ["success", "予約を作成しました"]);
   $id = $pdo->lastInsertId();
+
+  if ($favorite = Fetch::find("favorites", @$_POST["favorite_id"])) {
+    $favorite["areas"] = Fetch::areasByFavoriteId($favorite["id"]);
+    $stmt = $pdo->prepare("UPDATE reserves SET start = :start, end = :end");
+    $stmt->execute([
+      ":start" => $favorite["start"],
+      ":end" => $favorite["end"]
+    ]);  
+    foreach ($favorite["areas"] as $area) {
+      $stmt = $pdo->prepare("INSERT INTO reserves_areas (reserve_id, area_id) VALUES (:reserve_id, :area_id)");
+      $stmt->execute([
+        ":reserve_id" => $id,
+        ":area_id" => $area["id"]
+      ]);
+    }
+  }
+
+  Session::set("toast", ["success", "予約を作成しました"]);
   redirect("/reserves/{$id}");
 }
 
@@ -19,10 +36,11 @@ function updateReserve($vars) {
   $reserve = Fetch::find("reserves", $id);
   $survey = Fetch::find("surveys", $reserve["survey_id"]);
   global $pdo;
-  $stmt = $pdo->prepare("UPDATE reserves SET start = :start, end = :end");
+  $stmt = $pdo->prepare("UPDATE reserves SET start = :start, end = :end WHERE id = :id");
   $stmt->execute([
     ":start" => $_POST["start"],
-    ":end" => $_POST["end"]
+    ":end" => $_POST["end"],
+    ":id" => $reserve["id"]
   ]);
   Session::set("toast", ["success", "予約の基本設定を変更しました"]);
   back();

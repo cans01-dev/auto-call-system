@@ -5,11 +5,12 @@ function storeOption() {
   $stmt = $pdo->prepare("INSERT INTO options (faq_id, title, dial) VALUES (:faq_id, :title, :dial)");
   $faq = Fetch::find("faqs", $_POST["faq_id"]);
   $survey = Fetch::find("surveys", $faq["survey_id"]);
+  $options = Fetch::get("options", $faq["id"], "faq_id");
   if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
   $stmt->execute([
     ":faq_id" => $faq["id"],
     ":title" => $_POST["title"],
-    ":dial" => Fetch::maxDialInFaqId($faq["id"]) + 1
+    ":dial" => max(array_column($options, "dial")) + 1
   ]);
   $id = $pdo->lastInsertId();
   Session::set("toast", ["success", "選択肢を新規作成しました"]);

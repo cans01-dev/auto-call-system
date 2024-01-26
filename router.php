@@ -45,7 +45,10 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("DELETE", "/reserves_areas/{id:\d+}", "deleteReservesAreas");
 
 	$r->addRoute("POST", "/favorites", "storeFavorite");
-	$r->addRoute("PUT", "/favorites", "updateFavorite");
+	$r->addRoute("PUT", "/favorites/{id:\d+}", "updateFavorite");
 	$r->addRoute("DELETE", "/favorites/{id:\d+}", "deleteFavorite");
+
+	$r->addRoute("POST", "/favorites_areas", "storeFavoritesAreas");
+	$r->addRoute("DELETE", "/favorites_areas/{id:\d+}", "deleteFavoritesAreas");
 });
 

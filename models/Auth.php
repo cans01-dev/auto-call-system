@@ -13,7 +13,7 @@ class Auth
   }
 
   public static function attempt($email, $password) {
-    $user = Fetch::userByEmail($email);
+    $user = Fetch::find("users", $email, "email");
     if (password_verify($password, $user["password"])) {
       Session::set("userId", $user["id"]);
       Session::set("userEmail", $user["email"]);

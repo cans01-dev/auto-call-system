@@ -13,7 +13,7 @@
     <section id="faqs">
       <?= Components::h3("質問一覧") ?>
       <div>
-        <?php foreach ($faqs as $faq): ?>
+        <?php foreach ($survey["faqs"] as $faq): ?>
           <div class="card mb-2">
             <div class="card-body">
               <h5 class="card-title"><span class="badge bg-secondary me-2">ID: <?= $faq["id"] ?></span><?= $faq["title"] ?></h5>
@@ -35,13 +35,19 @@
       <?= Components::h3("カレンダー") ?>
       <div class="text-center mb-4">
         <div class="btn-group">
-          <a href="<?= url_param_change(["month" => date("m", $prev), "year" => date("Y", $prev)]) ?>#calendar" class="btn btn-outline-dark px-3">
+          <a
+          href="/surveys/<?= $survey["id"] ?>?month=<?= date("m", $prev) ?>&year=<?= date("Y", $prev) ?>#calendar"
+          class="btn btn-outline-dark px-3"
+          >
             <i class="fa-solid fa-angle-left fa-xl"></i>
           </a>
           <a href="#" class="btn btn-outline-dark px-5 active">
             <span class="fw-bold"><?= date("Y", $current) ?>年 <?= date("n", $current) ?>月</span>
           </a>
-          <a href="<?= url_param_change(["month" => date("m", $next), "year" => date("Y", $next)]) ?>#calendar" class="btn btn-outline-dark px-3">
+          <a
+          href="/surveys/<?= $survey["id"] ?>?month=<?= date("m", $next) ?>&year=<?= date("Y", $next) ?>#calendar"
+          class="btn btn-outline-dark px-3"
+          >
             <i class="fa-solid fa-angle-right fa-xl"></i>
           </a>
         </div>
@@ -165,23 +171,23 @@
           <span>開始・終了時間やエリア設定のテンプレートを利用してスムーズに予約の指定ができます。</span>
           <span>予約パターンの適用後に各日付ごとに設定を変更することも可能です。</span>
         </div>
-        <?php foreach ($favoriteReserves as $reserve): ?>
+        <?php foreach ($survey["favorites"] as $favorite): ?>
           <div class="card mb-2">
             <div class="card-body">
               <h5 class="card-title">
-                <span class="badge me-2 p-2" style="background-color: <?= $reserve["color"] ?>;"> </span>  
-                <?= $reserve["title"] ?>
+                <span class="badge me-2 p-2" style="background-color: <?= $favorite["color"] ?>;"> </span>  
+                <?= $favorite["title"] ?>
               </h5>
               <table>
                 <tbody>
                   <tr>
                     <th>時間</th>
-                    <td><?= date("H:i", strtotime($reserve["start"])) ?> - <?= date("H:i", strtotime($reserve["end"])) ?></td>
+                    <td><?= date("H:i", strtotime($favorite["start"])) ?> - <?= date("H:i", strtotime($favorite["end"])) ?></td>
                   </tr>
                   <tr>
                     <th>エリア</th>
                     <td>
-                      <?php foreach (Fetch::areasByReserveId($reserve["id"]) as $area): ?>
+                      <?php foreach (Fetch::areasByfavoriteId($favorite["id"]) as $area): ?>
                         <?= $area["title"] ?>
                       <?php endforeach; ?>
                     </td>
@@ -189,7 +195,7 @@
                 </tbody>
               </table>
               <div class="position-absolute top-0 end-0 p-3">
-                <a href="/favorites/<?= $reserve["f_id"] ?>" class="card-link">編集</a>
+                <a href="/favorites/<?= $favorite["id"] ?>" class="card-link">編集</a>
               </div>
             </div>
           </div>
@@ -210,36 +216,58 @@
       </div>
       <div class="modal-body pb-5">
         <?= Components::h4("予約パターンから自動で予約") ?>
-        <?php for ($i = 0; $i < 3; $i++): ?>
+        <?php foreach ($survey["favorites"] as $favorite): ?>
           <div class="card mb-2">
             <div class="card-body">
               <h5 class="card-title">
-                <span class="badge text-bg-warning me-2"> </span>  
-                Primary card title
+                <span class="badge me-2 p-2" style="background-color: <?= $favorite["color"] ?>;"> </span>  
+                <?= $favorite["title"] ?>
               </h5>
               <table>
                 <tbody>
-                  <tr><th>時間</th><td>17:00 - 21:00</td></tr>
-                  <tr><th>エリア</th><td>関東・甲信越</td></tr>
+                  <tr>
+                    <th>時間</th>
+                    <td><?= date("H:i", strtotime($favorite["start"])) ?> - <?= date("H:i", strtotime($favorite["end"])) ?></td>
+                  </tr>
+                  <tr>
+                    <th>エリア</th>
+                    <td>
+                      <?php foreach (Fetch::areasByfavoriteId($favorite["id"]) as $area): ?>
+                        <?= $area["title"] ?>
+                      <?php endforeach; ?>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
               <div class="position-absolute top-0 end-0 p-3">
                 <form action="/reserves" method="post">
-                  <input type="hidden" name="timestamp" value="">
-                  <input type="hidden" name="setting_id" value="">
+                  <?= csrf() ?>
+                  <input type="hidden" name="survey_id" value="<?= $survey["id"] ?>">
+                  <input type="hidden" name="date" class="date-input">
+                  <input type="hidden" name="favorite_id" value="<?= $favorite["id"] ?>">
                   <button type="submit" class="btn btn-primary">このパターンで予約</button>
                 </form>
               </div>
             </div>
           </div>
-        <?php endfor; ?>
+        <?php endforeach; ?>
         <?= Components::hr(4) ?>
         <?= Components::h4("手動で個別に予約") ?>
         <form action="/reserves" method="post">
           <?= csrf() ?>
-          <input type="hidden" name="survey_id" value="<?= $survey["id"] ?>">
-          <input type="hidden" name="date" id="recipient-name">
-          <button type="submit" class="btn btn-secondary">ページを移動して時間とエリアを設定</button>
+          <div class="mb-3">
+            <label class="form-label">開始時間・終了時間</label>
+            <div class="input-group">
+              <input type="time" name="start" class="form-control" value="<?= $reserve["start"] ?>" required>
+              <span class="input-group-text">~</span>
+              <input type="time" name="end" class="form-control" value="<?= $reserve["end"] ?>" required>
+            </div>
+          </div>
+          <div class="text-end">
+            <input type="hidden" name="survey_id" value="<?= $survey["id"] ?>">
+            <input type="hidden" name="date" class="date-input">
+            <button type="submit" class="btn btn-secondary">ページを移動してエリアを設定</button>
+          </div>
         </form>
       </div>
     </div>
@@ -290,9 +318,17 @@
             <label class="form-label">ラベルカラーを選択</label>
             <input type="color" name="color" class="form-control form-control-color" value="#563d7c" title="Choose your color">
           </div>
+          <div class="mb-3">
+            <label class="form-label">開始時間・終了時間</label>
+            <div class="input-group">
+              <input type="time" name="start" class="form-control" value="<?= $reserve["start"] ?>" required>
+              <span class="input-group-text">~</span>
+              <input type="time" name="end" class="form-control" value="<?= $reserve["end"] ?>" required>
+            </div>
+          </div>
           <div class="text-end">
             <input type="hidden" name="survey_id" value="<?= $survey["id"] ?>">
-            <button type="submit" class="btn btn-primary">作成</button>
+            <button type="submit" class="btn btn-primary">ページを移動してエリアを設定</button>
           </div>
         </form>
       </div>

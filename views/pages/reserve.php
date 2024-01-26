@@ -41,8 +41,8 @@
       <div class="card mb-4">
         <div class="card-header">選択済のエリア</div>
         <ul class="list-group list-group-flush">
-          <?php if ($selectedAreas): ?>
-            <?php foreach ($selectedAreas as $area): ?>
+          <?php if ($reserve["areas"]): ?>
+            <?php foreach ($reserve["areas"] as $area): ?>
               <li class="list-group-item d-flex align-items-center justify-content-between">
                 <div>
                   <?= $area["title"] ?>
@@ -67,21 +67,23 @@
           エリアを追加する
         </div>
         <ul class="list-group list-group-flush">
-          <?php foreach ($notSelectedAreas as $area): ?>
-            <li class="list-group-item d-flex align-items-center justify-content-between">
-              <div>
-                <?= $area["title"] ?>
-                <a href="/areas/<?= $area["id"] ?>" class="text-body-tertiary">
-                  <i class="fa-solid fa-circle-info"></i>
-                </a>
-              </div>
-              <form action="/reserves_areas" method="post">
-                <?= csrf() ?>
-                <input type="hidden" name="reserve_id" value="<?= $reserve["id"] ?>">
-                <input type="hidden" name="area_id" value="<?= $area["id"] ?>">
-                <button type="submit" class="btn btn-primary">追加</button>
-              </form>
-            </li>
+          <?php foreach (Fetch::all("areas") as $area): ?>
+            <?php if (!in_array($area["id"], array_column($reserve["areas"], "id"))): ?>
+              <li class="list-group-item d-flex align-items-center justify-content-between">
+                <div>
+                  <?= $area["title"] ?>
+                  <a href="/areas/<?= $area["id"] ?>" class="text-body-tertiary">
+                    <i class="fa-solid fa-circle-info"></i>
+                  </a>
+                </div>
+                <form action="/reserves_areas" method="post">
+                  <?= csrf() ?>
+                  <input type="hidden" name="reserve_id" value="<?= $reserve["id"] ?>">
+                  <input type="hidden" name="area_id" value="<?= $area["id"] ?>">
+                  <button type="submit" class="btn btn-primary">追加</button>
+                </form>
+              </li>
+            <?php endif; ?>
           <?php endforeach; ?>
         </ul>
       </div>

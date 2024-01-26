@@ -5,7 +5,7 @@ function index() {
 }
 
 function home() {
-  $surveys = Fetch::surveysByUserId(Auth::user()["id"]);
+  $surveys = Fetch::get("surveys", Auth::user()["id"], "user_id");
   require_once "./views/pages/home.php";
 }
 
@@ -14,7 +14,7 @@ function login() {
 }
 
 function account() {
-  $sendEmails = Fetch::sendEmailsByUserId(Auth::user()["id"]);
+  $sendEmails = Fetch::get("send_emails", Auth::user()["id"], "user_id");
   require_once "./views/pages/account.php";
 }
 
@@ -31,13 +31,13 @@ function survey($vars) {
   $year = $_GET["year"] ?? date("Y");
 
   $survey = Fetch::find("surveys", $id);
-  $faqs = Fetch::faqsBySurveyId($survey["id"]);
-  $reserves = Fetch::reservesBySurveyIdAndYearMonth($survey["id"], $month, $year);
-  $favoriteReserves = Fetch::favoriteReservesBySurveyId($survey["id"]);
+  $survey["faqs"] = Fetch::get("faqs", $survey["id"], "survey_id");
+  $survey["reserves"] = Fetch::reservesBySurveyIdAndYearMonth($survey["id"], $month, $year);
+  $survey["favorites"] = Fetch::get("favorites", $survey["id"], "survey_id");
   if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
 
   $schedules = [];
-  foreach ($reserves as $reserve) {
+  foreach ($survey["reserves"] as $reserve) {
     $reserve["areas"] = Fetch::areasByReserveId($reserve["id"]);
     $ts = strtotime($reserve["date"]);
     $schedules[date("d", $ts)] = $reserve;
@@ -55,8 +55,9 @@ function faq($vars) {
   $id = $vars["id"];
   $faq = Fetch::find("faqs", $id);
   $survey = Fetch::find("surveys", $faq["survey_id"]);
-  $options = Fetch::optionsByFaqId($faq["id"]);
-  $maxDial = Fetch::maxDialInFaqId($faq["id"]);
+  $options = Fetch::get("options", $faq["id"], "faq_id", "dial");
+
+  $maxDial = max(array_column($options, "dial"));
   if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
 
   require_once "./views/pages/faq.php";
@@ -67,7 +68,7 @@ function option($vars) {
   $option = Fetch::find("options", $id);
   $faq = Fetch::find("faqs", $option["faq_id"]);
   $survey = Fetch::find("surveys", $faq["survey_id"]);
-  $surveyFaqs = array_filter(Fetch::faqsBySurveyId($survey["id"]), function($surveyFaq) use($faq) {
+  $surveyFaqs = array_filter(Fetch::get("faqs", $survey["id"], "survey_id"), function($surveyFaq) use($faq) {
     return $surveyFaq["id"] !== $faq["id"];
   });
   if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
@@ -77,18 +78,27 @@ function option($vars) {
 function reserve($vars) {
   $id = $vars["id"];
   $reserve = Fetch::find("reserves", $id);
-  $selectedAreas = Fetch::reservesAreasByReserveId($reserve["id"]);
-  $notSelectedAreas = Fetch::areasByReserveId($reserve["id"], true);
+  $reserve["areas"] = Fetch::areasByReserveId($reserve["id"]);
   $survey = Fetch::find("surveys", $reserve["survey_id"]);
 
   if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
   require_once "./views/pages/reserve.php";
 }
 
+function favorite($vars) {
+  $id = $vars["id"];
+  $favorite = Fetch::find("favorites", $id);
+  $favorite["areas"] = Fetch::areasByFavoriteId($favorite["id"]);
+  $survey = Fetch::find("surveys", $favorite["survey_id"]);
+
+  if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
+  require_once "./views/pages/favorite.php";
+}
+
 function result($vars) {
   $id = $vars["id"];
   $reserve = Fetch::find("reserves", $id);
-  $selectedAreas = Fetch::reservesAreasByReserveId($reserve["id"]);
+  $selectedAreas = Fetch::areasByReserveId($reserve["id"]);
   $survey = Fetch::find("surveys", $reserve["survey_id"]);
 
   if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
@@ -97,13 +107,4 @@ function result($vars) {
 
 function call($vars) {
   require_once "./views/pages/call.php.php";
-}
-
-function favorite($vars) {
-  $id = $vars["id"];
-  $favorite = Fetch::find("favorites", $id);
-  $reserve = Fetch::find("reserves", $favorite["reserve_id"]);
-  $survey = Fetch::find("surveys", $favorite["survey_id"]);
-
-  require "./views/pages/favorite.php";
 }

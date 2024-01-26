@@ -9,6 +9,7 @@ DROP TABLE send_emails;
 DROP TABLE options;
 DROP TABLE stations;
 DROP TABLE reserves_areas;
+DROP TABLE favorites_areas;
 DROP TABLE areas;
 DROP TABLE favorites;
 DROP TABLE reserves;
@@ -19,7 +20,7 @@ DROP TABLE users;
 
 CREATE TABLE users (
   id int(11) NOT NULL AUTO_INCREMENT,
-  email varchar(255) NOT NULL,
+  email varchar(255) NOT NULL UNIQUE,
   password varchar(255) NOT NULL,
   PRIMARY KEY (id)
 );
@@ -77,18 +78,27 @@ CREATE TABLE reserves (
 CREATE TABLE favorites (
   id int(11) NOT NULL AUTO_INCREMENT,
   survey_id int(11) NOT NULL,
-  reserve_id int(11) NOT NULL,
+  start time NOT NULL,
+  end time NOT NULL,
   title varchar(255) NOT NULL,
   color char(7) NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (survey_id) REFERENCES surveys (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (reserve_id) REFERENCES reserves (id) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (survey_id) REFERENCES surveys (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE areas (
   id int(11) NOT NULL AUTO_INCREMENT,
   title varchar(255) NOT NULL,
   PRIMARY KEY (id)
+);
+
+CREATE TABLE favorites_areas (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  favorite_id int(11) NOT NULL,
+  area_id int(11) NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (favorite_id) REFERENCES favorites (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (area_id) REFERENCES areas (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE reserves_areas (

@@ -22,7 +22,7 @@ $pdo->beginTransaction();
 foreach ($stations as $station) {
   $title = mb_convert_encoding($station[1], "UTF-8", "SJIS");
   $prefix = $station[0];
-  $area = Fetch::areaByTitle($title);
+  $area = Fetch::find("areas", $title, "title");
 
   $stmt = $pdo->prepare("INSERT INTO stations (area_id, title, prefix) VALUES (:area_id, :title, :prefix)");
   $stmt->execute([
