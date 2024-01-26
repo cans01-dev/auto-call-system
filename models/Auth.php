@@ -1,7 +1,5 @@
 <?php
 
-require "./models/User.php";
-
 class Auth
 {
   public static function check() {

@@ -9,7 +9,6 @@
 
 <div class="d-flex gap-3">
   <div class="w-100">
-
   </div>
   <div class="flex-shrink-0" style="width: 300px;">
     <div class="sticky-top">

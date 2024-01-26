@@ -44,6 +44,9 @@
 							<?php if ($_SERVER["REQUEST_URI"] === "/surveys/{$sv["id"]}"): ?>
 								<ul class="nav nav-pills flex-column ps-4 pt-1">
 									<li class="nav-item">
+										<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#greeting-ending">グリーティング・エンディング</a>
+									</li>
+									<li class="nav-item">
 										<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#faqs">質問一覧</a>
 									</li>
 									<li class="nav-item">

@@ -56,8 +56,7 @@ function faq($vars) {
   $faq = Fetch::find("faqs", $id);
   $survey = Fetch::find("surveys", $faq["survey_id"]);
   $options = Fetch::get("options", $faq["id"], "faq_id", "dial");
-
-  $maxDial = max(array_column($options, "dial"));
+  $maxDial = count($options) > 0 ? max(array_column($options, "dial")) : null;
   if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
 
   require_once "./views/pages/faq.php";

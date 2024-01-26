@@ -3,10 +3,12 @@
 /**
  * オートコールシステムのみ利用
  */
-function array_print($array, $key) {
+function array_str($array, $delimiter=", ") {
   $str = "";
+  $last = array_slice($array, -1);
   foreach ($array as $item) {
-    $str .= $item[$key];
+    $str .= $item;
+    if ($item !== $last[0]) $str .= ", ";
   }
   return $str;
 }

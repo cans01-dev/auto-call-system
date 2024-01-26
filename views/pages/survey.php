@@ -10,13 +10,43 @@
 
 <div class="d-flex gap-3">
   <div class="w-100" data-bs-spy="scroll" data-bs-target="#navbar-example2" tabindex="0">
+  <section id="greeting-ending">
+      <?= Components::h3("グリーティング・エンディング") ?>
+      <div>
+        <div class="card mb-2">
+          <div class="card-body">
+            <h5 class="card-title"><span class="badge bg-secondary me-2">グリーティング</span></h5>
+            <h6 class="card-subtitle mb-2 text-body-secondary">---</h6>
+            <p class="card-text"><?= $survey["greeting"] ?></p>
+            <button type="button" class="btn btn-outline-dark me-2" data-bs-toggle="modal" data-bs-target="#greetingModal">設定</button>
+            <button href="" class="btn btn-outline-primary" disabled>
+              <i class="fa-solid fa-volume-high"></i>
+              音声
+            </button>
+          </div>
+        </div>
+        <div class="card mb-2">
+          <div class="card-body">
+            <h5 class="card-title"><span class="badge bg-secondary me-2">エンディング</span></h5>
+            <h6 class="card-subtitle mb-2 text-body-secondary">---</h6>
+            <p class="card-text"><?= $survey["ending"] ?></p>
+            <button type="button" class="btn btn-outline-dark me-2" data-bs-toggle="modal" data-bs-target="#endingModal">設定</button>
+            <button href="" class="btn btn-outline-primary" disabled>
+              <i class="fa-solid fa-volume-high"></i>
+              音声
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <?= Components::hr() ?>
     <section id="faqs">
       <?= Components::h3("質問一覧") ?>
       <div>
         <?php foreach ($survey["faqs"] as $faq): ?>
           <div class="card mb-2">
             <div class="card-body">
-              <h5 class="card-title"><span class="badge bg-secondary me-2">ID: <?= $faq["id"] ?></span><?= $faq["title"] ?></h5>
+              <h5 class="card-title"><span class="badge bg-secondary me-2">質問: <?= $faq["id"] ?></span><?= $faq["title"] ?></h5>
               <h6 class="card-subtitle mb-2 text-body-secondary">---</h6>
               <p class="card-text"><?= $faq["text"] ?></p>
               <a href="/faqs/<?= $faq["id"] ?>" class="btn btn-primary me-2">設定</a>
@@ -164,7 +194,7 @@
           </div>
         </form>        
       </section>
-      <?= Components::hr() ?>
+      <?= Components::hr(4) ?>
       <section id="settings">
         <?= Components::h4("予約パターン"); ?>
         <div class="form-text mb-2 vstack gap-1">
@@ -329,6 +359,58 @@
           <div class="text-end">
             <input type="hidden" name="survey_id" value="<?= $survey["id"] ?>">
             <button type="submit" class="btn btn-primary">ページを移動してエリアを設定</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- greetingModal -->
+<div class="modal fade" id="greetingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">グリーティングを編集</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/surveys/<?= $survey["id"] ?>/greeting" method="post">
+          <?= csrf() ?>
+          <?= method("PUT") ?>
+          <div class="mb-3">
+            <label class="form-label">テキスト</label>
+            <textarea name="greeting" class="form-control" rows="5"><?= $survey["greeting"] ?></textarea>
+          </div>
+          <div class="text-end">
+            <input type="hidden" name="survey_id" value="<?= $survey["id"] ?>">
+            <button type="submit" class="btn btn-primary">更新</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- endingModal -->
+<div class="modal fade" id="endingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">エンディングを編集</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/surveys/<?= $survey["id"] ?>/ending" method="post">
+          <?= csrf() ?>
+          <?= method("PUT") ?>
+          <div class="mb-3">
+            <label class="form-label">テキスト</label>
+            <textarea name="ending" class="form-control" rows="5"><?= $survey["ending"] ?></textarea>
+          </div>
+          <div class="text-end">
+            <input type="hidden" name="survey_id" value="<?= $survey["id"] ?>">
+            <button type="submit" class="btn btn-primary">更新</button>
           </div>
         </form>
       </div>

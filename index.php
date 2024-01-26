@@ -4,6 +4,7 @@ require "./vendor/autoload.php";
 use FastRoute\Dispatcher;
 
 require "./models/Fetch.php";
+require "./models/DB.php";
 require "./models/Auth.php";
 require "./models/Session.php";
 require "./models/Calendar.php";

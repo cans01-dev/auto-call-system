@@ -1,11 +1,8 @@
 <?php 
 
 function updateEmail() {
-  global $pdo;
-  $stmt = $pdo->prepare("UPDATE users SET email = :email WHERE id = :id");
-  $stmt->execute([
-    ":id" => Auth::user()["id"],
-    ":email" => $_POST["email"]
+  DB::update("users", Auth::user()["id"], [
+    "email" => $_POST["email"]
   ]);
   Session::set("toast", ["success", "メールアドレスを変更しました"]);
   back();
@@ -20,22 +17,17 @@ function updatePassword() {
     Session::set("toast", ["danger", "新しいパスワードの再入力が正しくありません"]);
     back();
   }
-  global $pdo;
-  $stmt = $pdo->prepare("UPDATE users SET password = :password WHERE id = :id");
-  $stmt->execute([
-    ":id" => Auth::user()["id"],
-    ":password" => password_hash($_POST["new_password"], PASSWORD_DEFAULT)
+  DB::update("users", Auth::user()["id"], [
+    "password" => password_hash($_POST["new_password"], PASSWORD_DEFAULT)
   ]);
   Session::set("toast", ["success", "パスワードを変更しました"]);
   back();
 }
 
 function storeSendEmail() {
-  global $pdo;
-  $stmt = $pdo->prepare("INSERT INTO send_emails (user_id, email) VALUES (:user_id, :email)");
-  $stmt->execute([
-    ":user_id" => Auth::user()["id"],
-    ":email" => $_POST["email"]
+  DB::insert("send_emails", [
+    "user_id" => Auth::user()["id"],
+    "email" => $_POST["email"]
   ]);
   Session::set("toast", ["success", "送信先メールアドレスを追加しました"]);
   back();
@@ -44,11 +36,8 @@ function storeSendEmail() {
 function updateSendEmail($vars) {
   $id = $vars["id"];
   $sendEmail = Fetch::find("send_emails", $id);
-  global $pdo;
-  $stmt = $pdo->prepare("UPDATE send_emails SET email = :email WHERE id = :id");
-  $stmt->execute([
-    ":id" => $id,
-    ":email" => $_POST["email"]
+  DB::update("send_emails", $id, [
+    "email" => $_POST["email"]
   ]);
   Session::set("toast", ["success", "送信先メールアドレスを変更しました"]);
   back();
