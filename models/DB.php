@@ -2,13 +2,6 @@
 
 class DB
 {
-  public static function find($table, $where_value, $where_key="id") {
-    global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM {$table} WHERE {$where_key} = :value");
-    $stmt->execute([":value" => $where_value]);
-    return $stmt->fetch();
-  }
-
   public static function insert($table, $array) {
     global $pdo;
     $k = array_str(array_keys($array));
@@ -42,9 +35,28 @@ class DB
     return $stmt->rowCount();
   }
 
+  public static function delete($table, $id) {
+    global $pdo;
+    $stmt = $pdo->prepare("DELETE FROM {$table} WHERE id = :id");
+    $stmt->execute([":id" => $id]);
+    return $stmt->rowCount();
+  }
+
   public static function lastInsertId() {
     global $pdo;
     return $pdo->lastInsertId();
+  }
+
+  public static function exchangeColumn($table, $from, $to, $column) {
+    global $pdo;
+    $pdo->beginTransaction();
+    DB::update($table, $from["id"], [
+      $column => $to[$column]
+    ]);
+    DB::update($table, $to["id"], [
+      $column => $from[$column]
+    ]);
+    $pdo->commit();
   }
 }
 

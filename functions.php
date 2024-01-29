@@ -5,12 +5,20 @@
  */
 function array_str($array, $delimiter=", ") {
   $str = "";
-  $last = array_slice($array, -1);
+  $last = array_slice($array, -1)[0];
   foreach ($array as $item) {
     $str .= $item;
-    if ($item !== $last[0]) $str .= ", ";
+    if ($item !== $last) $str .= ", ";
   }
   return $str;
+}
+
+function make_times($min=0, $max=86400, $step=60) {
+  $array = [];
+  for ($ts = $min; $ts <= $max; $ts += $step) {
+    array_push($array, $ts - 60*60*9);
+  }
+  return $array;
 }
 /**
  * ーーここまでーー
@@ -49,8 +57,9 @@ function redirect($path) {
   exit;
 }
 
-function back() {
+function back($hash=null) {
   $url = $_SERVER["HTTP_REFERER"];
+  if ($hash) $url .= "#{$hash}";
   header("Location: $url");
   exit;
 }

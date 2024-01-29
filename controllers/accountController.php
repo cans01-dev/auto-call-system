@@ -46,9 +46,7 @@ function updateSendEmail($vars) {
 function deleteSendEmail($vars) {
   $id = $vars["id"];
   $sendEmail = Fetch::find("send_emails", $id);
-  global $pdo;
-  $stmt = $pdo->prepare("DELETE FROM send_emails WHERE id = :id");
-  $stmt->execute([":id" => $id]);
+  DB::delete("send_emails", $id);
   Session::set("toast", ["info", "送信先メールアドレスを削除しました"]);
   redirect("/account");
 }

@@ -1,140 +1,13 @@
-DROP DATABASE auto_call_system;
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+CREATE DATABASE IF NOT EXISTS `auto_call_system` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `auto_call_system`;
 
-CREATE DATABASE auto_call_system;
-USE auto_call_system;
-
-CREATE TABLE users (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  email varchar(255) NOT NULL UNIQUE,
-  password varchar(255) NOT NULL,
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE send_emails (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  user_id int(11) NOT NULL,
-  email varchar(255) NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE surveys (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  user_id int(11) NOT NULL,
-  title varchar(255) NOT NULL,
-  note text(65535),
-  greeting text(65535),
-  PRIMARY KEY (id),
-  FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE endings (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  survey_id int(11) NOT NULL,
-  text text(65535),
-  PRIMARY KEY (id),
-  FOREIGN KEY (survey_id) REFERENCES surveys (id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE faqs (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  survey_id int(11) NOT NULL,
-  title varchar(255) NOT NULL,
-  text text(65535),
-  order_num int(11) NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (survey_id) REFERENCES surveys (id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE options (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  faq_id int(11) NOT NULL,
-  title varchar(255) NOT NULL,
-  dial int(11) NOT NULL,
-  is_last boolean NOT NULL,
-  next_faq_id int(11),
-  PRIMARY KEY (id),
-  FOREIGN KEY (faq_id) REFERENCES faqs (id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE reserves (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  survey_id int(11) NOT NULL,
-  date date NOT NULL,
-  start time NOT NULL,
-  end time NOT NULL,
-  status int(11) NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (survey_id) REFERENCES surveys (id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE favorites (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  survey_id int(11) NOT NULL,
-  start time NOT NULL,
-  end time NOT NULL,
-  title varchar(255) NOT NULL,
-  color char(7) NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (survey_id) REFERENCES surveys (id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE areas (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  title varchar(255) NOT NULL,
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE favorites_areas (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  favorite_id int(11) NOT NULL,
-  area_id int(11) NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (favorite_id) REFERENCES favorites (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (area_id) REFERENCES areas (id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE reserves_areas (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  reserve_id int(11) NOT NULL,
-  area_id int(11) NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (reserve_id) REFERENCES reserves (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (area_id) REFERENCES areas (id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE stations (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  area_id int(11) NOT NULL,
-  title varchar(255) NOT NULL,
-  prefix varchar(255) NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (area_id) REFERENCES areas (id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-
-INSERT INTO users (email, password) VALUES
-('test@example.com', '$2y$10$smM.1r.LkbkvktimMdr14ufFph9Wb97w2t5/wZVuXCeW0z3MLi8iW');
-
-INSERT INTO surveys (user_id, title, note, greeting) VALUES
-(1, 'アンケート１', '説明テキスト', NULL),
-(1, 'アンケ２あ', 'アああ', NULL);
-
-INSERT INTO endings (survey_id, text) VALUES
-(2, 'あaadavvdasvvdv'),
-(2, 'あああdvsav');
-
-INSERT INTO faqs (survey_id, title, text, order_num) VALUES
-(2, '質問ああ', 'あ', 0),
-(2, '質問いい', 'あああ', 1);
-
-INSERT INTO options (faq_id, title, is_last, next_faq_id, dial) VALUES
-(1, 'あああ選択肢a', 0, 2, 0),
-(1, 'いい選択肢e', 0, 2, 2),
-(1, 'たたた', 0, NULL, 1);
-
-INSERT INTO send_emails (user_id, email) VALUES
-(1, 'test2@example.com');
+CREATE TABLE `areas` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `areas` (`id`, `title`) VALUES
 (1, '四国'),
@@ -165,6 +38,158 @@ INSERT INTO `areas` (`id`, `title`) VALUES
 (26, '中国&関西'),
 (27, '東京&関西'),
 (28, '中部&東京');
+
+CREATE TABLE `faqs` (
+  `id` int(11) NOT NULL,
+  `survey_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `text` mediumtext DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `faqs` (`id`, `survey_id`, `title`, `text`) VALUES
+(1, 2, '質問ああaa', 'あcdc'),
+(2, 2, '質問いい', 'あああ'),
+(6, 6, '現在のお住まい', 'それでは、現在のお住まいについてお尋ねします。\r\n一戸建て持ち家の方は１を・・・・\r\nアパート・マンション、賃貸住宅の方は２を・・・・\r\nもう一度お聞きになりたい方は０を押してください。'),
+(7, 6, '光熱費', '今回のおすすめプランの条件に合った家庭かどうかの光熱費をお尋ねします\r\n電気料金が毎月１万円以上お使いの方は１を・・・・\r\n１万円以下の方は２を・・・・\r\nもう一度お聞きになりたい方は０を押してください。'),
+(8, 6, 'ご年齢', '③ご年齢についてお尋ねします。\r\n７６歳以上の方は１を・・・・\r\n７０歳から７５歳の方は２を・・・・\r\n３０歳から６９歳の方は３を・・・・\r\n２９歳以下の方は４を・・・・\r\nもう一度お聞きになりたい方は０を押してください。'),
+(9, 6, '給湯器', 'ガス給湯器、または、灯油ボイラーをお使いの方は１を・・・・\r\nエコキュート、または、電気温水器をお使いの方はは２を・・・・\r\nそのほかの給湯器をお使いの方は３を・・・・\r\nもう一度お聞きになりたい方は０を押してください。'),
+(10, 6, '太陽光パネルと蓄電池', '次に、太陽光パネルと蓄電池の導入状況についてお尋ねします\r\n太陽光パネルと蓄電池の両方を導入されている方は１を・・・・\r\n太陽光パネルのみを導入されている方は２を・・・・\r\n蓄電池のみ導入されている方は３を・・・・\r\nどちらも導入されていない方は４を・・・・\r\nもう一度お聞きになりたい方は０を押してください。'),
+(11, 6, 'お電話口に出て頂いている方', '今、お電話口に出て頂いている方が\r\nご主人様でしたら１を・・・・\r\n奥様でしたら２を・・・・\r\nその他のご家族の方でしたら３を・・・・\r\nもう一度お聞きになりたい方は０を押してください。\r\n'),
+(12, 6, '無料シミュレーション', '以上の結果を踏まえて、現状のご使用状況であれば十分に電気代の削減が可能なご家庭となっております。\r\nつきましては、現状よりどのくらい電気料金が安くなるか、地域の専属アドバイザーが無料シミュレーションを\r\nご自宅にて実施いたしております。\r\n無料シミュレーションをご希望の方は１を・・・・\r\nそれ以外の方は２を・・・・\r\nもう一度お聞きになりたい方は０を押してください。');
+
+CREATE TABLE `favorites` (
+  `id` int(11) NOT NULL,
+  `survey_id` int(11) NOT NULL,
+  `start` time NOT NULL,
+  `end` time NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `color` char(7) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `favorites` (`id`, `survey_id`, `start`, `end`, `title`, `color`) VALUES
+(1, 2, '17:53:00', '20:55:00', 'aaaaadvavds', '#706383'),
+(2, 6, '18:00:00', '21:00:00', '平日１', '#563d7c'),
+(3, 6, '10:01:00', '18:00:00', '土日', '#00ff33');
+
+CREATE TABLE `favorites_areas` (
+  `id` int(11) NOT NULL,
+  `favorite_id` int(11) NOT NULL,
+  `area_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `favorites_areas` (`id`, `favorite_id`, `area_id`) VALUES
+(6, 1, 1),
+(7, 1, 3),
+(10, 2, 8),
+(12, 2, 17),
+(13, 2, 7),
+(14, 2, 19),
+(16, 3, 8),
+(17, 3, 7),
+(18, 3, 17),
+(19, 3, 19);
+
+CREATE TABLE `options` (
+  `id` int(11) NOT NULL,
+  `faq_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `dial` int(11) NOT NULL,
+  `is_last` tinyint(1) NOT NULL,
+  `next_faq_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `options` (`id`, `faq_id`, `title`, `dial`, `is_last`, `next_faq_id`) VALUES
+(1, 1, 'あああ選択肢aa', 0, 0, 2),
+(2, 1, 'いい選択肢e', 2, 0, 2),
+(3, 1, 'たたた', 1, 0, NULL),
+(6, 6, '一戸建て、持ち家', 0, 0, 7),
+(7, 6, '賃貸住宅', 1, 0, 12),
+(8, 6, '聞き直し', 2, 0, NULL),
+(9, 7, '１万円以上', 1, 0, 8),
+(10, 7, '１万円以下', 2, 0, 8),
+(11, 7, '聞き直し', 0, 0, NULL),
+(12, 8, '７６歳以上', 0, 1, NULL),
+(13, 8, '７０歳から７５歳', 1, 0, 9),
+(14, 8, 'c', 2, 0, 9),
+(15, 8, '２９歳以下', 3, 1, NULL),
+(16, 8, '聞き直し', 4, 0, NULL),
+(17, 9, 'ガス給湯器 or 灯油ボイラーを使用', 0, 0, 10),
+(18, 9, 'エコキュート or 電気温水器を使用', 1, 0, 10),
+(19, 9, 'そのほかの給湯器を使用', 2, 0, 10),
+(20, 9, '聞き直し', 3, 0, NULL),
+(21, 10, '太陽光パネルと蓄電池の両方を導入', 1, 1, NULL),
+(22, 10, '太陽光パネルのみ導入', 2, 0, 11),
+(23, 10, '蓄電池のみ導入', 3, 0, 11),
+(24, 10, 'とちらも導入していない', 4, 0, 11),
+(25, 10, '聞き直し', 0, 0, NULL),
+(26, 11, 'ご主人様', 1, 0, 12),
+(27, 11, '聞き直し', 0, 0, NULL),
+(28, 11, '奥様', 2, 0, 12),
+(29, 11, 'その他のご家族', 3, 0, 12),
+(30, 12, '無料シミュレーション希望', 1, 0, NULL),
+(31, 12, '聞き直し', 0, 0, NULL),
+(32, 12, 'それ以外', 2, 0, NULL);
+
+CREATE TABLE `reserves` (
+  `id` int(11) NOT NULL,
+  `survey_id` int(11) NOT NULL,
+  `date` date NOT NULL,
+  `start` time NOT NULL,
+  `end` time NOT NULL,
+  `status` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `reserves` (`id`, `survey_id`, `date`, `start`, `end`, `status`) VALUES
+(1, 2, '2024-01-27', '16:07:00', '18:02:00', 0),
+(2, 2, '2024-01-30', '20:58:00', '21:59:00', 0),
+(3, 2, '2024-01-28', '20:26:00', '21:26:00', 0),
+(4, 2, '2024-01-31', '17:53:00', '20:55:00', 0),
+(5, 2, '2024-01-29', '17:53:00', '20:55:00', 0),
+(7, 6, '2024-01-28', '10:01:00', '18:00:00', 0),
+(8, 6, '2024-01-30', '18:00:00', '21:00:00', 0),
+(9, 6, '2024-01-27', '10:01:00', '18:00:00', 0);
+
+CREATE TABLE `reserves_areas` (
+  `id` int(11) NOT NULL,
+  `reserve_id` int(11) NOT NULL,
+  `area_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `reserves_areas` (`id`, `reserve_id`, `area_id`) VALUES
+(3, 3, 1),
+(8, 4, 1),
+(9, 4, 3),
+(11, 2, 2),
+(12, 5, 1),
+(13, 5, 2),
+(18, 7, 8),
+(19, 7, 7),
+(20, 7, 17),
+(21, 7, 19),
+(22, 8, 8),
+(23, 8, 17),
+(24, 8, 7),
+(25, 8, 19),
+(26, 9, 8),
+(27, 9, 7),
+(28, 9, 17),
+(29, 9, 19);
+
+CREATE TABLE `send_emails` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `send_emails` (`id`, `user_id`, `email`) VALUES
+(1, 1, 'test2@example.coma');
+
+CREATE TABLE `stations` (
+  `id` int(11) NOT NULL,
+  `area_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `prefix` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `stations` (`id`, `area_id`, `title`, `prefix`) VALUES
 (1, 1, '四国', '090-100'),
@@ -1108,3 +1133,146 @@ INSERT INTO `stations` (`id`, `area_id`, `title`, `prefix`) VALUES
 (939, 6, '九州', '080-836'),
 (940, 6, '九州', '080-837'),
 (941, 14, '沖縄', '080-985');
+
+CREATE TABLE `surveys` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `note` mediumtext DEFAULT NULL,
+  `greeting` mediumtext DEFAULT NULL,
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `surveys` (`id`, `user_id`, `title`, `note`, `greeting`) VALUES
+(2, 1, 'テスト用アンケート', 'アああ', 'davdvavdasv'),
+(6, 1, '電力〇〇センター', '', 'こちらは、電力〇〇センターです。〇〇電力管内にお住まいの皆様へ、〇〇電力のお得なプランに切り替えた場合、\r\nどれくらい電気代が削減できるかの診断精査を行っております。\r\n１分程度の音声質問にご協力をお願いします。　尚、音声の途中でもご回答頂けます。\r\n');
+
+CREATE TABLE `endings` (
+  `id` int(11) NOT NULL,
+  `survey_id` int(11) NOT NULL,
+  `text` mediumtext DEFAULT NULL,
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `endings` (`survey_id`, `text`) VALUES
+(2, 'テスト用アンケートエンディング１'),
+(2, '電力〇〇センターエンディング１'),
+(2, '電力〇〇センターエンディング２');
+
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `users` (`id`, `email`, `password`) VALUES
+(1, 'test@example.com', '$2y$10$/B6gRyB2uzTvvK9ZgiaRWOrk3hutAPKKSogjEm3PDSyyk2ACNVvkW');
+
+
+ALTER TABLE `areas`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `faqs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `survey_id` (`survey_id`);
+
+ALTER TABLE `favorites`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `survey_id` (`survey_id`);
+
+ALTER TABLE `favorites_areas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `favorite_id` (`favorite_id`),
+  ADD KEY `area_id` (`area_id`);
+
+ALTER TABLE `options`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `faq_id` (`faq_id`);
+
+ALTER TABLE `reserves`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `survey_id` (`survey_id`);
+
+ALTER TABLE `reserves_areas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `reserve_id` (`reserve_id`),
+  ADD KEY `area_id` (`area_id`);
+
+ALTER TABLE `send_emails`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+ALTER TABLE `stations`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `area_id` (`area_id`);
+
+ALTER TABLE `surveys`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+
+ALTER TABLE `areas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+
+ALTER TABLE `faqs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+ALTER TABLE `favorites`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+ALTER TABLE `favorites_areas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+ALTER TABLE `options`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+
+ALTER TABLE `reserves`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+ALTER TABLE `reserves_areas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+
+ALTER TABLE `send_emails`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+ALTER TABLE `stations`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=942;
+
+ALTER TABLE `surveys`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+
+ALTER TABLE `faqs`
+  ADD CONSTRAINT `faqs_ibfk_1` FOREIGN KEY (`survey_id`) REFERENCES `surveys` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `favorites`
+  ADD CONSTRAINT `favorites_ibfk_1` FOREIGN KEY (`survey_id`) REFERENCES `surveys` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `favorites_areas`
+  ADD CONSTRAINT `favorites_areas_ibfk_1` FOREIGN KEY (`favorite_id`) REFERENCES `favorites` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `favorites_areas_ibfk_2` FOREIGN KEY (`area_id`) REFERENCES `areas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `options`
+  ADD CONSTRAINT `options_ibfk_1` FOREIGN KEY (`faq_id`) REFERENCES `faqs` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `reserves`
+  ADD CONSTRAINT `reserves_ibfk_1` FOREIGN KEY (`survey_id`) REFERENCES `surveys` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `reserves_areas`
+  ADD CONSTRAINT `reserves_areas_ibfk_1` FOREIGN KEY (`reserve_id`) REFERENCES `reserves` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `reserves_areas_ibfk_2` FOREIGN KEY (`area_id`) REFERENCES `areas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `send_emails`
+  ADD CONSTRAINT `send_emails_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `stations`
+  ADD CONSTRAINT `stations_ibfk_1` FOREIGN KEY (`area_id`) REFERENCES `areas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `surveys`
+  ADD CONSTRAINT `surveys_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;

@@ -9,12 +9,44 @@ class Fetch
     return $stmt->fetch();
   }
 
-  public static function get($table, $where_value, $where_key, $order_by="id") {
+  public static function find2($table, $where_array) {
     global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM {$table} WHERE {$where_key} = :value ORDER BY {$order_by}");
+    $w = "";
+    $args = [];
+    $last = array_slice($where_array, -1)[0];
+    foreach ($where_array as $where) {
+      $w .= "{$where[0]} {$where[1]} :{$where[0]}";
+      if ($where !== $last) $w .= " AND ";
+      $args[":{$where[0]}"] = $where[2];
+    }
+    $sql = "SELECT * FROM {$table} WHERE {$w}";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($args);
+    return $stmt->fetch();
+  }
+
+  public static function get($table, $where_value, $where_key, $order_by="id", $operator="=") {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT * FROM {$table} WHERE {$where_key} {$operator} :value ORDER BY {$order_by}");
     $stmt->execute([
       ":value" => $where_value
     ]);
+    return $stmt->fetchAll();
+  }
+
+  public static function get2($table, $where_array) {
+    global $pdo;
+    $w = "";
+    $args = [];
+    $last = array_slice($where_array, -1)[0];
+    foreach ($where_array as $where) {
+      $w .= "{$where[0]} {$where[1]} :{$where[0]}";
+      if ($where !== $last) $w .= " AND ";
+      $args[":{$where[0]}"] = $where[2];
+    }
+    $sql = "SELECT * FROM {$table} WHERE {$w}";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($args);
     return $stmt->fetchAll();
   }
 
@@ -23,16 +55,6 @@ class Fetch
     $stmt = $pdo->prepare("SELECT * FROM {$table}");
     $stmt->execute();
     return $stmt->fetchAll();
-  }
-
-  public static function optionByDialAndFaq($dial, $faq_id) {
-    global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM options WHERE dial = :dial AND faq_id = :faq_id");
-    $stmt->execute([
-      ":dial" => $dial,
-      ":faq_id" => $faq_id
-    ]);
-    return $stmt->fetch();
   }
 
   public static function reservesBySurveyIdAndYearMonth($survey_id, $month, $year) {

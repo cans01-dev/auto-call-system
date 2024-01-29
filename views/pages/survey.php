@@ -10,7 +10,7 @@
 
 <div class="d-flex gap-3">
   <div class="w-100" data-bs-spy="scroll" data-bs-target="#navbar-example2" tabindex="0">
-  <section id="greeting-ending">
+    <section id="greeting-ending">
       <?= Components::h3("グリーティング・エンディング") ?>
       <div>
         <div class="card mb-2">
@@ -25,23 +25,26 @@
             </button>
           </div>
         </div>
+        <?php foreach ($survey["endings"] as $ending): ?>
         <div class="card mb-2">
           <div class="card-body">
-            <h5 class="card-title"><span class="badge bg-secondary me-2">エンディング</span></h5>
+            <h5 class="card-title"><span class="badge bg-secondary me-2">エンディング: <?= $ending["id"] ?></span></h5>
             <h6 class="card-subtitle mb-2 text-body-secondary">---</h6>
-            <p class="card-text"><?= $survey["ending"] ?></p>
-            <button type="button" class="btn btn-outline-dark me-2" data-bs-toggle="modal" data-bs-target="#endingModal">設定</button>
+            <p class="card-text"><?= $ending["text"] ?></p>
+            <button type="button" class="btn btn-outline-dark me-2" data-bs-toggle="modal" data-bs-target="#endingModal<?= $ending["id"] ?>">設定</button>
             <button href="" class="btn btn-outline-primary" disabled>
               <i class="fa-solid fa-volume-high"></i>
               音声
             </button>
           </div>
         </div>
+        <?php endforeach; ?>
       </div>
     </section>
     <?= Components::hr() ?>
     <section id="faqs">
       <?= Components::h3("質問一覧") ?>
+      <div class="form-text mb-2">質問の並び替えは動作には影響しません</div>
       <div>
         <?php foreach ($survey["faqs"] as $faq): ?>
           <div class="card mb-2">
@@ -54,6 +57,32 @@
                 <i class="fa-solid fa-volume-high"></i>
                 音声
               </button>
+              <div class="position-absolute top-0 end-0 p-3">
+                <form action="/faqs/<?= $faq["id"] ?>/order" id="upFaq<?= $faq["id"] ?>" method="post" hidden>
+                  <?= csrf() ?>
+                  <input type="hidden" name="to" value="up">
+                </form>
+                <form action="/faqs/<?= $faq["id"] ?>/order" id="downFaq<?= $faq["id"] ?>" method="post" hidden>
+                  <?= csrf() ?>
+                  <input type="hidden" name="to" value="down">
+                </form>
+                <div class="btn-group" role="group" aria-label="Basic outlined example">
+                  <button
+                  type="submit"
+                  class="btn btn-outline-primary" <?= !$faq["order_num"] ? "disabled" : ""; ?>
+                  form="upFaq<?= $faq["id"] ?>"
+                  >
+                    <i class="fa-solid fa-angle-up"></i>
+                  </button>
+                  <button
+                  type="submit"
+                  class="btn btn-outline-primary" <?= $faq["order_num"] === max(array_column($survey["faqs"], "order_num")) ? "disabled" : ""; ?>
+                  form="downFaq<?= $faq["id"] ?>"
+                  >
+                    <i class="fa-solid fa-angle-down"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         <?php endforeach; ?>
@@ -96,7 +125,7 @@
               <?php foreach ($week as $day): ?>
                 <td class="position-relative" style="height: 100px;">
                   <?php if ($day): ?>
-                    <div class="text-center mb-2">
+                    <div class="text-center mb-1">
                       <span class="<?= $day->today ? "text-bg-primary badge" : ""; ?>">
                         <?= date("j", $day->timestamp); ?>
                       </span>
@@ -107,9 +136,13 @@
                       href="/reserves/<?= $reserve["id"] ?><?= $reserve["status"]? "/result": null; ?>"
                       >
                         <?= date("H:i", strtotime($reserve["start"])) ?> - <?= date("H:i", strtotime($reserve["end"])) ?><br>
-                        <?php foreach ($reserve["areas"] as $area): ?>
-                        <?= $area["title"] ?>
-                        <?php endforeach; ?>
+                        <?php if (count($reserve["areas"]) < 4): ?>
+                          <?php foreach ($reserve["areas"] as $area): ?>
+                            <?= $area["title"] ?>
+                          <?php endforeach; ?>
+                        <?php else: ?>
+                          <?= count($reserve["areas"]) ?>件のエリア
+                        <?php endif; ?>
                       </a>
                     <?php else: ?>
                       <?php if (time() < $day->timestamp + RESERVATION_DEADLINE_HOUR * 3600): ?>
@@ -208,7 +241,7 @@
                 <span class="badge me-2 p-2" style="background-color: <?= $favorite["color"] ?>;"> </span>  
                 <?= $favorite["title"] ?>
               </h5>
-              <table>
+              <table class="table table-sm">
                 <tbody>
                   <tr>
                     <th>時間</th>
@@ -253,7 +286,7 @@
                 <span class="badge me-2 p-2" style="background-color: <?= $favorite["color"] ?>;"> </span>  
                 <?= $favorite["title"] ?>
               </h5>
-              <table>
+              <table class="table table-sm">
                 <tbody>
                   <tr>
                     <th>時間</th>
@@ -288,9 +321,23 @@
           <div class="mb-3">
             <label class="form-label">開始時間・終了時間</label>
             <div class="input-group">
-              <input type="time" name="start" class="form-control" value="<?= $reserve["start"] ?>" required>
+              <select name="start" class="form-select" required>
+                <option value="">選択してください</option>
+                <?php foreach (make_times(MIN_TIME, MAX_TIME, TIME_STEP) as $ts): ?>
+                <option value="<?= date("H:i", $ts) ?>">
+                  <?= date("H:i", $ts) ?>
+                </option>
+                <?php endforeach; ?>
+              </select>
               <span class="input-group-text">~</span>
-              <input type="time" name="end" class="form-control" value="<?= $reserve["end"] ?>" required>
+              <select name="end" class="form-select" required>
+                <option value="">選択してください</option>
+                <?php foreach (make_times(MIN_TIME, MAX_TIME, TIME_STEP) as $ts): ?>
+                <option value="<?= date("H:i", $ts) ?>">
+                  <?= date("H:i", $ts) ?>
+                </option>
+                <?php endforeach; ?>
+              </select>
             </div>
           </div>
           <div class="text-end">
@@ -351,9 +398,23 @@
           <div class="mb-3">
             <label class="form-label">開始時間・終了時間</label>
             <div class="input-group">
-              <input type="time" name="start" class="form-control" value="<?= $reserve["start"] ?>" required>
+              <select name="start" class="form-select" required>
+                <option value="">選択してください</option>
+                <?php foreach (make_times(MIN_TIME, MAX_TIME, TIME_STEP) as $ts): ?>
+                <option value="<?= date("H:i", $ts) ?>">
+                  <?= date("H:i", $ts) ?>
+                </option>
+                <?php endforeach; ?>
+              </select>
               <span class="input-group-text">~</span>
-              <input type="time" name="end" class="form-control" value="<?= $reserve["end"] ?>" required>
+              <select name="end" class="form-select" required>
+                <option value="">選択してください</option>
+                <?php foreach (make_times(MIN_TIME, MAX_TIME, TIME_STEP) as $ts): ?>
+                <option value="<?= date("H:i", $ts) ?>">
+                  <?= date("H:i", $ts) ?>
+                </option>
+                <?php endforeach; ?>
+              </select>
             </div>
           </div>
           <div class="text-end">
@@ -392,8 +453,9 @@
   </div>
 </div>
 
-<!-- endingModal -->
-<div class="modal fade" id="endingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<!-- endingModals -->
+<?php foreach ($survey["endings"] as $ending): ?>
+<div class="modal fade" id="endingModal<?= $ending["id"] ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -401,15 +463,14 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="/surveys/<?= $survey["id"] ?>/ending" method="post">
+        <form action="/endings/<?= $ending["id"] ?>" method="post">
           <?= csrf() ?>
           <?= method("PUT") ?>
           <div class="mb-3">
             <label class="form-label">テキスト</label>
-            <textarea name="ending" class="form-control" rows="5"><?= $survey["ending"] ?></textarea>
+            <textarea name="text" class="form-control" rows="5"><?= $ending["text"] ?></textarea>
           </div>
           <div class="text-end">
-            <input type="hidden" name="survey_id" value="<?= $survey["id"] ?>">
             <button type="submit" class="btn btn-primary">更新</button>
           </div>
         </form>
@@ -417,5 +478,6 @@
     </div>
   </div>
 </div>
+<?php endforeach; ?>
 
 <?php require './views/templates/footer.php'; ?>

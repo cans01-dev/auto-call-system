@@ -39,24 +39,22 @@ function orderOption($vars) {
   if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
 
   if ($to === "up") {
-    $option2 = Fetch::optionByDialAndFaq($option1["dial"] - 1, $faq["id"]);
+    $option2 = Fetch::find2("options", [
+      ["dial", "=", $option1["dial"] - 1], 
+      ["faq_id", "=", $faq["id"]]
+    ]);
   } elseif ($to === "down") {
-    $option2 = Fetch::optionByDialAndFaq($option1["dial"] + 1, $faq["id"]);
+    $option2 = Fetch::find2("options", [
+      ["dial", "=", $option1["dial"] + 1], 
+      ["faq_id", "=", $faq["id"]]
+    ]);;
   }
   if (!$option2) abort(403);
 
-  global $pdo;
-  $pdo->beginTransaction();
-  DB::update("options", $option1["id"], [
-    "dial" => $option2["dial"]
-  ]);
-  DB::update("options", $option2["id"], [
-    "dial" => $option1["dial"]
-  ]);
-  $pdo->commit();
+  DB::exchangeColumn("options", $option1, $option2, "dial");
 
   Session::set("toast", ["success", "選択肢のダイヤルを変更しました"]);
-  redirect("/faqs/{$faq["id"]}#options");
+  back("options");
 }
 
 function deleteOption($vars) {

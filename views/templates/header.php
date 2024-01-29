@@ -89,4 +89,4 @@
 	</div>
 </header>
 <main>
-<div class="main-container">
+<div class="main-container position-relative">

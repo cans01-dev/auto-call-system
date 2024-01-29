@@ -18,9 +18,23 @@
       <div class="mb-3">
         <label class="form-label">開始時間・終了時間</label>
         <div class="input-group">
-          <input type="time" name="start" class="form-control" value="<?= $reserve["start"] ?>" required>
+          <select name="start" class="form-select" required>
+            <option value="">選択してください</option>
+            <?php foreach (make_times(MIN_TIME, MAX_TIME, TIME_STEP) as $ts): ?>
+            <option value="<?= date("H:i", $ts) ?>" <?= $reserve["start"] == date("H:i:s", $ts) ? "selected" : ""; ?>>
+              <?= date("H:i", $ts) ?>
+            </option>
+            <?php endforeach; ?>
+          </select>
           <span class="input-group-text">~</span>
-          <input type="time" name="end" class="form-control" value="<?= $reserve["end"] ?>" required>
+          <select name="end" class="form-select" required>
+            <option value="">選択してください</option>
+            <?php foreach (make_times(MIN_TIME, MAX_TIME, TIME_STEP) as $ts): ?>
+            <option value="<?= date("H:i", $ts) ?>" <?= $reserve["end"] == date("H:i:s", $ts) ? "selected" : ""; ?>>
+              <?= date("H:i", $ts) ?>
+            </option>
+            <?php endforeach; ?>
+          </select>
         </div>
       </div>
       <div class="text-end">
@@ -61,6 +75,17 @@
             <li class="list-group-item">エリアが選択されていません</li>
           <?php endif; ?>
         </ul>
+      </div>
+      <div class="border p-2 mb-2">
+        <p>地域名を入力してまとめて選択</p>
+        <form action="/reserves_areas/by-word" method="post">
+          <?= csrf() ?>
+          <input type="hidden" name="reserve_id" value="<?= $reserve["id"] ?>">
+          <div class="input-group">
+            <input type="text" class="form-control" name="word" placeholder="（部分一致）" required>
+            <button type="submit" class="btn btn-outline-secondary">実行</button>
+          </div>
+        </form>
       </div>
       <div class="card mb-4">
         <div class="card-header">

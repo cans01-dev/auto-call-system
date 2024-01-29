@@ -31,9 +31,11 @@ function survey($vars) {
   $year = $_GET["year"] ?? date("Y");
 
   $survey = Fetch::find("surveys", $id);
-  $survey["faqs"] = Fetch::get("faqs", $survey["id"], "survey_id");
+  $survey["endings"] = Fetch::get("endings", $survey["id"], "survey_id");
+  $survey["faqs"] = Fetch::get("faqs", $survey["id"], "survey_id", "order_num");
   $survey["reserves"] = Fetch::reservesBySurveyIdAndYearMonth($survey["id"], $month, $year);
   $survey["favorites"] = Fetch::get("favorites", $survey["id"], "survey_id");
+
   if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
 
   $schedules = [];
@@ -62,7 +64,6 @@ function faq($vars) {
       $options[$index]["next_faq"] = Fetch::find("faqs", $option["next_faq_id"]);
     }
   }
-  $maxDial = count($options) > 0 ? max(array_column($options, "dial")) : null;
   if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
 
   require_once "./views/pages/faq.php";

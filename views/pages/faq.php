@@ -82,7 +82,7 @@
             </button>
             <button
             type="submit"
-            class="btn btn-outline-primary" <?= $option["dial"] === $maxDial ? "disabled" : ""; ?>
+            class="btn btn-outline-primary" <?= $option["dial"] === max(array_column($options, "dial")) ? "disabled" : ""; ?>
             form="downOption<?= $option["id"] ?>"
             >
               <i class="fa-solid fa-angle-down"></i>

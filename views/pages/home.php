@@ -9,6 +9,7 @@
 
 <div class="d-flex gap-3">
   <div class="w-100">
+    <?= Allow::option(Fetch::find("options", 3)) ?>
   </div>
   <div class="flex-shrink-0" style="width: 300px;">
     <div class="sticky-top">

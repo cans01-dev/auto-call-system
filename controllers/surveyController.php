@@ -36,11 +36,12 @@ function updateGreeting($vars) {
 
 function updateEnding($vars) {
   $id = $vars["id"];
-  $survey = Fetch::find("surveys", $id);
+  $ending = Fetch::find("endings", $id);
+  $survey = Fetch::find("surveys", $ending["survey_id"]);
   if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
-  DB::update("surveys", $id, [
-    "ending" => $_POST["ending"]
+  DB::update("endings", $id, [
+    "text" => $_POST["text"]
   ]);
-  Session::set("toast", ["success", "アンケートのエンディングを変更しました"]);
+  Session::set("toast", ["success", "エンディングのテキストを変更しました"]);
   back();
 }

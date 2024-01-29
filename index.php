@@ -9,6 +9,7 @@ require "./models/Auth.php";
 require "./models/Session.php";
 require "./models/Calendar.php";
 require "./models/Components.php";
+require "./models/Allow.php";
 require "./controllers/Controller.php";
 require "./controllers/accountController.php";
 require "./controllers/faqController.php";
@@ -19,9 +20,9 @@ require "./controllers/surveyController.php";
 require "./controllers/favoriteController.php";
 require "./controllers/optionController.php";
 
-require "./functions.php";
 require "./config.php";
 require "./router.php";
+require "./functions.php";
 
 date_default_timezone_set("Asia/Tokyo");
 
@@ -29,7 +30,11 @@ session_start();
 
 # DB接続
 try {
-	$pdo = new PDO(DB_DSN, DB_USERNAME, DB_PASSWORD);
+	$pdo = new PDO(
+		DB_PREFIX."dbname=".DB_NAME.";host=".DB_HOST,
+		DB_USERNAME,
+		DB_PASSWORD
+	);
 } catch (PDOException $e) {
 	exit($e->getMessage());
 }

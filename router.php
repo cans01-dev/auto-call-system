@@ -28,11 +28,13 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("PUT", "/surveys/{id:\d+}", "updateSurvey");
 	// $r->addRoute("DELETE", "/surveys/{id:\d+}", "deleteSurvey");
 	$r->addRoute("PUT", "/surveys/{id:\d+}/greeting", "updateGreeting");
-	$r->addRoute("PUT", "/surveys/{id:\d+}/ending", "updateEnding");
+
+	$r->addRoute("PUT", "/endings/{id:\d+}", "updateEnding");
 
 	$r->addRoute("POST", "/faqs", "storeFaq");
 	$r->addRoute("PUT", "/faqs/{id:\d+}", "updateFaq");
 	$r->addRoute("DELETE", "/faqs/{id:\d+}", "deleteFaq");
+	$r->addRoute("POST", "/faqs/{id:\d+}/order", "orderFaq");
 	
 	$r->addRoute("POST", "/options", "storeOption");
 	$r->addRoute("PUT", "/options/{id:\d+}", "updateOption");
@@ -45,10 +47,12 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 
 	$r->addRoute("POST", "/reserves_areas", "storeReservesAreas");
 	$r->addRoute("DELETE", "/reserves_areas/{id:\d+}", "deleteReservesAreas");
+	$r->addRoute("POST", "/reserves_areas/by-word", "storeReservesAreasByWord");
 
 	$r->addRoute("POST", "/favorites", "storeFavorite");
 	$r->addRoute("PUT", "/favorites/{id:\d+}", "updateFavorite");
 	$r->addRoute("DELETE", "/favorites/{id:\d+}", "deleteFavorite");
+	$r->addRoute("POST", "/favorites_areas/by-word", "storeFavoritesAreasByWord");
 
 	$r->addRoute("POST", "/favorites_areas", "storeFavoritesAreas");
 	$r->addRoute("DELETE", "/favorites_areas/{id:\d+}", "deleteFavoritesAreas");
