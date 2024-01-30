@@ -32,34 +32,41 @@
 					</a>
 				</li>
 				<li class="nav-item my-2 p-1 border border-2 rounded-2">
-					<ul class="nav nav-pills flex-column">
-						<?php foreach (Fetch::get("surveys", Auth::user()["id"], "user_id") as $sv): ?>
-						<li class="nav-item">
-							<a
-							class="nav-link <?= $_SERVER["REQUEST_URI"] === "/surveys/{$sv["id"]}" ? "active" : "link-body-emphasis" ?>"
-							href="/surveys/<?= $sv["id"] ?>"
-							>
-							<?= $sv["title"] ?>
-							</a>
-							<?php if ($_SERVER["REQUEST_URI"] === "/surveys/{$sv["id"]}"): ?>
-								<ul class="nav nav-pills flex-column ps-4 pt-1">
-									<li class="nav-item">
-										<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#greeting-ending">グリーティング・エンディング</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#faqs">質問一覧</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#calendar">カレンダー</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#area">エリア</a>
-									</li>
-								</ul>
-							<?php endif; ?>
-						</li>
-						<?php endforeach ?>
-					</ul>
+					<?php if ($svs = Fetch::get("surveys", Auth::user()["id"], "user_id")): ?>
+						<ul class="nav nav-pills flex-column">
+							<?php foreach ($svs as $sv): ?>
+							<li class="nav-item">
+								<a
+								class="nav-link <?= $_SERVER["REQUEST_URI"] === "/surveys/{$sv["id"]}" ? "active" : "link-body-emphasis" ?>"
+								href="/surveys/<?= $sv["id"] ?>"
+								>
+								<?= $sv["title"] ?>
+								</a>
+								<?php if ($_SERVER["REQUEST_URI"] === "/surveys/{$sv["id"]}"): ?>
+									<ul class="nav nav-pills flex-column ps-4 pt-1">
+										<li class="nav-item">
+											<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#greeting-ending">グリーティング・エンディング</a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#faqs">質問一覧</a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#calendar">カレンダー</a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#area">エリア</a>
+										</li>
+									</ul>
+								<?php endif; ?>
+							</li>
+							<?php endforeach ?>
+						</ul>
+					<?php else: ?>
+						<div class="px-3 py-2 text-center">
+							<p>アンケートがありません</p>
+							<a class="btn btn-outline-info" href="/home#create">アンケートを作成する</a>
+						</div>
+					<?php endif; ?>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link <?= $_SERVER["REQUEST_URI"] === "/support" ? "active" : "link-body-emphasis" ?>">

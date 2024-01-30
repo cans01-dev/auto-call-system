@@ -1,6 +1,6 @@
 <?php require './views/templates/header.php'; ?>
 
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" class="sticky-top">
   <ol class="breadcrumb">
     <li class="breadcrumb-item active">ホーム</li>
   </ol>
@@ -9,7 +9,7 @@
 
 <div class="d-flex gap-3">
   <div class="w-100">
-    <?= Allow::option(Fetch::find("options", 3)) ?>
+
   </div>
   <div class="flex-shrink-0" style="width: 300px;">
     <div class="sticky-top">

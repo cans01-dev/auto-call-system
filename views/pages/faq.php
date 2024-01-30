@@ -1,6 +1,6 @@
 <?php require './views/templates/header.php'; ?>
 
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" class="sticky-top">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">ホーム</a></li>
     <li class="breadcrumb-item"><a href="/surveys/<?= $survey["id"] ?>"><?= $survey["title"] ?></a></li>
@@ -12,7 +12,7 @@
 <section id="summary">
   <?= Components::h3("設定"); ?>
   <div style="max-width: 480px;">
-    <form action="/faqs/<?= $faq["id"] ?>" method="post">
+    <form method="post">
       <?= csrf() ?>
       <?= method("PUT") ?>
       <div class="mb-3">
@@ -54,12 +54,16 @@
         <th scope="row"><span class=""><?= $option["dial"] ?></span></th>
         <td><?= $option["title"] ?></td>
         <td>
-          <?php if ($option["next_faq_id"]): ?>
-          <a href="/faqs/<?= $option["next_faq_id"] ?>" class="badge text-bg-info" style="text-decoration: none;">
-            <?= $option["next_faq"]["title"] ?>
-          </a>
+          <?php if ($option["next_faq"] = Fetch::find2("faqs", [["id", "=", $option["next_faq_id"]]])): ?>
+            <?php if ($option["next_faq"]["id"] !== $faq["id"]): ?>
+              <a href="/faqs/<?= $option["next_faq"]["id"] ?>" class="badge bg-primary-subtle text-black" style="text-decoration: none;">
+                <?= $option["next_faq"]["title"]; ?>
+              </a>
+            <?php else: ?>
+              <span class="badge bg-info-subtle text-black">聞き直し</span>
+            <?php endif; ?>
           <?php else: ?>
-          <span class="badge text-bg-secondary">終了</span>
+            <span class="badge bg-dark-subtle text-black">終了</span>
           <?php endif; ?>
         </td>
         <td>

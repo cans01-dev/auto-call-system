@@ -1,6 +1,6 @@
 <?php require './views/templates/header.php'; ?>
 
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" class="sticky-top">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">ホーム</a></li>
     <li class="breadcrumb-item active"><?= $survey["title"] ?></li>
@@ -12,33 +12,40 @@
   <div class="w-100" data-bs-spy="scroll" data-bs-target="#navbar-example2" tabindex="0">
     <section id="greeting-ending">
       <?= Components::h3("グリーティング・エンディング") ?>
+      <div class="form-text mb-2">
+        グリーティングで通話の最初に流れるテキストを編集できます。<br>
+        エンディングは回答の結果によって変更することができます。
+      </div>
       <div>
-        <div class="card mb-2">
+        <div class="card mb-4">
           <div class="card-body">
-            <h5 class="card-title"><span class="badge bg-secondary me-2">グリーティング</span></h5>
-            <h6 class="card-subtitle mb-2 text-body-secondary">---</h6>
-            <p class="card-text"><?= $survey["greeting"] ?></p>
-            <button type="button" class="btn btn-outline-dark me-2" data-bs-toggle="modal" data-bs-target="#greetingModal">設定</button>
-            <button href="" class="btn btn-outline-primary" disabled>
-              <i class="fa-solid fa-volume-high"></i>
-              音声
-            </button>
+            <h5 class="card-title mb-3"><span class="badge bg-dark-subtle text-black me-2">グリーティング</span></h5>
+            <p class="card-text mb-0"><?= $survey["greeting"] ?></p>
+            <div class="position-absolute top-0 end-0 p-3">
+              <button type="button" class="btn btn-outline-dark me-2" data-bs-toggle="modal" data-bs-target="#greetingModal">設定</button>
+              <button href="" class="btn btn-outline-primary" disabled>
+                <i class="fa-solid fa-volume-high"></i>
+                音声
+              </button>
+            </div>
           </div>
         </div>
         <?php foreach ($survey["endings"] as $ending): ?>
         <div class="card mb-2">
           <div class="card-body">
-            <h5 class="card-title"><span class="badge bg-secondary me-2">エンディング: <?= $ending["id"] ?></span></h5>
-            <h6 class="card-subtitle mb-2 text-body-secondary">---</h6>
-            <p class="card-text"><?= $ending["text"] ?></p>
-            <button type="button" class="btn btn-outline-dark me-2" data-bs-toggle="modal" data-bs-target="#endingModal<?= $ending["id"] ?>">設定</button>
-            <button href="" class="btn btn-outline-primary" disabled>
-              <i class="fa-solid fa-volume-high"></i>
-              音声
-            </button>
+            <h5 class="card-title"><span class="badge bg-dark-subtle text-black me-2">エンディング</span><?= $ending["title"] ?></h5>
+            <p class="card-text mb-0"><?= $ending["text"] ?></p>
+            <div class="position-absolute top-0 end-0 p-3">
+              <button type="button" class="btn btn-outline-dark me-2" data-bs-toggle="modal" data-bs-target="#endingModal<?= $ending["id"] ?>">設定</button>
+              <button href="" class="btn btn-outline-primary" disabled>
+                <i class="fa-solid fa-volume-high"></i>
+                音声
+              </button>
+            </div>
           </div>
         </div>
         <?php endforeach; ?>
+        <?= Components::modalOpenButton("endingsCreateModal") ?>
       </div>
     </section>
     <?= Components::hr() ?>
@@ -49,14 +56,40 @@
         <?php foreach ($survey["faqs"] as $faq): ?>
           <div class="card mb-2">
             <div class="card-body">
-              <h5 class="card-title"><span class="badge bg-secondary me-2">質問</span><?= $faq["title"] ?></h5>
-              <h6 class="card-subtitle mb-2 text-body-secondary">---</h6>
+              <h5 class="card-title mb-3"><span class="badge bg-primary-subtle text-black me-2">質問</span><?= $faq["title"] ?></h5>
               <p class="card-text"><?= $faq["text"] ?></p>
-              <a href="/faqs/<?= $faq["id"] ?>" class="btn btn-primary me-2">設定</a>
-              <button href="" class="btn btn-outline-primary" disabled>
-                <i class="fa-solid fa-volume-high"></i>
-                音声
-              </button>
+              <?php if ($faq["options"] = Fetch::get2("options", [["faq_id", "=", $faq["id"]]], "dial")): ?>
+                <table class="table table-sm mb-0">
+                  <thead>
+                    <tr>
+                      <th scope="col">ダイヤル番号</th>
+                      <th scope="col">TITLE</th>
+                      <th scope="col">NEXT</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php foreach ($faq["options"] as $option): ?>
+                    <tr>
+                      <th scope="row"><span class=""><?= $option["dial"] ?></span></th>
+                      <td><?= $option["title"] ?></td>
+                      <td>
+                        <?php if ($option["next_faq"] = Fetch::find2("faqs", [["id", "=", $option["next_faq_id"]]])): ?>
+                          <?php if ($option["next_faq"]["id"] !== $faq["id"]): ?>
+                            <a href="/faqs/<?= $option["next_faq"]["id"] ?>" class="badge bg-primary-subtle text-black" style="text-decoration: none;">
+                              <?= $option["next_faq"]["title"]; ?>
+                            </a>
+                          <?php else: ?>
+                            <span class="badge bg-info-subtle text-black">聞き直し</span>
+                          <?php endif; ?>
+                        <?php else: ?>
+                        <span class="badge bg-dark-subtle text-black">終了</span>
+                        <?php endif; ?>
+                      </td>
+                    </tr>
+                    <?php endforeach; ?>
+                  </tbody>
+                </table>
+              <?php endif; ?>
               <div class="position-absolute top-0 end-0 p-3">
                 <form action="/faqs/<?= $faq["id"] ?>/order" id="upFaq<?= $faq["id"] ?>" method="post" hidden>
                   <?= csrf() ?>
@@ -66,7 +99,7 @@
                   <?= csrf() ?>
                   <input type="hidden" name="to" value="down">
                 </form>
-                <div class="btn-group" role="group" aria-label="Basic outlined example">
+                <div class="btn-group me-3" role="group" aria-label="Basic outlined example">
                   <button
                   type="submit"
                   class="btn btn-outline-primary" <?= !$faq["order_num"] ? "disabled" : ""; ?>
@@ -82,6 +115,11 @@
                     <i class="fa-solid fa-angle-down"></i>
                   </button>
                 </div>
+                <a href="/faqs/<?= $faq["id"] ?>" class="btn btn-primary">設定</a>
+                <button href="" class="btn btn-outline-primary" disabled>
+                  <i class="fa-solid fa-volume-high"></i>
+                  音声
+                </button>
               </div>
             </div>
           </div>
@@ -207,7 +245,7 @@
     <div class="sticky-top">
       <section id="summary">
         <?= Components::h4("設定"); ?>
-        <form action="/surveys/<?= $survey["id"] ?>" method="post">
+        <form method="post">
           <?= csrf() ?>
           <?= method("PUT") ?>
           <div class="mb-3">
@@ -241,18 +279,22 @@
                 <span class="badge me-2 p-2" style="background-color: <?= $favorite["color"] ?>;"> </span>  
                 <?= $favorite["title"] ?>
               </h5>
-              <table class="table table-sm">
+              <table class="table table-sm mb-0">
                 <tbody>
                   <tr>
-                    <th>時間</th>
+                    <th nowrap>時間</th>
                     <td><?= date("H:i", strtotime($favorite["start"])) ?> - <?= date("H:i", strtotime($favorite["end"])) ?></td>
                   </tr>
                   <tr>
-                    <th>エリア</th>
+                    <th nowrap>エリア</th>
                     <td>
-                      <?php foreach (Fetch::areasByfavoriteId($favorite["id"]) as $area): ?>
-                        <?= $area["title"] ?>
-                      <?php endforeach; ?>
+                      <?php if (count(Fetch::areasByFavoriteId($favorite["id"])) < 4): ?>
+                        <?php foreach (Fetch::areasByFavoriteId($favorite["id"]) as $area): ?>
+                          <?= $area["title"] ?>
+                        <?php endforeach; ?>
+                      <?php else: ?>
+                        <?= count(Fetch::areasByFavoriteId($favorite["id"])) ?>件のエリア
+                      <?php endif; ?>
                     </td>
                   </tr>
                 </tbody>
@@ -286,30 +328,28 @@
                 <span class="badge me-2 p-2" style="background-color: <?= $favorite["color"] ?>;"> </span>  
                 <?= $favorite["title"] ?>
               </h5>
-              <table class="table table-sm">
+              <table class="table table-sm mb-0">
                 <tbody>
                   <tr>
-                    <th>時間</th>
+                    <th nowrap>時間</th>
                     <td><?= date("H:i", strtotime($favorite["start"])) ?> - <?= date("H:i", strtotime($favorite["end"])) ?></td>
                   </tr>
                   <tr>
-                    <th>エリア</th>
+                    <th nowrap>エリア</th>
                     <td>
-                      <?php foreach (Fetch::areasByfavoriteId($favorite["id"]) as $area): ?>
-                        <?= $area["title"] ?>
-                      <?php endforeach; ?>
+                      <?php if (count(Fetch::areasByFavoriteId($favorite["id"])) < 4): ?>
+                        <?php foreach (Fetch::areasByFavoriteId($favorite["id"]) as $area): ?>
+                          <?= $area["title"] ?>
+                        <?php endforeach; ?>
+                      <?php else: ?>
+                        <?= count(Fetch::areasByFavoriteId($favorite["id"])) ?>件のエリア
+                      <?php endif; ?>
                     </td>
                   </tr>
                 </tbody>
               </table>
               <div class="position-absolute top-0 end-0 p-3">
-                <form action="/reserves" method="post">
-                  <?= csrf() ?>
-                  <input type="hidden" name="survey_id" value="<?= $survey["id"] ?>">
-                  <input type="hidden" name="date" class="date-input">
-                  <input type="hidden" name="favorite_id" value="<?= $favorite["id"] ?>">
-                  <button type="submit" class="btn btn-primary">このパターンで予約</button>
-                </form>
+                <a href="/favorites/<?= $favorite["id"] ?>" class="card-link">編集</a>
               </div>
             </div>
           </div>
@@ -453,31 +493,43 @@
   </div>
 </div>
 
+<?= Components::modal("endingsCreateModal", "エンディングを作成", <<<EOM
+  <form action="/endings" method="post">
+    CSRF
+    <div class="mb-3">
+      <label class="form-label">エンディングのタイトル</label>
+      <input type="text" name="title" class="form-control" placeholder="〇〇のエンディング">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">エンディングのテキスト</label>
+      <textarea name="text" class="form-control" rows="5"></textarea>
+    </div>
+    <div class="text-end">
+      <input type="hidden" name="survey_id" value="{$survey["id"]} ?>">
+      <button type="submit" class="btn btn-primary">作成</button>
+    </div>
+  </form>
+EOM); ?>
+
 <!-- endingModals -->
 <?php foreach ($survey["endings"] as $ending): ?>
-<div class="modal fade" id="endingModal<?= $ending["id"] ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">エンディングを編集</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <?= Components::modal("endingModal{$ending["id"]}", "エンディングを編集", <<<EOM
+    <form action="/endings/{$ending["id"]}" method="post">
+      CSRF
+      METHOD_PUT
+      <div class="mb-3">
+        <label class="form-label">エンディングのタイトル</label>
+        <input type="text" name="title" class="form-control" value="{$ending["title"]}">
       </div>
-      <div class="modal-body">
-        <form action="/endings/<?= $ending["id"] ?>" method="post">
-          <?= csrf() ?>
-          <?= method("PUT") ?>
-          <div class="mb-3">
-            <label class="form-label">テキスト</label>
-            <textarea name="text" class="form-control" rows="5"><?= $ending["text"] ?></textarea>
-          </div>
-          <div class="text-end">
-            <button type="submit" class="btn btn-primary">更新</button>
-          </div>
-        </form>
+      <div class="mb-3">
+        <label class="form-label">テキスト</label>
+        <textarea name="text" class="form-control" rows="5">{$ending["text"]}</textarea>
       </div>
-    </div>
-  </div>
-</div>
+      <div class="text-end">
+        <button type="submit" class="btn btn-primary">更新</button>
+      </div>
+    </form>
+  EOM) ?>
 <?php endforeach; ?>
 
 <?php require './views/templates/footer.php'; ?>

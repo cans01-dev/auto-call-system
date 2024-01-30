@@ -1,6 +1,6 @@
 <?php require './views/templates/header.php'; ?>
 
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" class="sticky-top">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">ホーム</a></li>
     <li class="breadcrumb-item"><a href="/account">アカウント</a></li>
@@ -12,7 +12,7 @@
 <section id="summary">
   <?= Components::h3("設定"); ?>
   <div style="max-width: 480px;">
-    <form action="/send-emails/<?= $sendEmail["id"] ?>" method="post">
+    <form method="post">
       <?= csrf() ?>
       <?= method("PUT") ?>
       <div class="mb-3">
@@ -21,7 +21,6 @@
       </div>
       <div class="form-check form-switch mb-3">
         <input class="form-check-input" type="checkbox" role="switch" checked>
-        <label class="form-check-label">有効化</label>
       </div>
       <div class="text-end">
         <button type="submit" class="btn btn-dark">更新</button>

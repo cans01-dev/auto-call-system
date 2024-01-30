@@ -1,6 +1,6 @@
 <?php require './views/templates/header.php'; ?>
 
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" class="sticky-top">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">ホーム</a></li>
     <li class="breadcrumb-item"><a href="/surveys/<?= $survey["id"] ?>"><?= $survey["title"] ?></a></li>
@@ -13,7 +13,7 @@
 <section id="summary">
   <?= Components::h3("設定"); ?>
   <div style="max-width: 480px;">
-    <form action="/options/<?= $option["id"] ?>" method="post">
+    <form method="post">
       <?= csrf() ?>
       <?= method("PUT") ?>
       <div class="mb-3">
@@ -23,14 +23,13 @@
       <div class="mb-3">
         <label class="form-label">NEXT</label>
         <select class="form-select" name="next_faq_id" required>
-          <option value="0" <?= !$option["next_faq_id"] ? "selected" : ""; ?>>終了</option>
-          <?php foreach ($surveyFaqs as $surveyFaq): ?>
-          <option
-          value="<?= $surveyFaq["id"] ?>"
-          <?= $option["next_faq_id"] === $surveyFaq["id"] ? "selected" : ""; ?>
-          >
-          <?= $surveyFaq["title"] ?>
-          </option>
+          <?php foreach ($survey["faqs"] as $faq): ?>
+            <option value="<?= $faq["id"] ?>" <?= $option["next_faq_id"] === $faq["id"] ? "selected" : ""; ?>>
+              <?= $faq["title"] ?><?= $faq["id"] === $option["faq_id"] ? "（聞き直し）": ""; ?>
+            </option>
+          <?php endforeach; ?>
+          <?php foreach (Fetch::find2("endings", [["survey_id", "=", $survey["id"]]]) as $ending): ?>
+            <option value=""></option>
           <?php endforeach; ?>
         </select>
         <div id="passwordHelpBlock" class="form-text">

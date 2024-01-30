@@ -36,6 +36,7 @@ function storeSendEmail() {
 function updateSendEmail($vars) {
   $id = $vars["id"];
   $sendEmail = Fetch::find("send_emails", $id);
+  if (!Allow::sendEmail($sendEmail)) abort(403);
   DB::update("send_emails", $id, [
     "email" => $_POST["email"]
   ]);
@@ -46,6 +47,7 @@ function updateSendEmail($vars) {
 function deleteSendEmail($vars) {
   $id = $vars["id"];
   $sendEmail = Fetch::find("send_emails", $id);
+  if (!Allow::sendEmail($sendEmail)) abort(403);
   DB::delete("send_emails", $id);
   Session::set("toast", ["info", "送信先メールアドレスを削除しました"]);
   redirect("/account");

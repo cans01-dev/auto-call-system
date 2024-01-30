@@ -31,6 +31,7 @@ CREATE TABLE surveys (
 CREATE TABLE endings (
   id int(11) NOT NULL AUTO_INCREMENT,
   survey_id int(11) NOT NULL,
+  title varchar(255) NOT NULL,
   text text(65535),
   PRIMARY KEY (id),
   FOREIGN KEY (survey_id) REFERENCES surveys (id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -114,15 +115,16 @@ CREATE TABLE stations (
 
 
 INSERT INTO users (email, password) VALUES
-('test@example.com', '$2y$10$smM.1r.LkbkvktimMdr14ufFph9Wb97w2t5/wZVuXCeW0z3MLi8iW');
+('test@example.com', '$2y$10$smM.1r.LkbkvktimMdr14ufFph9Wb97w2t5/wZVuXCeW0z3MLi8iW'),
+('test2@example.com', '$2y$10$smM.1r.LkbkvktimMdr14ufFph9Wb97w2t5/wZVuXCeW0z3MLi8iW');
 
 INSERT INTO surveys (user_id, title, note, greeting) VALUES
 (1, 'アンケート１', '説明テキスト', NULL),
 (1, 'アンケ２あ', 'アああ', NULL);
 
-INSERT INTO endings (survey_id, text) VALUES
-(2, 'あaadavvdasvvdv'),
-(2, 'あああdvsav');
+INSERT INTO endings (survey_id, title, text) VALUES
+(2, '円g日1', 'あaadavvdasvvdv'),
+(2, '円g品ぐ', 'あああdvsav');
 
 INSERT INTO faqs (survey_id, title, text, order_num) VALUES
 (2, '質問ああ', 'あ', 0),

@@ -34,7 +34,7 @@ class Fetch
     return $stmt->fetchAll();
   }
 
-  public static function get2($table, $where_array) {
+  public static function get2($table, $where_array, $order_by="id") {
     global $pdo;
     $w = "";
     $args = [];
@@ -44,7 +44,7 @@ class Fetch
       if ($where !== $last) $w .= " AND ";
       $args[":{$where[0]}"] = $where[2];
     }
-    $sql = "SELECT * FROM {$table} WHERE {$w}";
+    $sql = "SELECT * FROM {$table} WHERE {$w} ORDER BY {$order_by}";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($args);
     return $stmt->fetchAll();

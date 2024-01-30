@@ -3,11 +3,16 @@
 class Allow
 {
   public static function survey($survey) {
-    return $survey["user_id"] = Auth::user()["id"];
+    return $survey["user_id"] === Auth::user()["id"];
+  }
+
+  public static function ending($ending) {
+    $survey = Fetch::find("surveys", $ending["survey_id"]);
+    return self::survey($survey);
   }
 
   public static function faq($faq) {
-    $survey = Fetch::find("surveys", $faq["id"]);
+    $survey = Fetch::find("surveys", $faq["survey_id"]);
     return self::survey($survey);
   }
 
@@ -21,8 +26,8 @@ class Allow
     return self::survey($survey);
   }
 
-  public static function reserves_areas($reserves_areas) {
-    $reserve = Fetch::find("reserves_areas", $reserves_areas["reserve_id"]);
+  public static function ra($ra) {
+    $reserve = Fetch::find("reserves", $ra["reserve_id"]);
     return self::reserve($reserve);
   }
 
@@ -31,8 +36,8 @@ class Allow
     return self::survey($survey);
   }
 
-  public static function favorites_areas($favorites_areas) {
-    $favorite = Fetch::find("favorites", $favorites_areas["favorite_id"]);
+  public static function fa($fa) {
+    $favorite = Fetch::find("favorites", $fa["favorite_id"]);
     return self::favorite($favorite);
   }
 

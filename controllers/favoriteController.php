@@ -1,6 +1,8 @@
 <?php 
 
 function storeFavorite() {
+  $survey = Fetch::find("surveys", $_POST["survey_id"]);
+  if (!Allow::survey($survey)) abort(403);
   if (strtotime($_POST["start"]) + 3600 > strtotime($_POST["end"])) {
     Session::set("toast", ["danger", "エラー！<br>開始・終了時間は".(MIN_INTERVAL / 3600)."時間以上の間隔をあけてください"]);
     redirect("/surveys/{$_POST["survey_id"]}#calendar");
@@ -18,13 +20,13 @@ function storeFavorite() {
 }
 
 function updateFavorite($vars) {
+  $id = $vars["id"];
+  $favorite = Fetch::find("favorites", $id);
+  if (!Allow::favorite($favorite)) abort(403);
   if (strtotime($_POST["start"]) + 3600 > strtotime($_POST["end"])) {
     Session::set("toast", ["danger", "エラー！<br>開始・終了時間は".(MIN_INTERVAL / 3600)."時間以上の間隔をあけてください"]);
     back();
   }
-  $id = $vars["id"];
-  $favorite = Fetch::find("favorites", $id);
-  $survey = Fetch::find("surveys", $favorite["survey_id"]);
   DB::update("favorites", $id, [
     "title" => $_POST["title"],
     "color" => $_POST["color"],
@@ -38,15 +40,16 @@ function updateFavorite($vars) {
 function deleteFavorite($vars) {
   $id = $vars["id"];
   $favorite = Fetch::find("favorites", $id);
-  $survey = Fetch::find("surveys", $favorite["survey_id"]);
+  if (!Allow::favorite($favorite)) abort(403);
   DB::delete("favorites", $id);
   Session::set("toast", ["info", "お気に入り登録を削除しました"]);
-  redirect("/surveys/{$survey["id"]}");
+  redirect("/surveys/{$favorite["survey_id"]}");
 }
 
 function storeFavoritesAreasByWord() {
-  $word = $_POST["word"];
-  $areas = Fetch::get2("areas", [["title", "LIKE", "%{$word}%"]]);
+  $favorite = Fetch::find("favorites", $_POST["favorite_id"]);
+  if (!Allow::favorite($favorite)) abort(403);
+  $areas = Fetch::get2("areas", [["title", "LIKE", "%{$_POST["word"]}%"]]);
   $count = 0;
   foreach ($areas as $area) {
     if (!Fetch::find2("favorites_areas", [
@@ -65,6 +68,8 @@ function storeFavoritesAreasByWord() {
 }
 
 function storeFavoritesAreas() {
+  $favorite = Fetch::find("favorites", $_POST["favorite_id"]);
+  if (!Allow::favorite($favorite)) abort(403);
   DB::insert("favorites_areas", [
     "favorite_id" => $_POST["favorite_id"],
     "area_id" => $_POST["area_id"]
@@ -76,8 +81,8 @@ function storeFavoritesAreas() {
 function deleteFavoritesAreas($vars) {
   $id = $vars["id"];
   $fa = Fetch::find("favorites_areas", $id);
-  $fa["favorite"] = Fetch::find("favorites", $fa["favorite_id"]);
+  if (!Allow::fa($fa)) abort(403);
   DB::delete("favorites_areas", $id);
   Session::set("toast", ["danger", "エリアを削除しました"]);
-  redirect("/favorites/{$fa["favorite"]["id"]}#area");
+  redirect("/favorites/{$fa["favorite_id"]}#area");
 }

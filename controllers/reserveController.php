@@ -1,6 +1,8 @@
 <?php 
 
 function storeReserve() {
+  $survey = Fetch::find("surveys", $_POST["survey_id"]);
+  if (!Allow::survey($survey)) abort(403);
   $start = $_POST["start"] ?? DEFAULT_START_TIME;
   $end = $_POST["end"] ?? DEFAULT_END_TIME;
   if (strtotime($start) + 3600 > strtotime($end)) {
@@ -35,13 +37,13 @@ function storeReserve() {
 }
 
 function updateReserve($vars) {
+  $id = $vars["id"];
+  $reserve = Fetch::find("reserves", $id);
+  if (!Allow::reserve($reserve)) abort(403);
   if (strtotime($_POST["start"]) + 3600 > strtotime($_POST["end"])) {
     Session::set("toast", ["danger", "エラー！<br>開始・終了時間は".(MIN_INTERVAL / 3600)."時間以上の間隔をあけてください"]);
     back();
   }
-  $id = $vars["id"];
-  $reserve = Fetch::find("reserves", $id);
-  $survey = Fetch::find("surveys", $reserve["survey_id"]);
   DB::update("reserves", $reserve["id"], [
     "start" => $_POST["start"],
     "end" => $_POST["end"]
@@ -53,13 +55,15 @@ function updateReserve($vars) {
 function deleteReserve($vars) {
   $id = $vars["id"];
   $reserve = Fetch::find("reserves", $id);
-  $survey = Fetch::find("surveys", $reserve["survey_id"]);
+  if (!Allow::reserve($reserve)) abort(403);
   DB::delete("reserves", $id);
   Session::set("toast", ["success", "予約を削除しました"]);
-  redirect("/surveys/{$survey["id"]}");
+  redirect("/surveys/{$reserve["survey_id"]}");
 }
 
 function storeReservesAreas() {
+  $reserve = Fetch::find("reserves", $_POST["reserve_id"]);
+  if (!Allow::reserve($reserve)) abort(403);
   DB::insert("reserves_areas", [
     "reserve_id" => $_POST["reserve_id"],
     "area_id" => $_POST["area_id"]
@@ -69,6 +73,8 @@ function storeReservesAreas() {
 }
 
 function storeReservesAreasByWord() {
+  $reserve = Fetch::find("reserves", $_POST["reserve_id"]);
+  if (!Allow::reserve($reserve)) abort(403);
   $word = $_POST["word"];
   $areas = Fetch::get2("areas", [["title", "LIKE", "%{$word}%"]]);
   $count = 0;
@@ -91,6 +97,7 @@ function storeReservesAreasByWord() {
 function deleteReservesAreas($vars) {
   $id = $vars["id"];
   $ra = Fetch::find("reserves_areas", $id);
+  if (!Allow::ra($ra)) abort(403);
   $ra["reserve"] = Fetch::find("reserves", $ra["reserve_id"]);
   DB::delete("reserves_areas", $id);
   Session::set("toast", ["danger", "エリアを削除しました"]);

@@ -72,6 +72,9 @@ function abort($code) {
     case 403:
       header("HTTP/1.1 403 Forbidden");
       exit;
+    case 500:
+      header("HTTP/1.1 500 Internal server error");
+      exit;
   }
 }
 
