@@ -18,10 +18,12 @@ function updateOption($vars) {
   $id = $vars["id"];
   $option = Fetch::find("options", $id);
   if (!Allow::option($option)) abort(403);
+  $next_type = substr($_POST["next"], 0, 1);
+  $next_id = substr($_POST["next"], 1);
   DB::update("options", $id, [
     "title" => $_POST["title"],
-    "is_last" => !$_POST["next_faq_id"] ? 1 : 0,
-    "next_faq_id" => $_POST["next_faq_id"] ? $_POST["next_faq_id"] : null
+    "next_ending_id" => $next_type == "e" ? $next_id : null,
+    "next_faq_id" => $next_type == "f" ? $next_id : null
   ]);
   Session::set("toast", ["success", "選択肢の設定を変更しました"]);
   back();

@@ -22,14 +22,16 @@
       </div>
       <div class="mb-3">
         <label class="form-label">NEXT</label>
-        <select class="form-select" name="next_faq_id" required>
+        <select class="form-select" name="next" required>
           <?php foreach ($survey["faqs"] as $faq): ?>
-            <option value="<?= $faq["id"] ?>" <?= $option["next_faq_id"] === $faq["id"] ? "selected" : ""; ?>>
+            <option value="f<?= $faq["id"] ?>" <?= $option["next_faq_id"] === $faq["id"] ? "selected" : ""; ?>>
               <?= $faq["title"] ?><?= $faq["id"] === $option["faq_id"] ? "（聞き直し）": ""; ?>
             </option>
           <?php endforeach; ?>
-          <?php foreach (Fetch::find2("endings", [["survey_id", "=", $survey["id"]]]) as $ending): ?>
-            <option value=""></option>
+          <?php foreach (Fetch::get("endings", $survey["id"], "survey_id") as $ending): ?>
+            <option value="e<?= $ending["id"] ?>" <?= $option["next_ending_id"] === $ending["id"] ? "selected" : ""; ?>>
+              <?= $ending["title"] ?>
+            </option>
           <?php endforeach; ?>
         </select>
         <div id="passwordHelpBlock" class="form-text">
@@ -42,10 +44,6 @@
         <div id="passwordHelpBlock" class="form-text">
           ダイヤル番号は質問ページの選択肢一覧から変更できます
         </div>
-      </div>
-      <div class="form-check form-switch mb-3">
-        <input class="form-check-input" type="checkbox" role="switch" checked>
-        <label class="form-check-label">採用フラグ</label>
       </div>
       <div class="text-end">
         <button type="submit" class="btn btn-dark">更新</button>

@@ -10,7 +10,9 @@
 <div class="flex-container">
 <header class="border-end border-2 text-bg-white">
 	<div class="sticky-top container vh-100 p-3 d-flex flex-column">
-		<h1 class="fs-3 fw-bold mb-0"><?= PAGE_TITLE ?></h1>
+		<h1 class="fs-3 fw-bold mb-0">
+			<a href="/home" class="text-black" style="text-decoration: none;"><?= PAGE_TITLE ?></a>
+		</h1>
 		<hr>
 		<nav id="navbar-example2" class="mb-auto">
 			<ul class="nav nav-pills flex-column">

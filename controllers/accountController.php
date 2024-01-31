@@ -27,7 +27,8 @@ function updatePassword() {
 function storeSendEmail() {
   DB::insert("send_emails", [
     "user_id" => Auth::user()["id"],
-    "email" => $_POST["email"]
+    "email" => $_POST["email"],
+    "enabled" => "1"
   ]);
   Session::set("toast", ["success", "送信先メールアドレスを追加しました"]);
   back();
@@ -38,9 +39,10 @@ function updateSendEmail($vars) {
   $sendEmail = Fetch::find("send_emails", $id);
   if (!Allow::sendEmail($sendEmail)) abort(403);
   DB::update("send_emails", $id, [
-    "email" => $_POST["email"]
+    "email" => $_POST["email"],
+    "enabled" => $_POST["enabled"]
   ]);
-  Session::set("toast", ["success", "送信先メールアドレスを変更しました"]);
+  Session::set("toast", ["success", "送信先メールアドレスを変更しました{$_POST["enabled"]}"]);
   back();
 }
 

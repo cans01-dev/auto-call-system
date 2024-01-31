@@ -27,3 +27,6 @@ define("RESERVATION_STATUS", [
   4 => ["text" => "集計済", "bg" => "dark"],
   9 => ["text" => "お気に入り", "bg" => "black"]
 ]);
+
+# 予約パターン作成時のカラーパレット
+define("COLOR_PALLET", ["#DCF2F1", "#7FC7D9", "#365486", "#0F1035"]);

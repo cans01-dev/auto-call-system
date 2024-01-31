@@ -20,7 +20,8 @@
         <input type="email" name="email" class="form-control" value="<?= $sendEmail["email"] ?>">
       </div>
       <div class="form-check form-switch mb-3">
-        <input class="form-check-input" type="checkbox" role="switch" checked>
+        <label class="form-label">無効 / 有効</label>
+        <input class="form-check-input" type="checkbox" value="1" name="enabled" <?= $sendEmail["enabled"] ? "checked" : ""; ?>>
       </div>
       <div class="text-end">
         <button type="submit" class="btn btn-dark">更新</button>

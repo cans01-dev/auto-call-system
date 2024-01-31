@@ -62,8 +62,8 @@
             <?php else: ?>
               <span class="badge bg-info-subtle text-black">聞き直し</span>
             <?php endif; ?>
-          <?php else: ?>
-            <span class="badge bg-dark-subtle text-black">終了</span>
+          <?php elseif ($option["next_ending"] = Fetch::find2("endings", [["id", "=", $option["next_ending_id"]]])): ?>
+            <span class="badge bg-dark-subtle text-black"><?= $option["next_ending"]["title"] ?></span>
           <?php endif; ?>
         </td>
         <td>

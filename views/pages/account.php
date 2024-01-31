@@ -36,7 +36,12 @@
     <?php foreach ($sendEmails as $sendEmail): ?>
       <div class="card mb-2">
         <div class="card-body">
-          <span class="fw-bold me-2"><?= $sendEmail["email"] ?></span><span class="badge text-bg-dark">有効</span>
+          <span class="fw-bold me-2"><?= $sendEmail["email"] ?></span>
+          <?php if ($sendEmail["enabled"]): ?>
+            <span class="badge text-bg-dark">有効</span>
+          <?php else: ?>
+            <span class="badge text-bg-secondary">無効</span>
+          <?php endif; ?>
           <div class="position-absolute top-0 end-0 p-3">
             <a href="/send-emails/<?= $sendEmail["id"] ?>" class="card-link">編集</a>
           </div>

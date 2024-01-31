@@ -14,6 +14,7 @@ CREATE TABLE send_emails (
   id int(11) NOT NULL AUTO_INCREMENT,
   user_id int(11) NOT NULL,
   email varchar(255) NOT NULL,
+  enabled boolean NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -55,10 +56,12 @@ CREATE TABLE options (
   faq_id int(11) NOT NULL,
   title varchar(255) NOT NULL,
   dial int(11) NOT NULL,
-  is_last boolean NOT NULL,
+  next_ending_id int(11),
   next_faq_id int(11),
   PRIMARY KEY (id),
-  FOREIGN KEY (faq_id) REFERENCES faqs (id) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (faq_id) REFERENCES faqs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (next_faq_id) REFERENCES faqs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (next_ending_id) REFERENCES endings (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE reserves (
@@ -154,10 +157,10 @@ INSERT INTO faqs (survey_id, title, text, order_num) VALUES
 (2, '質問ああ', 'あ', 0),
 (2, '質問いい', 'あああ', 1);
 
-INSERT INTO options (faq_id, title, is_last, next_faq_id, dial) VALUES
-(1, 'あああ選択肢a', 0, 2, 0),
-(1, 'いい選択肢e', 0, 2, 2),
-(1, 'たたた', 0, NULL, 1);
+INSERT INTO options (faq_id, title, next_ending_id, next_faq_id, dial) VALUES
+(1, 'あああ選択肢a', NULL, 2, 0),
+(1, 'いい選択肢e', NULL, 2, 2),
+(1, 'たたた', 1, NULL, 1);
 
 INSERT INTO send_emails (user_id, email) VALUES
 (1, 'test2@example.com');

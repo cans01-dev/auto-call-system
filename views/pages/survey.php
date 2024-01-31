@@ -83,9 +83,9 @@
                           <?php else: ?>
                             <span class="badge bg-info-subtle text-black">聞き直し</span>
                           <?php endif; ?>
-                        <?php else: ?>
-                        <span class="badge bg-dark-subtle text-black">終了</span>
-                        <?php endif; ?>
+                          <?php elseif ($option["next_ending"] = Fetch::find2("endings", [["id", "=", $option["next_ending_id"]]])): ?>
+                            <span class="badge bg-dark-subtle text-black"><?= $option["next_ending"]["title"] ?></span>
+                          <?php endif; ?>
                       </td>
                     </tr>
                     <?php endforeach; ?>
@@ -258,10 +258,6 @@
             <label class="form-label">アンケートの説明（任意）</label>
             <textarea class="form-control" name="note" rows="3"><?= $survey["note"] ?></textarea>
           </div>
-          <div class="form-check form-switch mb-3">
-            <input class="form-check-input" type="checkbox" role="switch" checked>
-            <label class="form-check-label">採用フラグ</label>
-          </div>
           <div class="text-end">
             <button type="submit" class="btn btn-dark">更新</button>
           </div>
@@ -278,7 +274,7 @@
           <div class="card mb-2">
             <div class="card-body">
               <h5 class="card-title">
-                <span class="badge me-2 p-2" style="background-color: <?= $favorite["color"] ?>;"> </span>  
+                <div class="badge" style="background-color: <?= $favorite["color"] ?>;">　</div>
                 <?= $favorite["title"] ?>
               </h5>
               <table class="table table-sm mb-0">
@@ -435,7 +431,16 @@
           </div>
           <div class="mb-3">
             <label class="form-label">ラベルカラーを選択</label>
-            <input type="color" name="color" class="form-control form-control-color" value="#563d7c" title="Choose your color">
+            <div class="d-flex gap-4">
+              <?php foreach (COLOR_PALLET as $color): ?>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="color" value="<?= $color ?>" id="i<?= $color ?>">
+                <label class="form-check-label" for="i<?= $color ?>">
+                  <div class="badge border border-dark" style="background-color: <?= $color ?>;">　</div>
+                </label>
+              </div>
+              <?php endforeach; ?>
+            </div>
           </div>
           <div class="mb-3">
             <label class="form-label">開始時間・終了時間</label>
