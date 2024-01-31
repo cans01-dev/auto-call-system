@@ -24,6 +24,7 @@ CREATE TABLE surveys (
   title varchar(255) NOT NULL,
   note text(65535),
   greeting text(65535),
+  greeting_voice_file varchar(255),
   PRIMARY KEY (id),
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -33,6 +34,7 @@ CREATE TABLE endings (
   survey_id int(11) NOT NULL,
   title varchar(255) NOT NULL,
   text text(65535),
+  voice_file varchar(255),
   PRIMARY KEY (id),
   FOREIGN KEY (survey_id) REFERENCES surveys (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -43,6 +45,7 @@ CREATE TABLE faqs (
   title varchar(255) NOT NULL,
   text text(65535),
   order_num int(11) NOT NULL,
+  voice_file varchar(255),
   PRIMARY KEY (id),
   FOREIGN KEY (survey_id) REFERENCES surveys (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -65,6 +68,8 @@ CREATE TABLE reserves (
   start time NOT NULL,
   end time NOT NULL,
   status int(11) NOT NULL,
+  reserve_file varchar(255),
+  result_file varchar(255),
   PRIMARY KEY (id),
   FOREIGN KEY (survey_id) REFERENCES surveys (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -116,12 +121,22 @@ CREATE TABLE stations (
 CREATE TABLE calls (
   id int(11) NOT NULL AUTO_INCREMENT,
   reserve_id int(11) NOT NULL,
-  title varchar(255) NOT NULL,
-  prefix varchar(255) NOT NULL,
+  duration int(11) NOT NULL,
+  time time NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (reserve_id) REFERENCES reserves (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE answers (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  call_id int(11) NOT NULL,
+  faq_id int(11) NOT NULL,
+  option_id int(11) NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (call_id) REFERENCES calls (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (faq_id) REFERENCES faqs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (option_id) REFERENCES options (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 INSERT INTO users (email, password) VALUES
 ('test@example.com', '$2y$10$smM.1r.LkbkvktimMdr14ufFph9Wb97w2t5/wZVuXCeW0z3MLi8iW'),

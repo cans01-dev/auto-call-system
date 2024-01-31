@@ -66,24 +66,23 @@ foreach ($reserves as $reserve) {
   $stations_max = count($stations) - 1;
   while (count($numbers_array) < $numbers_length) {
     $station = $stations[rand(0, $stations_max)];
-    // Fetch::find("surveys", 1);
-
     $prefix = $station["prefix"];
     $n5 = rand(0, 9);
     $n6789 = sprintf('%04d', rand(0, 9999));
 
     $number = "{$prefix}{$n5}-{$n6789}";
-    $numbers_array[] = $number;
 
-    // echo "{$number} ({$station["title"]} - {$station["prefix"]})" . PHP_EOL;
+    // 重複チェック
+
+    $numbers_array[] = $number;
   }
   $array["numbers"] = $numbers_array;
 
   $array_json = json_encode($array, JSON_PRETTY_PRINT);
-  file_put_contents("outputs/ac{$reserve["id"]}.json", $array_json);
-}
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+  $file_path = "outputs/ac{$reserve["id"]}.json";
+  file_put_contents($file_path, $array_json);
+
   $curl_file = new CURLFile($_FILES['file']["tmp_name"], $_FILES['file']["type"], $_FILES['file']["name"]);
 
   $ch = curl_init();
@@ -107,12 +106,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   exit();
 }
 
-?>
 
-<form enctype="multipart/form-data" method="post">
-  <input type="file" name="file">
-  <button type="submit">送信</button>
-</form>
+?>
 
 <form>
   <input type="date" name="date">

@@ -2,6 +2,7 @@
 
 require "./vendor/autoload.php";
 use FastRoute\Dispatcher;
+use Dotenv\Dotenv;
 
 require "./models/Fetch.php";
 require "./models/DB.php";
@@ -24,6 +25,8 @@ require "./config.php";
 require "./router.php";
 require "./functions.php";
 
+Dotenv::createImmutable(__DIR__)->load();
+
 date_default_timezone_set("Asia/Tokyo");
 
 session_start();
@@ -31,9 +34,9 @@ session_start();
 # DB接続
 try {
 	$pdo = new PDO(
-		DB_PREFIX."dbname=".DB_NAME.";host=".DB_HOST,
-		DB_USERNAME,
-		DB_PASSWORD
+		$_ENV["DB_PREFIX"]."dbname=".$_ENV["DB_NAME"].";host=".$_ENV["DB_HOST"],
+		$_ENV["DB_USERNAME"],
+		$_ENV["DB_PASSWORD"]
 	);
 } catch (PDOException $e) {
 	exit($e->getMessage());
