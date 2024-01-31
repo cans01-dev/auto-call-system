@@ -6,11 +6,16 @@
   "end": "21:00",
   "greeting": "greeting223.wav",
   "ending": "ending223.wav",
-  "faqs(script)": [
+  "faqs": [
     {
       "label": "stage1",
+      "faq_id": "1",
       "voice": "voice3121.wav",
-      "options": {"0": "ending", "1": "stage2", "2": "stage3"}
+      "options": {
+        "0": "ending",
+        "1": "stage2",
+        "2": "stage3"
+      }
     },
     {
       "label": "stage2",

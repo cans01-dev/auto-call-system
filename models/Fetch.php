@@ -6,7 +6,7 @@ class Fetch
     global $pdo;
     $stmt = $pdo->prepare("SELECT * FROM {$table} WHERE {$where_key} = :value");
     $stmt->execute([":value" => $where_value]);
-    return $stmt->fetch();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
   public static function find2($table, $where_array) {
@@ -22,7 +22,7 @@ class Fetch
     $sql = "SELECT * FROM {$table} WHERE {$w}";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($args);
-    return $stmt->fetch();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
   public static function get($table, $where_value, $where_key, $order_by="id", $operator="=") {
@@ -31,7 +31,7 @@ class Fetch
     $stmt->execute([
       ":value" => $where_value
     ]);
-    return $stmt->fetchAll();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
   public static function get2($table, $where_array, $order_by="id") {
@@ -47,14 +47,14 @@ class Fetch
     $sql = "SELECT * FROM {$table} WHERE {$w} ORDER BY {$order_by}";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($args);
-    return $stmt->fetchAll();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
   public static function all($table) {
     global $pdo;
     $stmt = $pdo->prepare("SELECT * FROM {$table}");
     $stmt->execute();
-    return $stmt->fetchAll();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
   public static function reservesBySurveyIdAndYearMonth($survey_id, $month, $year) {
@@ -65,7 +65,7 @@ class Fetch
       ":month" => $month,
       ":year" => $year
     ]);
-    return $stmt->fetchAll();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
   public static function areasByReserveId($reserve_id) {
@@ -75,7 +75,7 @@ class Fetch
     $stmt->execute([
       ":reserve_id" => $reserve_id
     ]);
-    return $stmt->fetchAll();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
   public static function areasByFavoriteId($favorite_id) {
@@ -85,7 +85,7 @@ class Fetch
     $stmt->execute([
       ":favorite_id" => $favorite_id
     ]);
-    return $stmt->fetchAll();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 }
 

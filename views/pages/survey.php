@@ -51,7 +51,9 @@
     <?= Components::hr() ?>
     <section id="faqs">
       <?= Components::h3("質問一覧") ?>
-      <div class="form-text mb-2">質問の並び替えは動作には影響しません</div>
+      <div class="form-text mb-2">
+        一番上に配置された質問が最初の質問（グリーティングの後に再生される質問）となります
+      </div>
       <div>
         <?php foreach ($survey["faqs"] as $faq): ?>
           <div class="card mb-2">

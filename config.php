@@ -12,20 +12,20 @@ define("PAGE_TITLE", "AutoCallシステム");
 # 予約の締め切り
 define("RESERVATION_DEADLINE_HOUR", 9);
 
-# 開始・終了時間の初期値
-define("DEFAULT_START_TIME", "17:00");
-define("DEFAULT_END_TIME", "21:00");
-
-# 開始・終了時間の指定のステップ
+# 開始・終了時間の指定のステップ（秒）
 define("TIME_STEP", 900);
 
-# 開始・終了時間の最小の間隔
+# 開始・終了時間の最小の間隔（秒）
 define("MIN_INTERVAL", 3600);
 
 # 開始・終了時間の制限
 define("MIN_TIME", 60*60*9);
 define("MAX_TIME", 60*60*21);
 
+# あらかじめ生成しておく電話番号の数（一時間あたり）
+define("NUMBERS_PER_HOUR", 10000);
+
+# ステータスコードごとのテキストとカラーの指定
 define("RESERVATION_STATUS", [
   0 => ["text" => "予約済", "bg" => "primary"],
   1 => ["text" => "確定済", "bg" => "info"],

@@ -1,14 +1,30 @@
 {
   "ac_id": 223,
   "user_id": 1,
-  "results": [
+  "calls": [
     {
       "number": "080-1234-5678",
       "status": 1,
       "last_label": "stage3",
       "call_time": "18:12:25",
       "keep_time": "00:01:23",
-      "results": {"stage1": "1", "stage2": "0", "stage3": "2"}
+      "answers": [
+        {
+          "label": "stage1",
+          "faq_id": "1",
+          "dial": "1"
+        },
+        {
+          "label": "stage2",
+          "faq_id": "2",
+          "dial": "2"
+        },
+        {
+          "label": "stage1",
+          "faq_id": "4",
+          "dial": "4"
+        }
+      ]
     },
     {
       "number": "080-1234-5678",
@@ -16,7 +32,7 @@
       "last_label": "stage3",
       "call_time": "18:12:25",
       "keep_time": "00:01:23",
-      "results": {"stage1": "1", "stage2": "0", "stage3": "2"}
+      "answers": {"stage1": "1", "stage2": "0", "stage3": "2"}
     },
     {
       "number": "080-1234-5678",
@@ -24,7 +40,7 @@
       "last_label": "stage3",
       "call_time": "18:12:25",
       "keep_time": "00:01:23",
-      "results": {"stage1": "1", "stage2": "0", "stage3": "2"}
+      "answers": {"stage1": "1", "stage2": "0", "stage3": "2"}
     }
   ]
 }

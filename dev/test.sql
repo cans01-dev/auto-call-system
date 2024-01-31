@@ -113,6 +113,15 @@ CREATE TABLE stations (
   FOREIGN KEY (area_id) REFERENCES areas (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE calls (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  reserve_id int(11) NOT NULL,
+  title varchar(255) NOT NULL,
+  prefix varchar(255) NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (reserve_id) REFERENCES reserves (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 
 INSERT INTO users (email, password) VALUES
 ('test@example.com', '$2y$10$smM.1r.LkbkvktimMdr14ufFph9Wb97w2t5/wZVuXCeW0z3MLi8iW'),
