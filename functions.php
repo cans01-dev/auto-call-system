@@ -20,6 +20,11 @@ function make_times($min=0, $max=86400, $step=60) {
   }
   return $array;
 }
+function hour_to_sec(string $str): int
+{
+  $t = explode(":", $str);
+  return ($t[0] * 60 * 60) + ($t[1] * 60) + $t[2];
+}
 /**
  * ーーここまでーー
  */

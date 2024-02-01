@@ -7,7 +7,8 @@ function storeOption() {
   DB::insert("options", [
     "faq_id" => $faq["id"],
     "title" => $_POST["title"],
-    "dial" => count($options) ? max(array_column($options, "dial")) + 1 : 0
+    "dial" => count($options) ? max(array_column($options, "dial")) + 1 : 0,
+    "next_faq_id" => $faq["id"]
   ]);
   $id = DB::lastInsertId();
   Session::set("toast", ["success", "選択肢を新規作成しました"]);
@@ -57,6 +58,17 @@ function deleteOption($vars) {
   $option = Fetch::find("options", $id);
   if (!Allow::option($option)) abort(403);
   DB::delete("options", $id);
+
+  $target_options = Fetch::get2("options", [
+    ["faq_id", "=", $option["faq_id"]],
+    ["dial", ">", $option["dial"]]
+  ]);
+  foreach ($target_options as $to) {
+    DB::update("options", $to["id"], [
+      "dial" => $to["dial"] - 1
+    ]);
+  }
+
   Session::set("toast", ["info", "選択肢を削除しました"]);
   redirect("/faqs/{$option["faq_id"]}");
 }

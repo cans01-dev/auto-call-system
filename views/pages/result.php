@@ -31,14 +31,40 @@
   </section>
   <section id="file">
     <?= Components::h3("ファイル"); ?>
-    <div class="form-text mb-1">
-      結果ファイルをダウンロードすることができます
+    <div class="mb-4">
+      <div class="mb-2">予約情報ファイル</div>
+      <?php if ($reserve["reserve_file"]): ?>
+        <a class="btn btn-primary" href="/dev/<?= $reserve["reserve_file"] ?>" download>
+          <span class="me-1">
+            <i class="fa-solid fa-download fa-lg"></i>
+          </span>ダウンロード
+        </a>
+      <?php else: ?>
+        <button class="btn btn-primary" disabled>
+          <span class="me-1">
+            <i class="fa-solid fa-download fa-lg"></i>
+          </span>ダウンロード
+        </button>
+      <?php endif; ?>
+      <div class="form-text">確定済になるとダウンロードが可能になります</div>
     </div>
-    <a class="btn btn-primary" href="/dev/sample.txt" download>
-      <span class="me-1">
-        <i class="fa-solid fa-download fa-lg"></i>
-      </span>ダウンロード
-    </a>
+    <div>
+      <div class="mb-2">結果ファイル</div>
+      <?php if ($reserve["result_file"]): ?>
+        <a class="btn btn-primary" href="dev/<?= $reserve["result_file"] ?>" download>
+          <span class="me-1">
+            <i class="fa-solid fa-download fa-lg"></i>
+          </span>ダウンロード
+        </a>
+      <?php else: ?>
+        <button class="btn btn-primary" disabled>
+          <span class="me-1">
+            <i class="fa-solid fa-download fa-lg"></i>
+          </span>ダウンロード
+        </button>
+      <?php endif; ?>
+      <div class="form-text">集計済になるとダウンロードが可能になります</div>
+    </div>
   </section>
 </div>
 

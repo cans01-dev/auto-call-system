@@ -9,9 +9,15 @@ function storeFaq() {
     "title" => $_POST["title"],
     "order_num" => count($faqs) ? max(array_column($faqs, "order_num")) + 1 : 0
   ]);
-  $id = DB::lastInsertId();
+  $faq_id = DB::lastInsertId();
+  DB::insert("options", [
+    "faq_id" => $faq_id,
+    "title" => "聞き直し",
+    "dial" => 0,
+    "next_faq_id" => $faq_id
+  ]);
   Session::set("toast", ["success", "質問を新規作成しました"]);
-  redirect("/faqs/{$id}");
+  redirect("/faqs/{$faq_id}");
 }
 
 function updatefaq($vars) {

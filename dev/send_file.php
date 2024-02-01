@@ -2,6 +2,26 @@
 
 require "../config.php";
 require "../models/Fetch.php";
+require "../models/DB.php";
+
+function send_file($file_path, $url, $header) {
+  $curl_file = new CURLFile($file_path);
+
+  $ch = curl_init();
+  curl_setopt_array($ch, [
+    CURLOPT_URL => $url,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_HTTPHEADER => $header,
+    CURLOPT_POST => true,
+    CURLOPT_POSTFIELDS => [
+      'file' => $curl_file
+    ],
+  ]);
+  $response = curl_exec($ch);
+  curl_close($ch);
+
+  return $response;
+}
 
 try {
 	$pdo = new PDO(
@@ -20,51 +40,63 @@ $reserves = Fetch::get2("reserves", [
 foreach ($reserves as $reserve) {
   $survey = Fetch::find("surveys", $reserve["survey_id"]);
   $faqs = Fetch::get("faqs", $survey["id"], "survey_id");
+  $endings = Fetch::get("endings", $survey["id"], "survey_id");
   $areas = Fetch::areasByReserveId($reserve["id"]);
 
-  $array = [
-    "ac_id" => $reserve["id"],
-    "user_id" => $survey["user_id"],
-    "date" => $reserve["date"],
-    "start" => substr($reserve["start"], 0, -3),
-    "end" => substr($reserve["end"], 0, -3),
-    // greeting
-    // ending
-  ];
-
-  # faqs
-  $faqs_array = [];
-  foreach ($faqs as $i => $faq) {
-    $f = [
-      "label" => "stage{$i}",
-      // voice
-    ];
-      
-    $options = Fetch::get("options", $faq["id"], "faq_id");
-    $options_array = [];
-    foreach($options as $i => $option) {
-      $options_array["{$option["dial"]}"] = "aaa";
-    }
-    $f["options"] = $options_array;
-    $faqs_array[] = $f;
-  }
-  $array["faqs"] = $faqs_array;
-
-  # numbers
-  $numbers_array = [];
-  $numbers_length = round((strtotime($reserve["end"]) - strtotime($reserve["start"])) / 3600 * NUMBERS_PER_HOUR);
-
-  echo $reserve["id"] . "<br>";
   $stations = [];
   foreach ($areas as $area) {
-    echo $area["title"] . "<br>";
     foreach (Fetch::get("stations", $area["id"], "area_id") as $station) {
       $stations[] = $station;
     }
   }
 
+  $r = [
+    "ac_id" => $reserve["id"],
+    "user_id" => $survey["user_id"],
+    "date" => $reserve["date"],
+    "start" => substr($reserve["start"], 0, -3),
+    "end" => substr($reserve["end"], 0, -3),
+    "faqs" => [],
+    "endings" => [],
+    "numbers" => [],
+    // greeting
+  ];
+
+  # faqs
+  $faqs_array = [];
+  foreach ($faqs as $faq) {
+    $f = [
+      "label" => "stage" . $faq["order_num"] + 1,
+      "faq_id" => "{$faq["id"]}",
+      "options" => []
+      // voice
+    ];
+      
+    $options = Fetch::get("options", $faq["id"], "faq_id");
+    foreach($options as $option) {
+      $next_type = $option["next_ending_id"] ? "ending" : "faq";
+      $next_id = $next_type === "ending" ? $option["next_ending_id"] : $option["next_faq_id"];
+
+      $f["options"]["{$option["dial"]}"] = "{$next_type}{$next_id}";
+    }
+    $r["faqs"][] = $f;
+  }
+
+  # endings
+  foreach ($endings as $i => $ending) {
+    $e = [
+      "label" => "ending" . $i + 1,
+      "ending_id" => "{$ending["id"]}"
+      // voice
+    ];
+    $r["endings"][] = $e;
+  }
+
+  # numbers
+  $numbers_length = round((strtotime($reserve["end"]) - strtotime($reserve["start"])) / 3600 * NUMBERS_PER_HOUR);
   $stations_max = count($stations) - 1;
-  while (count($numbers_array) < $numbers_length) {
+
+  while (count($r["numbers"]) < $numbers_length) {
     $station = $stations[rand(0, $stations_max)];
     $prefix = $station["prefix"];
     $n5 = rand(0, 9);
@@ -74,36 +106,22 @@ foreach ($reserves as $reserve) {
 
     // 重複チェック
 
-    $numbers_array[] = $number;
+    $r["numbers"][] = $number;
   }
-  $array["numbers"] = $numbers_array;
 
-  $array_json = json_encode($array, JSON_PRETTY_PRINT);
+  print_r($r);
+  $array_json = json_encode($r, JSON_PRETTY_PRINT);
+  $file_path = "/storage/outputs/ac{$reserve["id"]}_{$reserve["date"]}.json";
+  file_put_contents(dirname(__DIR__).$file_path, $array_json);
 
-  $file_path = "outputs/ac{$reserve["id"]}.json";
-  file_put_contents($file_path, $array_json);
-
-  $curl_file = new CURLFile($_FILES['file']["tmp_name"], $_FILES['file']["type"], $_FILES['file']["name"]);
-
-  $ch = curl_init();
-  
-  curl_setopt_array($ch, [
-    CURLOPT_URL => "http://localhost:8080/dev/receive_file.php",
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_HTTPHEADER => [
-      "Authorization: Basic YWRtaW46dGVzdA=="
-    ],
-    CURLOPT_POST => true,
-    CURLOPT_POSTFIELDS => [
-      'file' => $curl_file
-    ],
+  echo send_file(dirname(__DIR__).$file_path, SEND_FILE_URL, [
+    "Authorization: " . SEND_FILE_AUTHORIZATION
   ]);
-  
-  echo curl_exec($ch);
-  
-  curl_close($ch);
 
-  exit();
+  DB::update("reserves", $reserve["id"], [
+    "status" => "1",
+    "reserve_file" => $file_path
+  ]);
 }
 
 

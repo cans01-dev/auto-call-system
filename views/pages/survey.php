@@ -58,7 +58,9 @@
         <?php foreach ($survey["faqs"] as $faq): ?>
           <div class="card mb-2">
             <div class="card-body">
-              <h5 class="card-title mb-3"><span class="badge bg-primary-subtle text-black me-2">質問</span><?= $faq["title"] ?></h5>
+              <h5 class="card-title mb-3">
+                <span class="badge bg-primary-subtle text-black me-2">質問</span><?= $faq["title"] ?>
+              </h5>
               <p class="card-text"><?= $faq["text"] ?></p>
               <?php if ($faq["options"] = Fetch::get2("options", [["faq_id", "=", $faq["id"]]], "dial")): ?>
                 <table class="table table-sm mb-0">
@@ -93,6 +95,9 @@
                 </table>
               <?php endif; ?>
               <div class="position-absolute top-0 end-0 p-3">
+                <?php if (!$faq["order_num"]): ?>
+                  <span class="badge bg-info me-2">最初の質問</span>
+                <?php endif; ?>
                 <form action="/faqs/<?= $faq["id"] ?>/order" id="upFaq<?= $faq["id"] ?>" method="post" hidden>
                   <?= csrf() ?>
                   <input type="hidden" name="to" value="up">
@@ -101,7 +106,7 @@
                   <?= csrf() ?>
                   <input type="hidden" name="to" value="down">
                 </form>
-                <div class="btn-group me-3" role="group" aria-label="Basic outlined example">
+                <div class="btn-group me-2" role="group" aria-label="Basic outlined example">
                   <button
                   type="submit"
                   class="btn btn-outline-primary" <?= !$faq["order_num"] ? "disabled" : ""; ?>
@@ -135,16 +140,16 @@
       <div class="text-center mb-4">
         <div class="btn-group">
           <a
-          href="/surveys/<?= $survey["id"] ?>?month=<?= date("m", $prev) ?>&year=<?= date("Y", $prev) ?>#calendar"
+          href="/surveys/<?= $survey["id"] ?>?month=<?= date("m", $calendar->getPrev()) ?>&year=<?= date("Y", $calendar->getPrev()) ?>#calendar"
           class="btn btn-outline-dark px-3"
           >
             <i class="fa-solid fa-angle-left fa-xl"></i>
           </a>
           <a href="#" class="btn btn-outline-dark px-5 active">
-            <span class="fw-bold"><?= date("Y", $current) ?>年 <?= date("n", $current) ?>月</span>
+            <span class="fw-bold"><?= date("Y", $calendar->getCurrent()) ?>年 <?= date("n", $calendar->getCurrent()) ?>月</span>
           </a>
           <a
-          href="/surveys/<?= $survey["id"] ?>?month=<?= date("m", $next) ?>&year=<?= date("Y", $next) ?>#calendar"
+          href="/surveys/<?= $survey["id"] ?>?month=<?= date("m", $calendar->getNext()) ?>&year=<?= date("Y", $calendar->getNext()) ?>#calendar"
           class="btn btn-outline-dark px-3"
           >
             <i class="fa-solid fa-angle-right fa-xl"></i>
@@ -227,18 +232,18 @@
           </tr>
         </thead>
         <tbody>
-          <?php for ($i = 0; $i < 3; $i++): ?>
+          <?php foreach ($areas as $area): ?>
           <tr>
             <th scope="row">関東・甲信越</th>
             <td>
               <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="44" aria-valuemin="0" aria-valuemax="100">
                 <div class="progress-bar" style="width: 44%">44%</div>
               </div>
-              <span>(2234 / 50000)</span>
+              <span>(2234 / <?= $area["all_numbers"] ?>)</span>
             </td>
             <td>36%</td>
           </tr>
-          <?php endfor; ?>
+          <?php endforeach; ?>
         </tbody>
       </table>
     </section>
@@ -534,6 +539,13 @@ EOM); ?>
       </div>
       <div class="text-end">
         <button type="submit" class="btn btn-primary">更新</button>
+      </div>
+    </form>
+    <form action="/endings/{$ending["id"]}" method="post"  onsubmit="return window.confirm('本当に削除しますか？')">
+      CSRF
+      METHOD_DELETE
+      <div class="text-end">
+        <button type="submit" class="btn btn-link">このエンディングを削除</button>
       </div>
     </form>
   EOM) ?>

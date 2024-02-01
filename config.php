@@ -1,6 +1,18 @@
 <?php 
 
+define("DB_PREFIX", "mysql:");
+define("DB_NAME", "auto_call_system");
+define("DB_HOST", "localhost");
+define("DB_USERNAME", "root");
+define("DB_PASSWORD", "");
+
 define("PAGE_TITLE", "AutoCallシステム");
+
+# 予約情報ファイルの送信先URL
+define("SEND_FILE_URL", "http://localhost:8080/dev/receive_file.php");
+
+# 予約情報ファイル送信のBasic認証情報
+define("SEND_FILE_AUTHORIZATION", "Basic YWRtaW46dGVzdA==");
 
 # 予約の締め切り
 define("RESERVATION_DEADLINE_HOUR", 9);
@@ -16,7 +28,7 @@ define("MIN_TIME", 60*60*9);
 define("MAX_TIME", 60*60*21);
 
 # あらかじめ生成しておく電話番号の数（一時間あたり）
-define("NUMBERS_PER_HOUR", 10000);
+define("NUMBERS_PER_HOUR", 100);
 
 # ステータスコードごとのテキストとカラーの指定
 define("RESERVATION_STATUS", [
@@ -30,3 +42,4 @@ define("RESERVATION_STATUS", [
 
 # 予約パターン作成時のカラーパレット
 define("COLOR_PALLET", ["#DCF2F1", "#7FC7D9", "#365486", "#0F1035"]);
+

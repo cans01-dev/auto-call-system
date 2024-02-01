@@ -51,6 +51,7 @@ class Components
   public static function modal($id, $title, $children) {
     $children = str_replace("CSRF", csrf(), $children);
     $children = str_replace("METHOD_PUT", method("PUT"), $children);
+    $children = str_replace("METHOD_DELETE", method("DELETE"), $children);
     return <<<EOM
       <!-- {$id} -->
       <div class="modal fade" id="{$id}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">

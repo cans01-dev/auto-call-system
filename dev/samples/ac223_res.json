@@ -12,7 +12,18 @@
         {
           "label": "stage1",
           "faq_id": "1",
-          "dial": "1"
+          "option_id": "",
+          "dial": "2"
+        },
+        {
+          "label": "stage1",
+          "faq_id": "1",
+          "dial": "0"
+        },
+        {
+          "label": "stage2",
+          "faq_id": "2",
+          "dial": "2"
         }
       ]
     }

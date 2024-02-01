@@ -62,3 +62,12 @@ function updateEnding($vars) {
   Session::set("toast", ["success", "エンディングのテキストを変更しました"]);
   back();
 }
+
+function deleteEnding($vars) {
+  $id = $vars["id"];
+  $ending = Fetch::find("endings", $id);
+  if (!Allow::ending($ending)) abort(403);
+  DB::delete("endings", $id);
+  Session::set("toast", ["success", "エンディングを削除しました"]);
+  back();
+}

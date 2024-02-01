@@ -30,6 +30,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 
 	$r->addRoute("POST", "/endings", "storeEnding");
 	$r->addRoute("PUT", "/endings/{id:\d+}", "updateEnding");
+	$r->addRoute("DELETE", "/endings/{id:\d+}", "deleteEnding");
 
 	$r->addRoute("POST", "/faqs", "storeFaq");
 	$r->addRoute("PUT", "/faqs/{id:\d+}", "updateFaq");

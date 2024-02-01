@@ -34,9 +34,9 @@ session_start();
 # DB接続
 try {
 	$pdo = new PDO(
-		$_ENV["DB_PREFIX"]."dbname=".$_ENV["DB_NAME"].";host=".$_ENV["DB_HOST"],
-		$_ENV["DB_USERNAME"],
-		$_ENV["DB_PASSWORD"]
+		DB_PREFIX."dbname=".DB_NAME.";host=".DB_HOST,
+		DB_USERNAME,
+		DB_PASSWORD
 	);
 } catch (PDOException $e) {
 	exit($e->getMessage());

@@ -16,7 +16,7 @@
       "faq_id": "1",　// Cans側で扱う質問とラベルを紐づけるため
       "voice": "voice3121.wav",
       "options": {
-        "0": "ending",
+        "0": "ending1",
         "1": "stage2",
         "2": "stage3"
       }
@@ -24,7 +24,8 @@
   ],
   "endings": [ // エンディングの複数分岐に対応するため
     {
-      "label": "stage3",
+      "label": "ending1",
+      "ending_id": 12,
       "voice": "voice3121.wav"
     }
   ],

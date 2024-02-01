@@ -49,7 +49,7 @@
         <button type="submit" class="btn btn-dark">更新</button>
       </div>
     </form>
-    <form method="post" onsubmit="return window.confirm('本当に削除しますか？')">
+    <form method="post" onsubmit="return window.confirm('本当に削除しますか？\r\n削除を実行すると空いたダイヤル番号に他の選択肢が割り当てられます')">
       <?= csrf() ?>
       <?= method("DELETE") ?>
       <div class="text-end">

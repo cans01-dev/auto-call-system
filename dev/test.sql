@@ -124,6 +124,8 @@ CREATE TABLE stations (
 CREATE TABLE calls (
   id int(11) NOT NULL AUTO_INCREMENT,
   reserve_id int(11) NOT NULL,
+  number char(13) NOT NULL,
+  status int(11) NOT NULL,
   duration int(11) NOT NULL,
   time time NOT NULL,
   PRIMARY KEY (id),

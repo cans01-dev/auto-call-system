@@ -26,11 +26,11 @@ function sendEmail($vars) {
 }
 
 function survey($vars) {
-  $id = $vars["id"];
+  $survey_id = $vars["id"];
   $month = $_GET["month"] ?? date("n");
   $year = $_GET["year"] ?? date("Y");
 
-  $survey = Fetch::find("surveys", $id);
+  $survey = Fetch::find("surveys", $survey_id);
   $survey["endings"] = Fetch::get("endings", $survey["id"], "survey_id");
   $survey["faqs"] = Fetch::get("faqs", $survey["id"], "survey_id", "order_num");
   $survey["reserves"] = Fetch::reservesBySurveyIdAndYearMonth($survey["id"], $month, $year);
@@ -46,9 +46,20 @@ function survey($vars) {
   }
 
   $calendar = new Calendar($month, $year, $schedules);
-  $current = $calendar->getCurrent();
-  $prev = $calendar->getPrev();
-  $next = $calendar->getNext();
+
+  global $pdo;
+  $stmt = $pdo->prepare("SELECT * FROM areas WHERE id IN (
+    SELECT area_id FROM reserves_areas WHERE reserve_id IN (
+      SELECT id FROM reserves WHERE survey_id = :survey_id
+    )
+  )");
+  $stmt->execute([":survey_id" => $survey_id]);
+  $areas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  foreach ($areas as $key => $area) {
+    $stations = Fetch::get("stations", $area["id"], "area_id");
+    $areas[$key]["all_numbers"] = count($stations) * 10000;
+    // エリア別進捗率のコール済番号数取得の処理を書くとこから
+  }
 
   require_once "./views/pages/survey.php";
 }
