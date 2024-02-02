@@ -27,7 +27,7 @@ define("MIN_INTERVAL", 3600);
 define("MIN_TIME", 60*60*9);
 define("MAX_TIME", 60*60*21);
 
-# あらかじめ生成しておく電話番号の数（一時間あたり）
+# Calls Per Hour あらかじめ生成しておく電話番号の数（一時間あたり）
 define("NUMBERS_PER_HOUR", 100);
 
 # ステータスコードごとのテキストとカラーの指定
@@ -42,4 +42,7 @@ define("RESERVATION_STATUS", [
 
 # 予約パターン作成時のカラーパレット
 define("COLOR_PALLET", ["#DCF2F1", "#7FC7D9", "#365486", "#0F1035"]);
+
+# 課金表示画面に適用される秒数あたりの料金
+define("PRICE_PER_SECOND", 0.138);
 

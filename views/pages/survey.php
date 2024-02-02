@@ -56,7 +56,7 @@
       </div>
       <div>
         <?php foreach ($survey["faqs"] as $faq): ?>
-          <div class="card mb-2">
+          <div class="card mb-2" id="faq<?= $faq["id"] ?>">
             <div class="card-body">
               <h5 class="card-title mb-3">
                 <span class="badge bg-primary-subtle text-black me-2">質問</span><?= $faq["title"] ?>
@@ -228,24 +228,54 @@
           <tr>
             <th scope="col">エリア</th>
             <th scope="col">進捗率(総コール数 / エリア内番号数)</th>
-            <th scope="col">有効コール率</th>
+            <th scope="col">応答率</th>
           </tr>
         </thead>
         <tbody>
           <?php foreach ($areas as $area): ?>
           <tr>
-            <th scope="row">関東・甲信越</th>
+            <th scope="row"><?= $area["title"] ?></th>
             <td>
               <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="44" aria-valuemin="0" aria-valuemax="100">
-                <div class="progress-bar" style="width: 44%">44%</div>
+                <div class="progress-bar" style="width: <?= round($area["progress_rate"] * 100) ?>%">
+                  <?= round($area["progress_rate"] * 100) ?>%
+                </div>
               </div>
-              <span>(2234 / <?= $area["all_numbers"] ?>)</span>
+              <span>(<?= $area["called_numbers"] ?> / <?= $area["all_numbers"] ?>) <?= round($area["progress_rate"] * 100, 4) ?>%</span>
             </td>
-            <td>36%</td>
+            <td>
+              <?= round($area["response_rate"] * 100) ?>% (<?= $area["responsed_numbers"] ?> / <?= $area["called_numbers"] ?>)
+            </td>
           </tr>
           <?php endforeach; ?>
         </tbody>
       </table>
+    </section>
+    <?= Components::hr() ?>
+    <section id="billing">
+      <?= Components::h3("料金") ?>
+      <p>ここで表示される料金は概算であり、実際の請求と異なる場合があります</p>
+      <div class="accordion accordion-flush border" id="accordionFlushExample">
+        <?php foreach ($survey["billings"] as $i => $billing): ?>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse<?= $i ?>" aria-expanded="false" aria-controls="flush-collapse<?= $i ?>">
+              <?= date("Y年 n月", $billing["timestamp"]) ?> 料金
+            </button>
+          </h2>
+          <div id="flush-collapse<?= $i ?>" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <dl>
+                <dt>通話成立時間(秒)</dt>
+                <dd><?= $billing["total_duration"] ?></dd>
+                <dt>料金<span class="badge bg-secondary ms-2">通話成立時間(秒) x <?= PRICE_PER_SECOND ?>円</span></dt>
+                <dd>\<?= round($billing["total_duration"] * PRICE_PER_SECOND) ?></dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+        <?php endforeach; ?>
+      </div>
     </section>
   </div>
   <div class="flex-shrink-0" style="width: 300px;">

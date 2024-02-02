@@ -79,6 +79,7 @@ function abort($code) {
       exit;
     case 500:
       header("HTTP/1.1 500 Internal server error");
+      require_once "views/pages/500.php";
       exit;
   }
 }

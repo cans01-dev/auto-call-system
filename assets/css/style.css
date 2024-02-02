@@ -20,7 +20,7 @@ header {
   flex-shrink: 0;
 }
 main {
-  padding: 0 16px 16px 16px;
+  padding: 0 16px 32px 16px;
   width: 100%;
 }
 .calendar-table {

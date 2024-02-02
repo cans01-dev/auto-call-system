@@ -58,6 +58,9 @@
 										<li class="nav-item">
 											<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#area">エリア</a>
 										</li>
+										<li class="nav-item">
+											<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#billing">料金</a>
+										</li>
 									</ul>
 								<?php endif; ?>
 							</li>

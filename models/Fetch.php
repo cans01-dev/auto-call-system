@@ -68,6 +68,14 @@ class Fetch
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  public static function callsByReserves($reserves) {
+    global $pdo;
+    $array_str = array_str(array_column($reserves, "id"));
+    $stmt = $pdo->prepare("SELECT * FROM calls WHERE reserve_id IN ({$array_str})");
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
   public static function areasByReserveId($reserve_id) {
     global $pdo;
     $sql = "SELECT *, ra.id as ra_id FROM reserves_areas as ra JOIN areas as a ON ra.area_id = a.id WHERE ra.reserve_id = :reserve_id";

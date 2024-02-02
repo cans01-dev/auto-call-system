@@ -21,7 +21,7 @@
       </div>
       <div class="mb-3">
         <label class="form-label">質問の読み上げ文章</label>
-        <textarea class="form-control" name="text" rows="5"><?= $faq["text"] ?></textarea>
+        <textarea class="form-control" name="text" rows="8"><?= $faq["text"] ?></textarea>
       </div>
       <div class="text-end">
         <button type="submit" class="btn btn-dark">更新</button>
@@ -49,7 +49,7 @@
       </tr>
     </thead>
     <tbody>
-      <?php foreach ($options as $option): ?>
+      <?php foreach ($faq["options"] as $option): ?>
       <tr>
         <th scope="row"><span class=""><?= $option["dial"] ?></span></th>
         <td><?= $option["title"] ?></td>
@@ -86,7 +86,7 @@
             </button>
             <button
             type="submit"
-            class="btn btn-outline-primary" <?= $option["dial"] === max(array_column($options, "dial")) ? "disabled" : ""; ?>
+            class="btn btn-outline-primary" <?= $option["dial"] === max(array_column($faq["options"], "dial")) ? "disabled" : ""; ?>
             form="downOption<?= $option["id"] ?>"
             >
               <i class="fa-solid fa-angle-down"></i>
@@ -114,6 +114,31 @@
           <div class="mb-3">
             <label class="form-label">選択肢のタイトル</label>
             <input type="text" name="title" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">NEXT</label>
+            <select class="form-select" name="next" required>
+              <?php foreach ($survey["faqs"] as $f): ?>
+                <option value="f<?= $f["id"] ?>">
+                  <?= $f["title"] ?><?= $f["id"] === $option["faq_id"] ? "（聞き直し）": ""; ?>
+                </option>
+              <?php endforeach; ?>
+              <?php foreach (Fetch::get("endings", $survey["id"], "survey_id") as $e): ?>
+                <option value="e<?= $e["id"] ?>">
+                  <?= $e["title"] ?>
+                </option>
+              <?php endforeach; ?>
+            </select>
+            <div id="passwordHelpBlock" class="form-text">
+              この選択肢が選択された場合の次の操作を指定してください
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">ダイヤル番号</label>
+            <input type="number" class="form-control" value="<?= count($faq["options"]) ? max(array_column($faq["options"], "dial")) + 1 : 0 ?>" disabled>
+            <div id="passwordHelpBlock" class="form-text">
+              ダイヤル番号は作成後に質問ページの選択肢一覧から変更できます
+            </div>
           </div>
           <div class="text-end">
             <input type="hidden" name="faq_id" value="<?= $faq["id"] ?>">

@@ -1,0 +1,66 @@
+{
+    "id": 3,
+    "user_id": 1,
+    "calls": [
+        {
+            "number": "",
+            "status": 1,
+            "duration": 104,
+            "time": "09:58:05",
+            "answers": [
+                {
+                    "id": 4,
+                    "option_id": 10
+                }
+            ]
+        },
+        {
+            "number": "",
+            "status": 2,
+            "duration": 104,
+            "time": "09:58:05",
+            "answers": [
+                {
+                    "id": 4,
+                    "option_id": 10
+                }
+            ]
+        },
+        {
+            "number": "",
+            "status": 1,
+            "duration": 66,
+            "time": "09:55:10",
+            "answers": [
+                {
+                    "id": 4,
+                    "option_id": 10
+                }
+            ]
+        },
+        {
+            "number": "",
+            "status": 1,
+            "duration": 81,
+            "time": "09:18:43",
+            "answers": [
+                {
+                    "id": 4,
+                    "option_id": 10
+                }
+            ]
+        },
+        {
+            "number": "",
+            "status": 1,
+            "duration": 50,
+            "time": "09:26:31",
+            "answers": [
+                {
+                    "id": 4,
+                    "option_id": 9
+                }
+            ]
+        }
+    ]
+}

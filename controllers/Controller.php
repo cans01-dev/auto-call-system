@@ -55,10 +55,54 @@ function survey($vars) {
   )");
   $stmt->execute([":survey_id" => $survey_id]);
   $areas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
   foreach ($areas as $key => $area) {
     $stations = Fetch::get("stations", $area["id"], "area_id");
     $areas[$key]["all_numbers"] = count($stations) * 10000;
-    // エリア別進捗率のコール済番号数取得の処理を書くとこから
+    $areas[$key]["called_numbers"] = 0;
+    $areas[$key]["responsed_numbers"] = 0;
+    foreach ($stations as $station) {
+      $stmt = $pdo->prepare("SELECT * FROM calls WHERE reserve_id IN (
+        SELECT id FROM reserves WHERE survey_id = :survey_id
+      ) AND number LIKE :number");
+      $stmt->execute([
+        ":survey_id" => $survey_id,
+        ":number" => "{$station["prefix"]}%"
+      ]);
+      $calls = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $areas[$key]["called_numbers"] += count($calls);
+
+      $stmt = $pdo->prepare("SELECT * FROM calls WHERE reserve_id IN (
+        SELECT id FROM reserves WHERE survey_id = :survey_id
+      ) AND number LIKE :number AND status = :status");
+      $stmt->execute([
+        ":survey_id" => $survey_id,
+        ":number" => "{$station["prefix"]}%",
+        ":status" => 1
+      ]);
+      $calls = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $areas[$key]["responsed_numbers"] += count($calls);
+    }
+    $areas[$key]["progress_rate"] = $areas[$key]["called_numbers"] / $areas[$key]["all_numbers"];
+    if ($areas[$key]["called_numbers"]) {
+      $areas[$key]["response_rate"] = $areas[$key]["responsed_numbers"] / $areas[$key]["called_numbers"];
+    } else {
+      $areas[$key]["response_rate"] = 0;
+    }
+  }
+
+  $tss = [];
+  for ($i = 0; $i > -5; $i--) $tss[] = mktime(0, 0, 0, date("m") + $i, 1, date("Y"));
+
+  foreach ($tss as $ts) {
+    $reserves = Fetch::reservesBySurveyIdAndYearMonth($survey_id, date("m", $ts), date("Y", $ts));
+    $calls = $reserves ? Fetch::callsByReserves($reserves) : [];
+    
+    $total_duration = $calls ? array_sum(array_column($calls, "duration")) : 0;
+    $survey["billings"][] = [
+      "timestamp" => $ts,
+      "total_duration" => $total_duration
+    ];
   }
 
   require_once "./views/pages/survey.php";
@@ -67,12 +111,13 @@ function survey($vars) {
 function faq($vars) {
   $id = $vars["id"];
   $faq = Fetch::find("faqs", $id);
+  $faq["options"] = Fetch::get("options", $faq["id"], "faq_id", "dial");
   $survey = Fetch::find("surveys", $faq["survey_id"]);
-  $options = Fetch::get("options", $faq["id"], "faq_id", "dial");
-  foreach ($options as $option) {
+  $survey["faqs"] = Fetch::get("faqs", $survey["id"], "survey_id", "order_num");
+  foreach ($faq["options"] as $option) {
     if ($option["next_faq_id"]) {
-      $index = array_search($option, $options);
-      $options[$index]["next_faq"] = Fetch::find("faqs", $option["next_faq_id"]);
+      $index = array_search($option, $faq["options"]);
+      $faq["options"][$index]["next_faq"] = Fetch::find("faqs", $option["next_faq_id"]);
     }
   }
   if ($survey["user_id"] !== Auth::user()["id"]) abort(403);

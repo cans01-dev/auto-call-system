@@ -37,14 +37,25 @@ function deleteFaq($vars) {
   $faq = Fetch::find("faqs", $id);
   if (!Allow::faq($faq)) abort(403);
   DB::delete("faqs", $id);
+
+  $target_faqs = Fetch::get2("faqs", [
+    ["survey_id", "=", $faq["survey_id"]],
+    ["order_num", ">", $faq["order_num"]]
+  ]);
+  foreach ($target_faqs as $to) {
+    DB::update("faqs", $to["id"], [
+      "order_num" => $to["order_num"] - 1
+    ]);
+  }
+
   Session::set("toast", ["info", "選択肢を削除しました"]);
   redirect("/surveys/{$faq["survey_id"]}");
 }
 
 function orderFaq($vars) {
-  $id = $vars["id"];
+  $faq_id = $vars["id"];
   $to = $_POST["to"];
-  $faq1 = Fetch::find("faqs", $id);
+  $faq1 = Fetch::find("faqs", $faq_id);
   if (!Allow::faq($faq1)) abort(403);
   if ($to === "up") {
     $faq2 = Fetch::find2("faqs", [
@@ -59,6 +70,8 @@ function orderFaq($vars) {
   }
   if (!$faq2) abort(500);
   DB::exchangeColumn("faqs", $faq1, $faq2, "order_num");
+
+  // 並び替えたときのリダイレクトはssy
   Session::set("toast", ["success", "質問の並び順を変更しました"]);
-  back("faqs");
+  back("faq{$faq_id}");
 }

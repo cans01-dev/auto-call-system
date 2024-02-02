@@ -4,11 +4,14 @@ function storeOption() {
   $faq = Fetch::find("faqs", $_POST["faq_id"]);
   if (!Allow::faq($faq)) abort(403);
   $options = Fetch::get("options", $faq["id"], "faq_id");
+  $next_type = substr($_POST["next"], 0, 1);
+  $next_id = substr($_POST["next"], 1);
   DB::insert("options", [
     "faq_id" => $faq["id"],
     "title" => $_POST["title"],
     "dial" => count($options) ? max(array_column($options, "dial")) + 1 : 0,
-    "next_faq_id" => $faq["id"]
+    "next_ending_id" => $next_type == "e" ? $next_id : null,
+    "next_faq_id" => $next_type == "f" ? $next_id : null
   ]);
   $id = DB::lastInsertId();
   Session::set("toast", ["success", "選択肢を新規作成しました"]);
