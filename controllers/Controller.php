@@ -166,5 +166,11 @@ function result($vars) {
 }
 
 function call($vars) {
-  require_once "./views/pages/call.php.php";
+  require_once "./views/pages/call.php";
+}
+
+function support() {
+  $parser = new Parsedown();
+  $markdown = $parser->text(file_get_contents(dirname(__DIR__)."/assets/markdown/support.md"));
+  require_once "./views/pages/support.php";
 }

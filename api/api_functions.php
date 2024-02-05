@@ -1,5 +1,18 @@
 <?php
 
+function new_pdo() {
+  try {
+    $pdo = new PDO(
+      DB_PREFIX."dbname=".DB_NAME.";host=".DB_HOST,
+      DB_USERNAME,
+      DB_PASSWORD
+    );
+    return $pdo;
+  } catch (PDOException $e) {
+    exit($e->getMessage());
+  }  
+}
+
 function authenticate() {
   [$username, $password] = explode(":", base64_decode(substr($_SERVER["HTTP_AUTHORIZATION"], 6)));
   return $username === "admin" && $password === "test";
@@ -17,9 +30,7 @@ function upload_file($file) {
   return false;
 }
 
-function send_file($file_path, $url, $header) {
-  $curl_file = new CURLFile($file_path);
-
+function send_file(CURLFile $curl_file, $url, $header) {
   $ch = curl_init();
   curl_setopt_array($ch, [
     CURLOPT_URL => $url,

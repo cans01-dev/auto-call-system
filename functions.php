@@ -23,7 +23,18 @@ function make_times($min=0, $max=86400, $step=60) {
 function hour_to_sec(string $str): int
 {
   $t = explode(":", $str);
-  return ($t[0] * 60 * 60) + ($t[1] * 60) + $t[2];
+  $h = (int)$t[0];
+  if (isset($t[1])) {
+    $m = (int)$t[1];
+  } else {
+    $m = 0;
+  }
+  if (isset($t[2])) {
+    $s = (int)$t[2];
+  } else {
+    $s = 0;
+  }
+  return ($h * 60 * 60) + ($m * 60) + $s;
 }
 /**
  * ーーここまでーー

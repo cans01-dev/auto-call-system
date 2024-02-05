@@ -4,8 +4,8 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title><?= PAGE_TITLE ?></title>
-	<link rel="stylesheet" href="/assets/css/bootstrap.css">
-	<link rel="stylesheet" href="/assets/css/style.css">
+	<script src="https://kit.fontawesome.com/285c1d0655.js" crossorigin="anonymous"></script>
+	<script src="<?= url("/assets/script/dist/main.js") ?>"></script>
 <body>
 <div class="flex-container">
 <header class="border-end border-2 text-bg-white">
@@ -74,7 +74,7 @@
 					<?php endif; ?>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link <?= $_SERVER["REQUEST_URI"] === "/support" ? "active" : "link-body-emphasis" ?>">
+					<a href="/support" class="nav-link <?= $_SERVER["REQUEST_URI"] === "/support" ? "active" : "link-body-emphasis" ?>">
 						<span class="text-center d-inline-block me-2" style="width: 24px;">
 							<i class="fa-solid fa-circle-question fa-lg"></i>
 						</span>サポート

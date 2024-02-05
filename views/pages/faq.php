@@ -27,7 +27,7 @@
         <button type="submit" class="btn btn-dark">更新</button>
       </div>
     </form>
-    <form method="post" onsubmit="return window.confirm('本当に削除しますか？\r\n質問を削除すると関連する選択肢などのデータも削除されます')">
+    <form method="post" onsubmit="return window.confirm('本当に削除しますか？\r\n遷移先がこの質問になっている他の質問の選択肢は自動的に「聞き直し」に変更されます')">
       <?= csrf() ?>
       <?= method("DELETE") ?>
       <div class="text-end">

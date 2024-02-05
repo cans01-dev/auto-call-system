@@ -126,8 +126,8 @@ CREATE TABLE calls (
   reserve_id int(11) NOT NULL,
   number char(13) NOT NULL,
   status int(11) NOT NULL,
-  duration int(11) NOT NULL,
-  time time NOT NULL,
+  duration int(11),
+  time time,
   PRIMARY KEY (id),
   FOREIGN KEY (reserve_id) REFERENCES reserves (id) ON DELETE CASCADE ON UPDATE CASCADE
 );

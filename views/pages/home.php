@@ -9,7 +9,6 @@
 
 <div class="d-flex gap-3">
   <div class="w-100">
-
   </div>
   <div class="flex-shrink-0" style="width: 300px;">
     <div class="sticky-top">
@@ -18,8 +17,7 @@
         <div class="card mb-2">
           <div class="card-body">
             <h5 class="card-title"><?= $survey["title"] ?></h5>
-            <h6 class="card-subtitle mb-2 text-body-secondary">コール済: ---</h6>
-            <p class="card-text"><?= $survey["note"] ?></p>
+            <div><?= $survey["note"] ?></div>
             <div class="position-absolute top-0 end-0 p-3">
               <a href="/surveys/<?= $survey["id"] ?>" class="card-link">編集</a>
             </div>

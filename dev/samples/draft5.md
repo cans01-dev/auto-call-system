@@ -71,7 +71,8 @@ Cans側で扱うIDと結果ファイルの一致
       // "last_label" 削除
       "duration": "00:01:23", // keep_time -> duration
       "time": "18:12:25", // call_time -> time
-      "answers": {
+      "answers": 
+      {
         "id": 12, // faq_id
         "option_id": 32,
         // "label" 削除

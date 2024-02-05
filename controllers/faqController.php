@@ -36,19 +36,30 @@ function deleteFaq($vars) {
   $id = $vars["id"];
   $faq = Fetch::find("faqs", $id);
   if (!Allow::faq($faq)) abort(403);
+
+  $target_options = Fetch::get2("options", [
+    ["next_faq_id", "=", $faq["id"]]
+  ]);
+  foreach ($target_options as $to) {
+    $row_count = DB::update("options", $to["id"], [
+      "next_faq_id" => $to["faq_id"]
+    ]);
+  }
+
   DB::delete("faqs", $id);
 
   $target_faqs = Fetch::get2("faqs", [
     ["survey_id", "=", $faq["survey_id"]],
     ["order_num", ">", $faq["order_num"]]
   ]);
-  foreach ($target_faqs as $to) {
-    DB::update("faqs", $to["id"], [
-      "order_num" => $to["order_num"] - 1
+  foreach ($target_faqs as $tf) {
+    DB::update("faqs", $tf["id"], [
+      "order_num" => $tf["order_num"] - 1
     ]);
   }
 
-  Session::set("toast", ["info", "選択肢を削除しました"]);
+  $msg = $row_count ? "<br>{$row_count}件の選択肢を「聞き直し」に変更しました" : null;
+  Session::set("toast", ["success", "質問を削除しました{$msg}"]);
   redirect("/surveys/{$faq["survey_id"]}");
 }
 

@@ -13,6 +13,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("GET", "/favorites/{id:\d+}", "favorite");
 	$r->addRoute("GET", "/account", "account");
 	$r->addRoute("GET", "/send-emails/{id:\d+}", "sendEmail");
+	$r->addRoute("GET", "/support", "support");
 
 	$r->addRoute("POST", "/login", "loginPost");
 	$r->addRoute("POST", "/logout", "logout");

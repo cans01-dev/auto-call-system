@@ -1,9 +1,6 @@
 <?php
 
 require "./vendor/autoload.php";
-use FastRoute\Dispatcher;
-use Dotenv\Dotenv;
-
 require "./models/Fetch.php";
 require "./models/DB.php";
 require "./models/Auth.php";
@@ -20,12 +17,9 @@ require "./controllers/resultController.php";
 require "./controllers/surveyController.php";
 require "./controllers/favoriteController.php";
 require "./controllers/optionController.php";
-
 require "./config.php";
 require "./router.php";
 require "./functions.php";
-
-Dotenv::createImmutable(__DIR__)->load();
 
 date_default_timezone_set("Asia/Tokyo");
 
@@ -72,14 +66,14 @@ $publicHandlers = ["login", "loginPost"];
 
 # ルーティングの実行
 switch ($routeInfo[0]) {
-	case Dispatcher::NOT_FOUND:
+	case FastRoute\Dispatcher::NOT_FOUND:
 		require_once "./views/pages/404.php";
 		break;
-	case Dispatcher::METHOD_NOT_ALLOWED:
+	case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
 		$allowedMethods = $routeInfo[1];
 		require_once "./views/pages/405.php";
 		break;
-	case Dispatcher::FOUND:
+	case FastRoute\Dispatcher::FOUND:
 		$handler = $routeInfo[1];
 		$vars = $routeInfo[2];
 

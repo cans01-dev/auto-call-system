@@ -443,6 +443,9 @@
             <input type="hidden" name="survey_id" value="<?= $survey["id"] ?>">
             <button type="submit" class="btn btn-primary">作成</button>
           </div>
+          <div class="form-text">
+            質問を作成すると自動的に「0: 聞き直し」の選択肢が設定されます
+          </div>
         </form>
       </div>
     </div>
