@@ -34,6 +34,7 @@ function updateGreeting($vars) {
   if (!Allow::survey($survey)) abort(403);
   $file_name = "s{$survey["id"]}_greeting.wav";
   file_put_contents(dirname(__DIR__)."/storage/outputs/{$file_name}", text_to_speech($_POST["greeting"]));
+  // 2/7 👆質問、エンディングを更新したら音声ファイルを生成してファイル名をDBに保存するとこから
   DB::update("surveys", $id, [
     "greeting" => $_POST["greeting"],
     "greeting_voice_file" => $file_name
