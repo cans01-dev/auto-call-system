@@ -34,7 +34,7 @@
     <div class="mb-4">
       <div class="mb-2">予約情報ファイル</div>
       <?php if ($reserve["reserve_file"]): ?>
-        <a class="btn btn-primary" href="/dev/<?= $reserve["reserve_file"] ?>" download>
+        <a class="btn btn-primary" href="<?= url("/storage/outputs/".$reserve["reserve_file"]) ?>" download>
           <span class="me-1">
             <i class="fa-solid fa-download fa-lg"></i>
           </span>ダウンロード
@@ -51,7 +51,7 @@
     <div>
       <div class="mb-2">結果ファイル</div>
       <?php if ($reserve["result_file"]): ?>
-        <a class="btn btn-primary" href="dev/<?= $reserve["result_file"] ?>" download>
+        <a class="btn btn-primary" href="<?= url("/storage/uploads/".$reserve["result_file"]) ?>" download>
           <span class="me-1">
             <i class="fa-solid fa-download fa-lg"></i>
           </span>ダウンロード

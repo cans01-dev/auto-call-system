@@ -32,8 +32,11 @@ function updateGreeting($vars) {
   $id = $vars["id"];
   $survey = Fetch::find("surveys", $id);
   if (!Allow::survey($survey)) abort(403);
+  $file_name = "s{$survey["id"]}_greeting.wav";
+  file_put_contents(dirname(__DIR__)."/storage/outputs/{$file_name}", text_to_speech($_POST["greeting"]));
   DB::update("surveys", $id, [
-    "greeting" => $_POST["greeting"]
+    "greeting" => $_POST["greeting"],
+    "greeting_voice_file" => $file_name
   ]);
   Session::set("toast", ["success", "アンケートのグリーティングを変更しました"]);
   back();

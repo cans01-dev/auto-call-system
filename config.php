@@ -9,7 +9,7 @@ define("DB_PASSWORD", "");
 define("PAGE_TITLE", "AutoCallシステム");
 
 # 予約情報ファイルの送信先URL
-define("SEND_FILE_URL", "http://localhost:8080/dev/receive_file.php");
+define("SEND_FILE_URL", "http://localhost:8080/api/pse_virtual.php");
 
 # 予約情報ファイル送信のBasic認証情報
 define("SEND_FILE_AUTHORIZATION", "Basic YWRtaW46dGVzdA==");
@@ -45,4 +45,3 @@ define("COLOR_PALLET", ["#DCF2F1", "#7FC7D9", "#365486", "#0F1035"]);
 
 # 課金表示画面に適用される秒数あたりの料金
 define("PRICE_PER_SECOND", 0.138);
-

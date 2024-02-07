@@ -27,6 +27,7 @@
                 <i class="fa-solid fa-volume-high"></i>
                 音声
               </button>
+              <audio controls src="<?= url("/storage/outputs/".$survey["greeting_voice_file"]) ?>"></audio>
             </div>
           </div>
         </div>

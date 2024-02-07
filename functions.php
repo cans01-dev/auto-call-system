@@ -20,6 +20,7 @@ function make_times($min=0, $max=86400, $step=60) {
   }
   return $array;
 }
+
 function hour_to_sec(string $str): int
 {
   $t = explode(":", $str);
@@ -36,6 +37,41 @@ function hour_to_sec(string $str): int
   }
   return ($h * 60 * 60) + ($m * 60) + $s;
 }
+
+function text_to_speech($text) {
+  $google_api_key = "AIzaSyCVOtglUcy3xRxk-x1qI2m8e-JmJ_RZZJU";
+  $google_tts_api_url = "https://texttospeech.googleapis.com/v1/text:synthesize?key=".$google_api_key;
+  
+  $ch = curl_init();
+  curl_setopt_array($ch, [
+    CURLOPT_URL => $google_tts_api_url,
+    CURLOPT_HTTPHEADER => ["Content-Type: application/json"],
+    CURLOPT_CUSTOMREQUEST => "POST",
+    CURLOPT_SSL_VERIFYPEER => false,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_POSTFIELDS => json_encode([
+      "audioConfig" => [
+        "audioEncoding" => "LINEAR16",
+        "pitch" => 0,
+        "speakingRate" => 1 
+      ],
+      "input" => [
+        "text" => $text,
+      ],
+      "voice" => [
+        "languageCode" => "ja-JP",
+        "name" => "ja-JP-Standard-A"
+      ]
+    ])
+  ]);
+  $response = curl_exec($ch);
+  curl_close($ch);
+  
+  $array = json_decode($response, true);
+
+  return base64_decode($array["audioContent"]);
+}
+
 /**
  * ーーここまでーー
  */
