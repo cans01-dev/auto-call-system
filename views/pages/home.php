@@ -13,17 +13,21 @@
   <div class="flex-shrink-0" style="width: 300px;">
     <div class="sticky-top">
       <?= Components::h4("アンケート一覧") ?>
-      <?php foreach ($surveys as $survey): ?>
-        <div class="card mb-2">
-          <div class="card-body">
-            <h5 class="card-title"><?= $survey["title"] ?></h5>
-            <div><?= $survey["note"] ?></div>
-            <div class="position-absolute top-0 end-0 p-3">
-              <a href="/surveys/<?= $survey["id"] ?>" class="card-link">編集</a>
+      <?php if ($surveys): ?>
+        <?php foreach ($surveys as $survey): ?>
+          <div class="card mb-2">
+            <div class="card-body">
+              <h5 class="card-title"><?= $survey["title"] ?></h5>
+              <div><?= $survey["note"] ?></div>
+              <div class="position-absolute top-0 end-0 p-3">
+                <a href="/surveys/<?= $survey["id"] ?>" class="card-link">編集</a>
+              </div>
             </div>
           </div>
-        </div>
-      <?php endforeach; ?>
+        <?php endforeach; ?>
+      <?php else: ?>
+        <div class="text-center py-2 rounded border mb-2">アンケートがありません</div>
+      <?php endif; ?>
       <?= Components::modalOpenButton("surveysCreateModal") ?>
     </div>
   </div>

@@ -135,6 +135,7 @@ function gen_reserve_info_array($reserve) {
     "id" => $reserve["id"],
     "user_id" => $survey["user_id"],
     "date" => $reserve["date"],
+    "greeting" => $survey["greeting_voice_file"],
     "start" => substr($reserve["start"], 0, -3),
     "end" => substr($reserve["end"], 0, -3),
     "faqs" => [],
@@ -147,6 +148,7 @@ function gen_reserve_info_array($reserve) {
   foreach ($faqs as $faq) {
     $f = [
       "faq_id" => "{$faq["id"]}",
+      "voice" => $faq["voice_file"],
       "options" => []
     ];
       
@@ -167,8 +169,8 @@ function gen_reserve_info_array($reserve) {
   # endings
   foreach ($endings as $ending) {
     $e = [
-      "ending_id" => "{$ending["id"]}"
-      // voice
+      "ending_id" => "{$ending["id"]}",
+      "voice" => $ending["voice_file"]
     ];
     $r["endings"][] = $e;
   }
@@ -191,4 +193,21 @@ function gen_reserve_info_array($reserve) {
   }
 
   return $r;
+}
+
+function get_reserve_files($reserve) {
+  $files = [];
+  $survey = Fetch::find("surveys", $reserve["survey_id"]);
+  $faqs = Fetch::get("faqs", $survey["id"], "survey_id");
+  $endings = Fetch::get("endings", $survey["id"], "survey_id");
+  
+  $files[] = $survey["greeting_voice_file"];
+  foreach ($faqs as $faq) {
+    $files[] = $faq["voice_file"];
+  }
+  foreach ($endings as $ending) {
+    $files[] = $ending["voice_file"];
+  }
+
+  return $files;
 }

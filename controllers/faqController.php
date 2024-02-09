@@ -24,9 +24,12 @@ function updatefaq($vars) {
   $id = $vars["id"];
   $faq = Fetch::find("faqs", $id);
   if (!Allow::faq($faq)) abort(403);
+  $file_name = "faq{$faq["id"]}.wav";
+  file_put_contents(dirname(__DIR__)."/storage/outputs/{$file_name}", text_to_speech($_POST["text"]));
   DB::update("faqs", $id, [
     "title" => $_POST["title"],
-    "text" => $_POST["text"]
+    "text" => $_POST["text"],
+    "voice_file" => $file_name
   ]);
   Session::set("toast", ["success", "質問の設定を変更しました"]);
   back();

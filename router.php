@@ -14,6 +14,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("GET", "/account", "account");
 	$r->addRoute("GET", "/send-emails/{id:\d+}", "sendEmail");
 	$r->addRoute("GET", "/support", "support");
+	$r->addRoute("GET", "/admin/users", "users");
 
 	$r->addRoute("POST", "/login", "loginPost");
 	$r->addRoute("POST", "/logout", "logout");
@@ -58,5 +59,8 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 
 	$r->addRoute("POST", "/favorites_areas", "storeFavoritesAreas");
 	$r->addRoute("DELETE", "/favorites_areas/{id:\d+}", "deleteFavoritesAreas");
+
+	$r->addRoute("POST", "/admin/users", "storeUser");
+	$r->addRoute("PUT", "/admin/users/{id:\d+}/password", "adminUpdatePassword");
 });
 

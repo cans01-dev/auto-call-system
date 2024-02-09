@@ -83,6 +83,16 @@
 						</span>サポート
 					</a>
 				</li>
+				<?php if (Auth::user()["status"] === USER_STATUS_ADMIN): ?>
+					<li class="nav-item my-2 p-1 border border-2 rounded-2">
+						<h4 class="fs-6">管理者メニュー</h4>
+						<a href="/admin/users" class="nav-link <?= $_SERVER["REQUEST_URI"] === "/admin/users" ? "active" : "link-body-emphasis" ?>">
+							<span class="text-center d-inline-block me-2" style="width: 24px;">
+								<i class="fa-solid fa-users fa-lg"></i>
+							</span>ユーザー管理
+						</a>
+					</li>
+				<?php endif; ?>
 			</ul>
 		</nav>
 		<hr>

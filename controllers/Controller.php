@@ -174,3 +174,10 @@ function support() {
   $markdown = $parser->text(file_get_contents(dirname(__DIR__)."/assets/markdown/support.md"));
   require_once "./views/pages/support.php";
 }
+
+# admin
+function users() {
+  $users = Fetch::all("users");
+
+  require_once "./views/pages/users.php";
+}

@@ -37,21 +37,32 @@
             </div>
           </div>
         </div>
-        <?php foreach ($survey["endings"] as $ending): ?>
-        <div class="card mb-2">
-          <div class="card-body">
-            <h5 class="card-title"><span class="badge bg-dark-subtle text-black me-2">エンディング</span><?= $ending["title"] ?></h5>
-            <p class="card-text mb-0"><?= $ending["text"] ?></p>
-            <div class="position-absolute top-0 end-0 p-3">
-              <button type="button" class="btn btn-outline-dark me-2" data-bs-toggle="modal" data-bs-target="#endingModal<?= $ending["id"] ?>">設定</button>
-              <button href="" class="btn btn-outline-primary" disabled>
-                <i class="fa-solid fa-volume-high"></i>
-                音声
-              </button>
+        <?php if ($survey["endings"]): ?>
+          <?php foreach ($survey["endings"] as $ending): ?>
+            <div class="card mb-2">
+              <div class="card-body">
+                <h5 class="card-title mb-3"><span class="badge bg-dark-subtle text-black me-2">エンディング</span><?= $ending["title"] ?></h5>
+                <p class="card-text mb-0"><?= $ending["text"] ?></p>
+                <div class="position-absolute top-0 end-0 p-3">
+                  <button type="button" class="btn btn-outline-dark me-2" data-bs-toggle="modal" data-bs-target="#endingModal<?= $ending["id"] ?>">設定</button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#audioModal"
+                    data-bs-whatever="<?= url("/storage/outputs/".$ending["voice_file"]) ?>"
+                    <?= $ending["voice_file"] ? "" : "disabled"; ?>
+                  >
+                    <i class="fa-solid fa-volume-high"></i>
+                    音声
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <?php endforeach; ?>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <div class="text-center py-2 rounded border mb-2">エンディングがありません</div>
+        <?php endif; ?>
         <?= Components::modalOpenButton("endingsCreateModal") ?>
       </div>
     </section>
@@ -62,82 +73,98 @@
         一番上に配置された質問が最初の質問（グリーティングの後に再生される質問）となります
       </div>
       <div>
-        <?php foreach ($survey["faqs"] as $faq): ?>
-          <div class="card mb-2" id="faq<?= $faq["id"] ?>">
-            <div class="card-body">
-              <h5 class="card-title mb-3">
-                <span class="badge bg-primary-subtle text-black me-2">質問</span><?= $faq["title"] ?>
-              </h5>
-              <p class="card-text"><?= $faq["text"] ?></p>
-              <?php if ($faq["options"] = Fetch::get2("options", [["faq_id", "=", $faq["id"]]], "dial")): ?>
-                <table class="table table-sm mb-0">
-                  <thead>
-                    <tr>
-                      <th scope="col">ダイヤル番号</th>
-                      <th scope="col">TITLE</th>
-                      <th scope="col">NEXT</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php foreach ($faq["options"] as $option): ?>
-                    <tr>
-                      <th scope="row"><span class=""><?= $option["dial"] ?></span></th>
-                      <td><?= $option["title"] ?></td>
-                      <td>
-                        <?php if ($option["next_faq"] = Fetch::find2("faqs", [["id", "=", $option["next_faq_id"]]])): ?>
-                          <?php if ($option["next_faq"]["id"] !== $faq["id"]): ?>
-                            <a href="/faqs/<?= $option["next_faq"]["id"] ?>" class="badge bg-primary-subtle text-black" style="text-decoration: none;">
-                              <?= $option["next_faq"]["title"]; ?>
-                            </a>
-                          <?php else: ?>
-                            <span class="badge bg-info-subtle text-black">聞き直し</span>
-                          <?php endif; ?>
-                          <?php elseif ($option["next_ending"] = Fetch::find2("endings", [["id", "=", $option["next_ending_id"]]])): ?>
-                            <span class="badge bg-dark-subtle text-black"><?= $option["next_ending"]["title"] ?></span>
-                          <?php endif; ?>
-                      </td>
-                    </tr>
-                    <?php endforeach; ?>
-                  </tbody>
-                </table>
-              <?php endif; ?>
-              <div class="position-absolute top-0 end-0 p-3">
-                <?php if (!$faq["order_num"]): ?>
-                  <span class="badge bg-info me-2">最初の質問</span>
+        <?php if ($survey["faqs"]): ?>
+          <?php foreach ($survey["faqs"] as $faq): ?>
+            <div class="card mb-2" id="faq<?= $faq["id"] ?>">
+              <div class="card-body">
+                <h5 class="card-title mb-3">
+                  <span class="badge bg-primary-subtle text-black me-2">質問</span><?= $faq["title"] ?>
+                </h5>
+                <p class="card-text"><?= $faq["text"] ?></p>
+                <?php if ($faq["options"] = Fetch::get2("options", [["faq_id", "=", $faq["id"]]], "dial")): ?>
+                  <table class="table table-sm mb-0">
+                    <thead>
+                      <tr>
+                        <th scope="col">ダイヤル番号</th>
+                        <th scope="col">TITLE</th>
+                        <th scope="col">NEXT</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php foreach ($faq["options"] as $option): ?>
+                      <tr>
+                        <th scope="row"><span class=""><?= $option["dial"] ?></span></th>
+                        <td><?= $option["title"] ?></td>
+                        <td>
+                          <?php if ($option["next_faq"] = Fetch::find2("faqs", [["id", "=", $option["next_faq_id"]]])): ?>
+                            <?php if ($option["next_faq"]["id"] !== $faq["id"]): ?>
+                              <a href="/faqs/<?= $option["next_faq"]["id"] ?>" class="badge bg-primary-subtle text-black" style="text-decoration: none;">
+                                <?= $option["next_faq"]["title"]; ?>
+                              </a>
+                            <?php else: ?>
+                              <span class="badge bg-info-subtle text-black">聞き直し</span>
+                            <?php endif; ?>
+                            <?php elseif ($option["next_ending"] = Fetch::find2("endings", [["id", "=", $option["next_ending_id"]]])): ?>
+                              <span class="badge bg-dark-subtle text-black"><?= $option["next_ending"]["title"] ?></span>
+                            <?php endif; ?>
+                        </td>
+                      </tr>
+                      <?php endforeach; ?>
+                    </tbody>
+                  </table>
                 <?php endif; ?>
-                <form action="/faqs/<?= $faq["id"] ?>/order" id="upFaq<?= $faq["id"] ?>" method="post" hidden>
-                  <?= csrf() ?>
-                  <input type="hidden" name="to" value="up">
-                </form>
-                <form action="/faqs/<?= $faq["id"] ?>/order" id="downFaq<?= $faq["id"] ?>" method="post" hidden>
-                  <?= csrf() ?>
-                  <input type="hidden" name="to" value="down">
-                </form>
-                <div class="btn-group me-2" role="group" aria-label="Basic outlined example">
+                <?php if (!$faq["voice_file"]): ?>
+                  <div class="alert alert-danger mt-3 mb-0" role="alert">
+                    質問の読み上げ文章を更新して音声ファイルを生成してください
+                  </div>
+                <?php endif; ?>
+                <div class="position-absolute top-0 end-0 py-2 px-3">
+                  <?php if (!$faq["order_num"]): ?>
+                    <span class="badge bg-info me-2">最初の質問</span>
+                  <?php endif; ?>
+                  <form action="/faqs/<?= $faq["id"] ?>/order" id="upFaq<?= $faq["id"] ?>" method="post" hidden>
+                    <?= csrf() ?>
+                    <input type="hidden" name="to" value="up">
+                  </form>
+                  <form action="/faqs/<?= $faq["id"] ?>/order" id="downFaq<?= $faq["id"] ?>" method="post" hidden>
+                    <?= csrf() ?>
+                    <input type="hidden" name="to" value="down">
+                  </form>
+                  <div class="btn-group me-2" role="group" aria-label="Basic outlined example">
+                    <button
+                    type="submit"
+                    class="btn btn-outline-primary" <?= !$faq["order_num"] ? "disabled" : ""; ?>
+                    form="upFaq<?= $faq["id"] ?>"
+                    >
+                      <i class="fa-solid fa-angle-up"></i>
+                    </button>
+                    <button
+                    type="submit"
+                    class="btn btn-outline-primary" <?= $faq["order_num"] === max(array_column($survey["faqs"], "order_num")) ? "disabled" : ""; ?>
+                    form="downFaq<?= $faq["id"] ?>"
+                    >
+                      <i class="fa-solid fa-angle-down"></i>
+                    </button>
+                  </div>
+                  <a href="/faqs/<?= $faq["id"] ?>" class="btn btn-primary">設定</a>
                   <button
-                  type="submit"
-                  class="btn btn-outline-primary" <?= !$faq["order_num"] ? "disabled" : ""; ?>
-                  form="upFaq<?= $faq["id"] ?>"
+                    type="button"
+                    class="btn btn-outline-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#audioModal"
+                    data-bs-whatever="<?= url("/storage/outputs/".$faq["voice_file"]) ?>"
+                    <?= $faq["voice_file"] ? "" : "disabled"; ?>
                   >
-                    <i class="fa-solid fa-angle-up"></i>
-                  </button>
-                  <button
-                  type="submit"
-                  class="btn btn-outline-primary" <?= $faq["order_num"] === max(array_column($survey["faqs"], "order_num")) ? "disabled" : ""; ?>
-                  form="downFaq<?= $faq["id"] ?>"
-                  >
-                    <i class="fa-solid fa-angle-down"></i>
+                    <i class="fa-solid fa-volume-high"></i>
+                    音声
                   </button>
                 </div>
-                <a href="/faqs/<?= $faq["id"] ?>" class="btn btn-primary">設定</a>
-                <button href="" class="btn btn-outline-primary" disabled>
-                  <i class="fa-solid fa-volume-high"></i>
-                  音声
-                </button>
               </div>
             </div>
-          </div>
-        <?php endforeach; ?>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <div class="text-center py-2 rounded border mb-2">質問がありません</div>
+        <?php endif; ?>
         <?= Components::modalOpenButton("faqsCreateModal"); ?>
       </div>
     </section>
@@ -351,11 +378,11 @@
   </div>
 </div>
 
-<?= Components::modal("audioModal", "読み上げ音声を視聴", <<<EOM
+<?= Components::modal("audioModal", "読み上げ音声を再生", <<<EOL
   <div class="text-center py-2">
     <audio controls></audio>
   </div>
-EOM); ?>
+EOL); ?>
 
 <!-- dayModal -->
 <div class="modal fade" id="dayModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -437,9 +464,9 @@ EOM); ?>
   </div>
 </div>
 
-<?= Components::modal("faqsCreateModal", "質問を新規作成", <<<EOM
+<?= Components::modal("faqsCreateModal", "質問を新規作成", <<<EOL
   <form action="/faqs" method="post">
-    <?= csrf() ?>
+    CSRF
     <div class="mb-3">
       <label class="form-label">質問のタイトル</label>
       <input type="text" name="title" class="form-control" placeholder="〇〇に関する質問">
@@ -452,7 +479,7 @@ EOM); ?>
       質問を作成すると自動的に「0: 聞き直し」の選択肢が設定されます
     </div>
   </form>
-EOM); ?>
+EOL); ?>
 
 <!-- favoritesCreateModal -->
 <div class="modal fade" id="favoritesCreateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -514,7 +541,7 @@ EOM); ?>
   </div>
 </div>
 
-<?= Components::modal("greetingModal", "グリーティングを編集", <<<EOM
+<?= Components::modal("greetingModal", "グリーティングを編集", <<<EOL
   <form action="/surveys/{$survey["id"]}/greeting" method="post">
     CSRF
     METHOD_PUT
@@ -526,10 +553,13 @@ EOM); ?>
       <input type="hidden" name="survey_id" value="{$survey["id"]}">
       <button type="submit" class="btn btn-primary">更新</button>
     </div>
+    <div class="form-text">
+      更新すると入力されたテキストから音声ファイルが自動的に生成され再生可能になります
+    </div>
   </form>
-EOM); ?>
+EOL); ?>
 
-<?= Components::modal("endingsCreateModal", "エンディングを作成", <<<EOM
+<?= Components::modal("endingsCreateModal", "エンディングを作成", <<<EOL
   <form action="/endings" method="post">
     CSRF
     <div class="mb-3">
@@ -545,7 +575,7 @@ EOM); ?>
       <button type="submit" class="btn btn-primary">作成</button>
     </div>
   </form>
-EOM); ?>
+EOL); ?>
 
 <!-- endingModals -->
 <?php foreach ($survey["endings"] as $ending): ?>

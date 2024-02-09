@@ -17,6 +17,7 @@ require "./controllers/resultController.php";
 require "./controllers/surveyController.php";
 require "./controllers/favoriteController.php";
 require "./controllers/optionController.php";
+require "./controllers/adminController.php";
 require "./config.php";
 require "./router.php";
 require "./functions.php";
@@ -79,6 +80,10 @@ switch ($routeInfo[0]) {
 
 		# 認証が必要な場合はログインページにリダイレクト
 		if (Auth::check() || in_array($handler, $publicHandlers)) {
+			if (preg_match("/^\/admin\//", $_SERVER["REQUEST_URI"]) && Auth::user()["status"] !== 1) {
+				Session::set("toast", ["danger", "管理者ユーザー以外はこの操作を実行できません"]);
+				redirect("/home");
+			}
 			echo !empty($vars) ? $handler($vars) : $handler();
 			Session::delete("toast");
 		} else {

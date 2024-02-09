@@ -63,9 +63,10 @@ INSERT INTO `surveys` (`id`, `user_id`, `title`, `note`, `greeting`, `greeting_v
 (1, 1, 'アンケート１', '説明テキスト', NULL, NULL),
 (2, 1, 'アンケ２あ', 'アああ', 'こちらは、電力〇〇センターです。〇〇電力管内にお住まいの皆様へ、〇〇電力のお得なプランに切り替えた場合、\r\nどれくらい電気代が削減できるかの診断精査を行っております。\r\n１分程度の音声質問にご協力をお願いします。　尚、音声の途中でもご回答頂けます。\r\n', NULL);
 
-INSERT INTO `users` (`id`, `email`, `password`) VALUES
-(1, 'test@example.com', '$2y$10$smM.1r.LkbkvktimMdr14ufFph9Wb97w2t5/wZVuXCeW0z3MLi8iW'),
-(2, 'test2@example.com', '$2y$10$smM.1r.LkbkvktimMdr14ufFph9Wb97w2t5/wZVuXCeW0z3MLi8iW');
+INSERT INTO `users` (`id`, `email`, `password`, `status`) VALUES
+(1, 'test@example.com', '$2y$10$smM.1r.LkbkvktimMdr14ufFph9Wb97w2t5/wZVuXCeW0z3MLi8iW', 0),
+(2, 'test2@example.com', '$2y$10$smM.1r.LkbkvktimMdr14ufFph9Wb97w2t5/wZVuXCeW0z3MLi8iW', 0),
+(3, 'admin@example.com', '$2y$10$smM.1r.LkbkvktimMdr14ufFph9Wb97w2t5/wZVuXCeW0z3MLi8iW', 1);
 
 INSERT INTO `areas` (`id`, `title`) VALUES
   (1, '四国'),

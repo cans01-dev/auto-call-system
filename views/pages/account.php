@@ -15,6 +15,16 @@
       <?= csrf() ?>
       <?= method('PUT') ?>
       <div class="mb-3">
+        <label class="form-label">ステータス</label>
+        <div>
+          <?php if (Auth::user()["status"] === 0): ?>
+              <span class="badge bg-dark-subtle text-black fs-6">一般</span>
+            <?php elseif (Auth::user()["status"] === 1): ?>
+              <span class="badge bg-dark-subtle text-black fs-6">管理</span>
+          <?php endif; ?>
+        </div>
+      </div>
+      <div class="mb-3">
         <label class="form-label">メールアドレス</label>
         <input type="email" name="email" class="form-control" value="<?= Auth::user()["email"] ?>">
       </div>
@@ -52,63 +62,42 @@
   </div>
 </section>
 
-<!-- changePasswordModal -->
-<div class="modal fade" id="changePasswordModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">パスワードを変更</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form action="/account/password" method="post">
-          <?= csrf() ?>
-          <?= method("PUT") ?>
-          <div class="mb-3">
-            <label class="form-label">現在のパスワード</label>
-            <input type="password" name="old_password" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">新しいパスワード</label>
-            <input type="password" name="new_password" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">新しいパスワード（再入力）</label>
-            <input type="password" name="new_password_confirm" class="form-control" required>
-          </div>
-          <div class="text-end">
-            <button type="submit" class="btn btn-primary">更新</button>
-          </div>
-        </form>
-        </form>
-      </div>
+<?= Components::modal("changePasswordModal", "パスワードを変更", <<<EOL
+  <form action="/account/password" method="post">
+    CSRF
+    METHOD_PUT
+    <div class="mb-3">
+      <label class="form-label">現在のパスワード</label>
+      <input type="password" name="old_password" class="form-control" required>
     </div>
-  </div>
-</div>
+    <div class="mb-3">
+      <label class="form-label">新しいパスワード</label>
+      <input type="password" name="new_password" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">新しいパスワード（再入力）</label>
+      <input type="password" name="new_password_confirm" class="form-control" required>
+    </div>
+    <div class="text-end">
+      <button type="submit" class="btn btn-primary">更新</button>
+    </div>
+    <div class="form-text">
+      パスワードは8文字以上の半角英数字を指定してください
+    </div>
+  </form>
+EOL); ?>
 
-<!-- sendEmailsCreateModal -->
-<div class="modal fade" id="sendEmailsCreateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">送信先メールアドレス新規登録</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form action="/send-emails" method="post">
-          <?= csrf() ?>
-          <div class="mb-3">
-            <label class="form-label">メールアドレス</label>
-            <input type="email" name="email" class="form-control" required>
-          </div>
-          <div class="text-end">
-            <button type="submit" class="btn btn-primary">登録</button>
-          </div>
-        </form>
-        </form>
-      </div>
+<?= Components::modal("sendEmailsCreateModal", "送信先メールアドレス新規登録", <<<EOL
+  <form action="/send-emails" method="post">
+    CSRF
+    <div class="mb-3">
+      <label class="form-label">メールアドレス</label>
+      <input type="email" name="email" class="form-control" required>
     </div>
-  </div>
-</div>
+    <div class="text-end">
+      <button type="submit" class="btn btn-primary">登録</button>
+    </div>
+  </form>
+EOL); ?>
 
 <?php require './views/templates/footer.php'; ?>
