@@ -1,0 +1,27 @@
+Notionリンク
+[Notion](https://low-melon-caf.notion.site/c1a3edb8e27f4ce59d00fad5487e49a5?pvs=4)
+
+- 有効コール一覧
+- コール検索（電話番号、回答）
+- 回答パターン別統計
+- 
+***
+
+### XSERVER
+mysql ユーザー
+autocall_main:cans01autocall
+
+ssh
+cans01autocall,
+鍵の場所: auto_call_system/dev
+
+- 1/10
+環境構築、フジハウジングの開発環境を改良・コメント付け
+- 1/11
+DB設計
+- 1/12
+project-baseの改良、Userモデル作成、Authモデル作成、認証周りのコントローラ作成
+- 1/15
+project-baseの改良、URI設計、ページ構成決め、ルーティング実装, Bootstrap, webpack
+- 1/16
+UI実装->サイドバー, ログイン, アンケート一覧, アンケート個別, 予約一覧（完了
