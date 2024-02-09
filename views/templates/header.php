@@ -4,8 +4,11 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title><?= PAGE_TITLE ?></title>
+	<link rel="stylesheet" href="<?= url("/assets/css/bootstrap.css") ?>">
+	<link rel="stylesheet" href="<?= url("/assets/css/markdown.css") ?>">
+	<link rel="stylesheet" href="<?= url("/assets/css/style.css") ?>">
 	<script src="https://kit.fontawesome.com/285c1d0655.js" crossorigin="anonymous"></script>
-	<script src="<?= url("/assets/script/dist/main.js") ?>"></script>
+	<script src="<?= url("/assets/script/dist/main.js") ?>" defer></script>
 <body>
 <div class="flex-container">
 <header class="border-end border-2 text-bg-white">

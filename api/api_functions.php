@@ -144,29 +144,29 @@ function gen_reserve_info_array($reserve) {
   ];
 
   # faqs
-  $faqs_array = [];
   foreach ($faqs as $faq) {
     $f = [
-      "label" => "stage" . $faq["order_num"] + 1,
       "faq_id" => "{$faq["id"]}",
       "options" => []
-      // voice
     ];
       
     $options = Fetch::get("options", $faq["id"], "faq_id");
     foreach($options as $option) {
       $next_type = $option["next_ending_id"] ? "ending" : "faq";
       $next_id = $next_type === "ending" ? $option["next_ending_id"] : $option["next_faq_id"];
-
-      $f["options"]["{$option["dial"]}"] = "{$next_type}{$next_id}";
+      // $next = 
+      $f["options"]["{$option["dial"]}"] = [
+        "option_id" => $option["id"],
+        "next_type" => $next_type,
+        "next_index" => $next_id
+      ];
     }
     $r["faqs"][] = $f;
   }
 
   # endings
-  foreach ($endings as $i => $ending) {
+  foreach ($endings as $ending) {
     $e = [
-      "label" => "ending" . $i + 1,
       "ending_id" => "{$ending["id"]}"
       // voice
     ];

@@ -23,11 +23,17 @@
             <p class="card-text mb-0"><?= $survey["greeting"] ?></p>
             <div class="position-absolute top-0 end-0 p-3">
               <button type="button" class="btn btn-outline-dark me-2" data-bs-toggle="modal" data-bs-target="#greetingModal">設定</button>
-              <button href="" class="btn btn-outline-primary" disabled>
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#audioModal"
+                data-bs-whatever="<?= url("/storage/outputs/".$survey["greeting_voice_file"]) ?>"
+                <?= $survey["greeting_voice_file"] ? "" : "disabled"; ?>
+              >
                 <i class="fa-solid fa-volume-high"></i>
                 音声
               </button>
-              <audio controls src="<?= url("/storage/outputs/".$survey["greeting_voice_file"]) ?>"></audio>
             </div>
           </div>
         </div>
@@ -345,6 +351,12 @@
   </div>
 </div>
 
+<?= Components::modal("audioModal", "読み上げ音声を視聴", <<<EOM
+  <div class="text-center py-2">
+    <audio controls></audio>
+  </div>
+EOM); ?>
+
 <!-- dayModal -->
 <div class="modal fade" id="dayModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable">
@@ -425,33 +437,22 @@
   </div>
 </div>
 
-<!-- faqsCreateModal -->
-<div class="modal fade" id="faqsCreateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">質問を新規作成</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form action="/faqs" method="post">
-          <?= csrf() ?>
-          <div class="mb-3">
-            <label class="form-label">質問のタイトル</label>
-            <input type="text" name="title" class="form-control" placeholder="〇〇に関する質問">
-          </div>
-          <div class="text-end">
-            <input type="hidden" name="survey_id" value="<?= $survey["id"] ?>">
-            <button type="submit" class="btn btn-primary">作成</button>
-          </div>
-          <div class="form-text">
-            質問を作成すると自動的に「0: 聞き直し」の選択肢が設定されます
-          </div>
-        </form>
-      </div>
+<?= Components::modal("faqsCreateModal", "質問を新規作成", <<<EOM
+  <form action="/faqs" method="post">
+    <?= csrf() ?>
+    <div class="mb-3">
+      <label class="form-label">質問のタイトル</label>
+      <input type="text" name="title" class="form-control" placeholder="〇〇に関する質問">
     </div>
-  </div>
-</div>
+    <div class="text-end">
+      <input type="hidden" name="survey_id" value="{$survey["id"]}">
+      <button type="submit" class="btn btn-primary">作成</button>
+    </div>
+    <div class="form-text">
+      質問を作成すると自動的に「0: 聞き直し」の選択肢が設定されます
+    </div>
+  </form>
+EOM); ?>
 
 <!-- favoritesCreateModal -->
 <div class="modal fade" id="favoritesCreateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -513,31 +514,20 @@
   </div>
 </div>
 
-<!-- greetingModal -->
-<div class="modal fade" id="greetingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">グリーティングを編集</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form action="/surveys/<?= $survey["id"] ?>/greeting" method="post">
-          <?= csrf() ?>
-          <?= method("PUT") ?>
-          <div class="mb-3">
-            <label class="form-label">テキスト</label>
-            <textarea name="greeting" class="form-control" rows="5"><?= $survey["greeting"] ?></textarea>
-          </div>
-          <div class="text-end">
-            <input type="hidden" name="survey_id" value="<?= $survey["id"] ?>">
-            <button type="submit" class="btn btn-primary">更新</button>
-          </div>
-        </form>
-      </div>
+<?= Components::modal("greetingModal", "グリーティングを編集", <<<EOM
+  <form action="/surveys/{$survey["id"]}/greeting" method="post">
+    CSRF
+    METHOD_PUT
+    <div class="mb-3">
+      <label class="form-label">テキスト</label>
+      <textarea name="greeting" class="form-control" rows="5">{$survey["greeting"]}</textarea>
     </div>
-  </div>
-</div>
+    <div class="text-end">
+      <input type="hidden" name="survey_id" value="{$survey["id"]}">
+      <button type="submit" class="btn btn-primary">更新</button>
+    </div>
+  </form>
+EOM); ?>
 
 <?= Components::modal("endingsCreateModal", "エンディングを作成", <<<EOM
   <form action="/endings" method="post">

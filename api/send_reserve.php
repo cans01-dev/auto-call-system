@@ -9,7 +9,7 @@ require __DIR__."/api_functions.php";
 
 $pdo = new_pdo();
 
-$date = $argv[1];
+if (!$date = $argv[1]) exit();
 
 $reserves = Fetch::get2("reserves", [
   ["date", "=", $date ?? date("Y-m-d")]
@@ -33,15 +33,15 @@ foreach ($reserves as $reserve) {
   reserve_file => {$file_path}
   EOL;
 
-  $url = SEND_FILE_URL;
-  $curl_file = new CURLFile(dirname(__DIR__).$file_path);
-  [$response, $http_code] = send_file($curl_file, $url, [
-    "Authorization: " . SEND_FILE_AUTHORIZATION
-  ]);
-  echo <<<EOL
-  sent file to {$url}"
-  [response ({$url})]
-  http code: {$http_code}
-  {$response}
-  EOL;
+  // $url = SEND_FILE_URL;
+  // $curl_file = new CURLFile(dirname(__DIR__).$file_path);
+  // [$response, $http_code] = send_file($curl_file, $url, [
+  //   "Authorization: " . SEND_FILE_AUTHORIZATION
+  // ]);
+  // echo <<<EOL
+  // sent file to {$url}"
+  // [response ({$url})]
+  // http code: {$http_code}
+  // {$response}
+  // EOL;
 }

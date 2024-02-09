@@ -29,34 +29,21 @@
   </div>
 </div>
 
-
-<!-- surveysCreateModal -->
-<div class="modal fade" id="surveysCreateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">アンケートを新規作成</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form action="/surveys" method="post">
-          <?= csrf() ?>
-          <div class="mb-3">
-            <label class="form-label">アンケートのタイトル</label>
-            <input type="text" name="title" class="form-control" placeholder="〇〇のアンケート"  required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">アンケートの説明（任意）</label>
-            <textarea class="form-control" name="note" rows="3"></textarea>
-          </div>
-          <div class="text-end">
-            <input type="hidden" name="surveyId" value="<?= $surveyId ?>">
-            <button type="submit" class="btn btn-primary">作成</button>
-          </div>
-        </form>
-      </div>
+<?= Components::modal("surveysCreateModal", "アンケートを新規作成", <<<EOM
+  <form action="/surveys" method="post">
+    CSRF
+    <div class="mb-3">
+      <label class="form-label">アンケートのタイトル</label>
+      <input type="text" name="title" class="form-control" placeholder="〇〇のアンケート"  required>
     </div>
-  </div>
-</div>
+    <div class="mb-3">
+      <label class="form-label">アンケートの説明（任意）</label>
+      <textarea class="form-control" name="note" rows="3"></textarea>
+    </div>
+    <div class="text-end">
+      <button type="submit" class="btn btn-primary">作成</button>
+    </div>
+  </form>
+EOM); ?>
 
 <?php require './views/templates/footer.php'; ?>

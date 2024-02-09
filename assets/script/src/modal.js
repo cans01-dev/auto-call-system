@@ -18,6 +18,17 @@ if (dayModal) {
   })
 }
 
+const audioModal = document.getElementById('audioModal');
+if (audioModal) {
+  audioModal.addEventListener('show.bs.modal', event => {
+    const button = event.relatedTarget;
+    const recipient = button.getAttribute('data-bs-whatever');
+    const modalAudio = audioModal.querySelector('audio');
+
+    modalAudio.src = recipient;
+  })
+}
+
 if (location.pathname === "/home") {
   console.log('/home');
   const surveysCreateModalEl = document.getElementById('surveysCreateModal');

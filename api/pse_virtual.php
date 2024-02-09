@@ -32,3 +32,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   {$response}
   EOL;
 }
+
+?>
+
+<h2>予約情報ファイルを受信、サンプル結果ファイルを生成、送信</h2>
+<form method="post">
+  <label>予約情報ファイル</label>
+  <input type="file" name="file">
+  <button type="submit">実行</button>
+</form>
