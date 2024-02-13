@@ -1,6 +1,6 @@
 <?php require './views/templates/header.php'; ?>
 
-<nav aria-label="breadcrumb" class="sticky-top">
+<nav aria-label="breadcrumb" class="breadcrumb-nav">
   <ol class="breadcrumb">
     <li class="breadcrumb-item active">ホーム</li>
   </ol>
@@ -10,7 +10,7 @@
 <div class="d-flex gap-3">
   <div class="w-100">
   </div>
-  <div class="flex-shrink-0" style="width: 300px;">
+  <div class="flex-shrink-0 sticky-aside" style="width: 300px;">
     <div class="sticky-top">
       <?= Components::h4("アンケート一覧") ?>
       <?php if ($surveys): ?>
@@ -26,7 +26,7 @@
           </div>
         <?php endforeach; ?>
       <?php else: ?>
-        <div class="text-center py-2 rounded border mb-2">アンケートがありません</div>
+        <?= Components::noContent("アンケートがありません") ?>
       <?php endif; ?>
       <?= Components::modalOpenButton("surveysCreateModal") ?>
     </div>

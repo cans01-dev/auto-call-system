@@ -16,3 +16,10 @@ function logout() {
   redirect("/login");
 }
 
+function sendContact() {
+  // お問い合わせの送信 or DB保存の処理
+
+  Session::set("toast", ["warning", "！この機能はまだ実装されていません"]);
+  back();
+}
+

@@ -9,10 +9,9 @@ require "./api_functions.php";
 $pdo = new_pdo();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-  if (!authenticate("admin", "test", $_SERVER["HTTP_AUTHORIZATION"])) exit("認証情報が不正");
-  if (!$file_path = upload_file($_FILES["file"])) exit("ファイルのアップロードに失敗しました");
+  if (!authenticate("admin", "test", $_SERVER["HTTP_AUTHORIZATION"])) error_response("Authentication failed");
+  if (!$file_path = upload_file($_FILES["file"])) exit();
   $array = json_decode(file_get_contents($file_path), true);
-  echo "結果ファイルを正常に受信しました: {$file_path}" . PHP_EOL;
 
   $reserve = Fetch::find("reserves", $array["id"]);
 
@@ -41,9 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     "result_file" => basename($file_path),
     "status" => "4"
   ]);
-  echo <<<EOL
-  [UPDATE reserve({$reserve["id"]})]
-  status => "4",
-  result_file => {$file_path}
-  EOL;
+
+  header("200 OK");
+  exit(json_encode(["message" => "success"]));
 }

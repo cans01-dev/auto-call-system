@@ -38,9 +38,8 @@ function hour_to_sec(string $str): int
   return ($h * 60 * 60) + ($m * 60) + $s;
 }
 
-function text_to_speech($text) {
-  $google_api_key = "AIzaSyCVOtglUcy3xRxk-x1qI2m8e-JmJ_RZZJU";
-  $google_tts_api_url = "https://texttospeech.googleapis.com/v1/text:synthesize?key=".$google_api_key;
+function text_to_speech($text, $voice_name) {
+  $google_tts_api_url = "https://texttospeech.googleapis.com/v1/text:synthesize?key=".GOOGLE_API_KEY;
   
   $ch = curl_init();
   curl_setopt_array($ch, [
@@ -60,7 +59,7 @@ function text_to_speech($text) {
       ],
       "voice" => [
         "languageCode" => "ja-JP",
-        "name" => "ja-JP-Standard-A"
+        "name" => $voice_name
       ]
     ])
   ]);

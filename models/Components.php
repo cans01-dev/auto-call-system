@@ -69,6 +69,13 @@ class Components
     </div>  
     EOM;
   }
+
+  public static function noContent($children) {
+    return <<<EOM
+      <div class="text-center py-2 rounded border mb-2">{$children}</div>
+    EOM;
+  }
+
 }
 
 

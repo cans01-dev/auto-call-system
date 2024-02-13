@@ -40,6 +40,26 @@ define("RESERVATION_STATUS", [
   9 => ["text" => "お気に入り", "bg" => "black"]
 ]);
 
+define("USER_STATUS", [
+  0 => ["text" => "一般", "bg" => "primary"],
+  1 => ["text" => "管理者", "bg" => "info"],
+  2 => ["text" => "利用停止", "bg" => "secondary"]
+]);
+
+define("CONTACT_TYPE", [
+  0 => ["text" => "機能についてのご質問"],
+  1 => ["text" => "バグ、エラーの報告"],
+  2 => ["text" => "その他のご連絡"]
+]);
+
+define("VOICES", [
+  ["name" => "ja-JP-Standard-A", "gender" => "FEMALE"],
+  ["name" => "ja-JP-Standard-B", "gender" => "FEMALE"],
+  ["name" => "ja-JP-Standard-C", "gender" => "MALE"],
+  ["name" => "ja-JP-Standard-D", "gender" => "MALE"]
+]);
+
+
 define("USER_STATUS_GENERAL", 0);
 define("USER_STATUS_ADMIN", 1);
 
@@ -48,3 +68,5 @@ define("COLOR_PALLET", ["#DCF2F1", "#7FC7D9", "#365486", "#0F1035"]);
 
 # 課金表示画面に適用される秒数あたりの料金
 define("PRICE_PER_SECOND", 0.138);
+
+define("GOOGLE_API_KEY", "AIzaSyCVOtglUcy3xRxk-x1qI2m8e-JmJ_RZZJU");

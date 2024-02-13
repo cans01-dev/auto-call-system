@@ -1,6 +1,6 @@
 <?php require './views/templates/header.php'; ?>
 
-<nav aria-label="breadcrumb" class="sticky-top">
+<nav aria-label="breadcrumb" class="breadcrumb-nav">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">ホーム</a></li>
     <li class="breadcrumb-item"><a href="/surveys/<?= $survey["id"] ?>"><?= $survey["title"] ?></a></li>
@@ -26,6 +26,7 @@
       <div class="text-end">
         <button type="submit" class="btn btn-dark">更新</button>
       </div>
+      <div class="form-text">更新すると入力されたテキストから音声ファイルが自動的に生成されます</div>
     </form>
     <form method="post" onsubmit="return window.confirm('本当に削除しますか？\r\n遷移先がこの質問になっている他の質問の選択肢は自動的に「聞き直し」に変更されます')">
       <?= csrf() ?>

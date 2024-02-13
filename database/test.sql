@@ -27,6 +27,7 @@ CREATE TABLE surveys (
   note text(65535),
   greeting text(65535),
   greeting_voice_file varchar(255),
+  voice_name varchar(255) NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 );

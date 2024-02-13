@@ -18,6 +18,20 @@ function adminUpdatePassword() {
   back();
 }
 
+function adminUpdateStatus() {
+  $user = Fetch::find("users", $_POST["user_id"]);
+
+  if (!password_verify($_POST["admin_password"], Auth::user()["password"])) {
+    Session::set("toast", ["danger", "変更を行う管理者のパスワードが異なります"]);
+    back();
+  }
+  DB::update("users", $user["id"], [
+    "status" => $_POST["new_status"]
+  ]);
+  Session::set("toast", ["success", "{$user["email"]}のステータスを変更しました"]);
+  back();
+}
+
 function storeUser() {
   if ($_POST["password"] !== $_POST["password_confirm"]) {
     Session::set("toast", ["danger", "パスワードの再入力が正しくありません"]);

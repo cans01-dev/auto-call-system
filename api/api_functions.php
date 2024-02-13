@@ -121,9 +121,6 @@ function gen_reserve_info_array($reserve) {
   $endings = Fetch::get("endings", $survey["id"], "survey_id");
   $areas = Fetch::areasByReserveId($reserve["id"]);
 
-  if ($reserve["status"]) exit("エラー: 予約のステータスが予約済ではない");
-  if (empty($areas)) exit("エラー: エリアが指定されてない");
-
   $stations = [];
   foreach ($areas as $area) {
     foreach (Fetch::get("stations", $area["id"], "area_id") as $station) {
@@ -210,4 +207,9 @@ function get_reserve_files($reserve) {
   }
 
   return $files;
+}
+
+function error_response($message) {
+  header("400 Bad Request");
+  exit(json_encode(["message: {$message}"], JSON_PRETTY_PRINT));
 }

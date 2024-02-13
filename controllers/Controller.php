@@ -91,10 +91,17 @@ function survey($vars) {
     }
   }
 
-  $tss = [];
-  for ($i = 0; $i > -5; $i--) $tss[] = mktime(0, 0, 0, date("m") + $i, 1, date("Y"));
+  $survey_reserves = Fetch::get("reserves", $survey_id, "survey_id");
+  $months = [];
+  foreach ($survey_reserves as $reserve) {
+    $month = date("Y-m", strtotime($reserve["date"]));
+    if (!in_array($month, $months)) {
+      $months[] = $month;
+    }
+  }
 
-  foreach ($tss as $ts) {
+  foreach ($months as $month) {
+    $ts = strtotime($month."-01");
     $reserves = Fetch::reservesBySurveyIdAndYearMonth($survey_id, date("m", $ts), date("Y", $ts));
     $calls = $reserves ? Fetch::callsByReserves($reserves) : [];
     

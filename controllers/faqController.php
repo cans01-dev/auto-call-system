@@ -23,9 +23,10 @@ function storeFaq() {
 function updatefaq($vars) {
   $id = $vars["id"];
   $faq = Fetch::find("faqs", $id);
+  $survey = Fetch::find("surveys", $faq["survey_id"]);
   if (!Allow::faq($faq)) abort(403);
-  $file_name = "faq{$faq["id"]}.wav";
-  file_put_contents(dirname(__DIR__)."/storage/outputs/{$file_name}", text_to_speech($_POST["text"]));
+  $file_name = uniqid("f{$faq["id"]}_") . ".wav";
+  file_put_contents(dirname(__DIR__)."/storage/outputs/{$file_name}", text_to_speech($_POST["text"], $survey["voice_name"]));
   DB::update("faqs", $id, [
     "title" => $_POST["title"],
     "text" => $_POST["text"],

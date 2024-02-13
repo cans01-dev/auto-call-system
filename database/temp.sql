@@ -59,9 +59,9 @@ INSERT INTO `reserves_areas` (`id`, `reserve_id`, `area_id`) VALUES
 INSERT INTO `send_emails` (`id`, `user_id`, `email`, `enabled`) VALUES
 (1, 1, 'test2@example.com', 0);
 
-INSERT INTO `surveys` (`id`, `user_id`, `title`, `note`, `greeting`, `greeting_voice_file`) VALUES
-(1, 1, 'アンケート１', '説明テキスト', NULL, NULL),
-(2, 1, 'アンケ２あ', 'アああ', 'こちらは、電力〇〇センターです。〇〇電力管内にお住まいの皆様へ、〇〇電力のお得なプランに切り替えた場合、\r\nどれくらい電気代が削減できるかの診断精査を行っております。\r\n１分程度の音声質問にご協力をお願いします。　尚、音声の途中でもご回答頂けます。\r\n', NULL);
+INSERT INTO `surveys` (`id`, `user_id`, `title`, `note`, `greeting`, `greeting_voice_file`, `voice_name`) VALUES
+(1, 1, 'アンケート１', '説明テキスト', NULL, NULL, 'ja-JP-Standard-A'),
+(2, 1, 'アンケ２あ', 'アああ', 'こちらは、電力〇〇センターです。〇〇電力管内にお住まいの皆様へ、〇〇電力のお得なプランに切り替えた場合、\r\nどれくらい電気代が削減できるかの診断精査を行っております。\r\n１分程度の音声質問にご協力をお願いします。　尚、音声の途中でもご回答頂けます。\r\n', NULL, 'ja-JP-Standard-A');
 
 INSERT INTO `users` (`id`, `email`, `password`, `status`) VALUES
 (1, 'test@example.com', '$2y$10$smM.1r.LkbkvktimMdr14ufFph9Wb97w2t5/wZVuXCeW0z3MLi8iW', 0),

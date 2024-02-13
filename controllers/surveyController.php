@@ -9,7 +9,8 @@ function storeSurvey() {
   DB::insert("surveys", [
     "user_id" => Auth::user()["id"],
     "title" => $_POST["title"],
-    "note" => $_POST["note"]
+    "note" => $_POST["note"],
+    "voice_name" => VOICES[0]["name"]
   ]);
   $id = DB::lastInsertId();
   Session::set("toast", ["success", "アンケートを新規作成しました"]);
@@ -22,7 +23,8 @@ function updateSurvey($vars) {
   if (!Allow::survey($survey)) abort(403);
   DB::update("surveys", $id, [
     "title" => $_POST["title"],
-    "note" => $_POST["note"]
+    "note" => $_POST["note"],
+    "voice_name" => $_POST["voice_name"],
   ]);
   Session::set("toast", ["success", "アンケートの設定を変更しました"]);
   back();
@@ -32,8 +34,8 @@ function updateGreeting($vars) {
   $id = $vars["id"];
   $survey = Fetch::find("surveys", $id);
   if (!Allow::survey($survey)) abort(403);
-  $file_name = "s{$survey["id"]}_greeting.wav";
-  file_put_contents(dirname(__DIR__)."/storage/outputs/{$file_name}", text_to_speech($_POST["greeting"]));
+  $file_name = uniqid("s{$survey["id"]}g_") . ".wav";
+  file_put_contents(dirname(__DIR__)."/storage/outputs/{$file_name}", text_to_speech($_POST["greeting"], $survey["voice_name"]));
   DB::update("surveys", $id, [
     "greeting" => $_POST["greeting"],
     "greeting_voice_file" => $file_name
@@ -51,8 +53,8 @@ function storeEnding() {
     "text" => $_POST["text"]
   ]);
   $ending_id = DB::lastInsertId();
-  $file_name = "ending{$ending_id}.wav";
-  file_put_contents(dirname(__DIR__)."/storage/outputs/{$file_name}", text_to_speech($_POST["text"]));
+  $file_name = uniqid("e{$ending_id}_") . ".wav";
+  file_put_contents(dirname(__DIR__)."/storage/outputs/{$file_name}", text_to_speech($_POST["text"], $survey["voice_name"]));
   DB::update("endings", $ending_id, [
     "voice_file" => $file_name
   ]);
@@ -64,8 +66,8 @@ function updateEnding($vars) {
   $id = $vars["id"];
   $ending = Fetch::find("endings", $id);
   if (!Allow::ending($ending)) abort(403);
-  $file_name = "ending{$ending["id"]}.wav";
-  file_put_contents(dirname(__DIR__)."/storage/outputs/{$file_name}", text_to_speech($_POST["text"]));
+  $file_name = uniqid("e{$ending["id"]}_") . ".wav";
+  file_put_contents(dirname(__DIR__)."/storage/outputs/{$file_name}", text_to_speech($_POST["text"], $survey["voice_name"]));
   DB::update("endings", $id, [
     "title" => $_POST["title"],
     "text" => $_POST["text"],
