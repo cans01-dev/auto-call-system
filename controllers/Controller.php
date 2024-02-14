@@ -35,18 +35,18 @@ function survey($vars) {
   $survey["faqs"] = Fetch::get("faqs", $survey["id"], "survey_id", "order_num");
   $survey["reserves"] = Fetch::reservesBySurveyIdAndYearMonth($survey["id"], $month, $year);
   $survey["favorites"] = Fetch::get("favorites", $survey["id"], "survey_id");
+  if (!Allow::survey($survey)) abort(403);
 
-  if ($survey["user_id"] !== Auth::user()["id"]) abort(403);
-
+  # calendar
   $schedules = [];
   foreach ($survey["reserves"] as $reserve) {
     $reserve["areas"] = Fetch::areasByReserveId($reserve["id"]);
     $ts = strtotime($reserve["date"]);
     $schedules[date("d", $ts)] = $reserve;
   }
-
   $calendar = new Calendar($month, $year, $schedules);
 
+  # area
   global $pdo;
   $stmt = $pdo->prepare("SELECT * FROM areas WHERE id IN (
     SELECT area_id FROM reserves_areas WHERE reserve_id IN (
@@ -55,7 +55,6 @@ function survey($vars) {
   )");
   $stmt->execute([":survey_id" => $survey_id]);
   $areas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
   foreach ($areas as $key => $area) {
     $stations = Fetch::get("stations", $area["id"], "area_id");
     $areas[$key]["all_numbers"] = count($stations) * 10000;
@@ -91,6 +90,7 @@ function survey($vars) {
     }
   }
 
+  # billing
   $survey_reserves = Fetch::get("reserves", $survey_id, "survey_id");
   $months = [];
   foreach ($survey_reserves as $reserve) {
@@ -99,12 +99,10 @@ function survey($vars) {
       $months[] = $month;
     }
   }
-
   foreach ($months as $month) {
     $ts = strtotime($month."-01");
     $reserves = Fetch::reservesBySurveyIdAndYearMonth($survey_id, date("m", $ts), date("Y", $ts));
     $calls = $reserves ? Fetch::callsByReserves($reserves) : [];
-    
     $total_duration = $calls ? array_sum(array_column($calls, "duration")) : 0;
     $survey["billings"][] = [
       "timestamp" => $ts,

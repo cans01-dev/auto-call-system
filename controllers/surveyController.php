@@ -65,7 +65,8 @@ function storeEnding() {
 function updateEnding($vars) {
   $id = $vars["id"];
   $ending = Fetch::find("endings", $id);
-  if (!Allow::ending($ending)) abort(403);
+  $survey = Fetch::find("surveys", $ending["survey_id"]);
+  if (!Allow::survey($survey)) abort(403);
   $file_name = uniqid("e{$ending["id"]}_") . ".wav";
   file_put_contents(dirname(__DIR__)."/storage/outputs/{$file_name}", text_to_speech($_POST["text"], $survey["voice_name"]));
   DB::update("endings", $id, [
@@ -83,5 +84,33 @@ function deleteEnding($vars) {
   if (!Allow::ending($ending)) abort(403);
   DB::delete("endings", $id);
   Session::set("toast", ["success", "エンディングを削除しました"]);
+  back();
+}
+
+function allVoiceFileReGen($vars) {
+  $survey_id = $vars["id"];
+  $survey = Fetch::find("surveys", $survey_id);
+  if (!Allow::survey($survey)) abort(403);
+
+  $survey["endings"] = Fetch::get("endings", $survey["id"], "survey_id");
+  $survey["faqs"] = Fetch::get("faqs", $survey["id"], "survey_id", "order_num");
+
+  $file_name = uniqid("s{$survey["id"]}g_") . ".wav";
+  file_put_contents(dirname(__DIR__)."/storage/outputs/{$file_name}",text_to_speech($survey["greeting"], $survey["voice_name"]));
+  DB::update("surveys", $survey_id, ["greeting_voice_file" => $file_name]);
+
+  foreach ($survey["endings"] as $ending) {
+    $file_name = uniqid("e{$ending["id"]}_") . ".wav";
+    file_put_contents(dirname(__DIR__)."/storage/outputs/{$file_name}", text_to_speech($ending["text"], $survey["voice_name"]));  
+    DB::update("endings", $ending["id"], ["voice_file" => $file_name]);
+  }
+
+  foreach ($survey["faqs"] as $faq) {
+    $file_name = uniqid("f{$faq["id"]}_") . ".wav";
+    file_put_contents(dirname(__DIR__)."/storage/outputs/{$file_name}", text_to_speech($faq["text"], $survey["voice_name"]));  
+    DB::update("faqs", $faq["id"], ["voice_file" => $file_name]);
+  }
+
+  Session::set("toast", ["success", "全ての音声ファイルを更新しました"]);
   back();
 }

@@ -234,7 +234,7 @@
                         <?php endif; ?>
                       </a>
                     <?php else: ?>
-                      <?php if (time() < $day->timestamp + RESERVATION_DEADLINE_HOUR * 3600): ?>
+                      <?php // if (time() < $day->timestamp + RESERVATION_DEADLINE_HOUR * 3600): ?>
                         <button
                         type="button"
                         class="day-modal-button"
@@ -244,7 +244,7 @@
                         >
                           <i class="fa-solid fa-plus fa-2xl"></i>
                         </button>
-                      <?php endif; ?>
+                      <?php // endif; ?>
                     <?php endif; ?>
                   <?php endif; ?>
                 </td>
@@ -338,37 +338,47 @@
     <div class="sticky-top">
       <section id="summary">
         <?= Components::h4("設定"); ?>
-        <form method="post">
-          <?= csrf() ?>
-          <?= method("PUT") ?>
-          <div class="mb-3">
-            <label class="form-label">アンケートのタイトル</label>
-            <input type="text" name="title" class="form-control" value="<?= $survey["title"] ?>" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">アンケートの説明（任意）</label>
-            <textarea class="form-control" name="note" rows="3"><?= $survey["note"] ?></textarea>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">生成する音声のタイプ</label>
-            <select class="form-select" name="voice_name">
-              <?php foreach (VOICES as $voice): ?>
-                <option
-                  value="<?= $voice["name"] ?>"
-                  <?= $voice["name"] === $survey["voice_name"] ? "selected" : ""; ?>
-                >
-                <?= "{$voice["name"]} ({$voice["gender"]})" ?>
-              </option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-          <div class="text-end mb-2">
-            <button type="submit" class="btn btn-dark">更新</button>
-          </div>
-          <div class="form-text">
-            音声タイプの変更は、既に生成された音声ファイルには影響せず、既存の文章に反映させるには全て更新する必要があります
-          </div>
-        </form>        
+        <div class="mb-2">
+          <form method="post">
+            <?= csrf() ?>
+            <?= method("PUT") ?>
+            <div class="mb-3">
+              <label class="form-label">アンケートのタイトル</label>
+              <input type="text" name="title" class="form-control" value="<?= $survey["title"] ?>" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">アンケートの説明（任意）</label>
+              <textarea class="form-control" name="note" rows="3"><?= $survey["note"] ?></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">
+                生成する音声のタイプ
+                <?= Components::infoBtn() ?>
+              </label>
+              <select class="form-select" name="voice_name">
+                <?php foreach (VOICES as $voice): ?>
+                  <option
+                    value="<?= $voice["name"] ?>"
+                    <?= $voice["name"] === $survey["voice_name"] ? "selected" : ""; ?>
+                  >
+                  <?= "{$voice["name"]} ({$voice["gender"]})" ?>
+                </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+            <div class="text-end mb-2">
+              <button type="submit" class="btn btn-dark">更新</button>
+            </div>
+            <div class="form-text">
+              音声タイプの変更は、既に生成された音声ファイルには影響せず、既存の文章に反映させるには全て更新する必要があります
+            </div>
+          </form>
+        </div>
+        <div class="text-end">
+          <button type="button" class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#advancedSettingsModal">
+            詳細設定
+          </button>
+        </div>
       </section>
       <?= Components::hr(4) ?>
       <section id="settings">
@@ -428,7 +438,7 @@ EOL); ?>
 
 <!-- dayModal -->
 <div class="modal fade" id="dayModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5"></h1>
@@ -541,9 +551,12 @@ EOL); ?>
           <div class="mb-3">
             <label class="form-label">ラベルカラーを選択</label>
             <div class="d-flex gap-4">
-              <?php foreach (COLOR_PALLET as $color): ?>
+              <?php foreach (COLOR_PALLET as $k => $color): ?>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="color" value="<?= $color ?>" id="i<?= $color ?>">
+                <input
+                  class="form-check-input" type="radio" name="color" value="<?= $color ?>" id="i<?= $color ?>"
+                  <?= $k === 0 ? "checked" : "" ?>
+                >
                 <label class="form-check-label" for="i<?= $color ?>">
                   <div class="badge border border-dark" style="background-color: <?= $color ?>;">　</div>
                 </label>
@@ -597,6 +610,36 @@ EOL); ?>
     </div>
     <div class="form-text">更新すると入力されたテキストから音声ファイルが自動的に生成されます</div>
   </form>
+EOL); ?>
+
+<?= Components::modal("advancedSettingsModal", "詳細設定", <<<EOL
+  <div class="mb-3">
+    <form
+    action="/surveys/{$survey["id"]}/all_voice_file_re_gen"
+    method="post"
+    onsubmit="return window.confirm('本当に実行しますか？この操作には時間がかかることがあります')"
+    >
+      CSRF
+      <button class="btn btn-outline-danger">全ての音声ファイルを更新する</button>
+      <div class="form-text">
+        このアンケートのグリーティングや全てのエンディング、質問の音声ファイルが現在の設定で再生成されます。
+      </div>
+    </form>
+  </div>
+  <div class="mb-3">
+    <form
+    action="/surveys/{$survey["id"]}"
+    method="post"
+    onsubmit="return window.confirm('本当に削除しますか？')"
+    >
+      CSRF
+      METHOD_DELETE
+      <button class="btn btn-outline-danger">アンケートを削除する</button>
+      <div class="form-text">
+        このアンケートに関連する全てのデータ（質問、予約、結果など）が削除されます。
+      </div>
+    </form>
+  </div>
 EOL); ?>
 
 <?= Components::modal("endingsCreateModal", "エンディングを作成", <<<EOL

@@ -69,12 +69,12 @@ main {
 }
 .breadcrumb {
   margin-bottom: 0;
-  padding: 12px 0;
+  padding: 12px 0 8px;
   background-color: #fff;
 }
 .sticky-aside {
   > div {
-    top: 56px;
+    top: 44px;
     @media (max-width: 1120px) {
       top: 104px;
     }

@@ -29,6 +29,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("POST", "/surveys", "storeSurvey");
 	$r->addRoute("PUT", "/surveys/{id:\d+}", "updateSurvey");
 	$r->addRoute("PUT", "/surveys/{id:\d+}/greeting", "updateGreeting");
+	$r->addRoute("POST", "/surveys/{id:\d+}/all_voice_file_re_gen", "allVoiceFileReGen");
 
 	$r->addRoute("POST", "/endings", "storeEnding");
 	$r->addRoute("PUT", "/endings/{id:\d+}", "updateEnding");
