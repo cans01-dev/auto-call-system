@@ -28,7 +28,7 @@
                 class="btn btn-outline-primary"
                 data-bs-toggle="modal"
                 data-bs-target="#audioModal"
-                data-bs-whatever="<?= url("/storage/outputs/".$survey["greeting_voice_file"]) ?>"
+                data-bs-whatever="<?= url("/storage/users/{$survey["user_id"]}/{$survey["greeting_voice_file"]}") ?>"
                 <?= $survey["greeting_voice_file"] ? "" : "disabled"; ?>
               >
                 <i class="fa-solid fa-volume-high"></i>
@@ -55,7 +55,7 @@
                     class="btn btn-outline-primary"
                     data-bs-toggle="modal"
                     data-bs-target="#audioModal"
-                    data-bs-whatever="<?= url("/storage/outputs/".$ending["voice_file"]) ?>"
+                    data-bs-whatever="<?= url("/storage/users/{$survey["user_id"]}/{$ending["voice_file"]}") ?>"
                     <?= $ending["voice_file"] ? "" : "disabled"; ?>
                   >
                     <i class="fa-solid fa-volume-high"></i>
@@ -162,7 +162,7 @@
                     class="btn btn-outline-primary"
                     data-bs-toggle="modal"
                     data-bs-target="#audioModal"
-                    data-bs-whatever="<?= url("/storage/outputs/".$faq["voice_file"]) ?>"
+                    data-bs-whatever="<?= url("/storage/users/{$survey["user_id"]}/{$faq["voice_file"]}") ?>"
                     <?= $faq["voice_file"] ? "" : "disabled"; ?>
                   >
                     <i class="fa-solid fa-volume-high"></i>
@@ -224,8 +224,14 @@
                       class="badge text-bg-<?= RESERVATION_STATUS[$reserve["status"]]["bg"] ?> bg-gradient text-wrap w-100" style="text-decoration: none;"
                       href="/reserves/<?= $reserve["id"] ?><?= $reserve["status"]? "/result": null; ?>"
                       >
-                        <?= date("H:i", strtotime($reserve["start"])) ?> - <?= date("H:i", strtotime($reserve["end"])) ?><br>
-                        <?php if (count($reserve["areas"]) < 4): ?>
+                        <?= date("H:i", strtotime($reserve["start"])) ?> - <?= date("H:i", strtotime($reserve["end"])) ?>
+                        <?php if (count($reserve["areas"]) === 0): ?>
+                          <div class="text-danger py-2">
+                            <span href="#" data-bs-toggle="tooltip" data-bs-title="エリアが指定されていません">
+                              <i class="fa-solid fa-circle-exclamation fa-2xl"></i>
+                            </span>
+                          </div>
+                        <?php elseif (count($reserve["areas"]) < 4): ?>
                           <?php foreach ($reserve["areas"] as $area): ?>
                             <?= $area["title"] ?>
                           <?php endforeach; ?>
@@ -474,7 +480,13 @@ EOL); ?>
                 </tbody>
               </table>
               <div class="position-absolute top-0 end-0 p-3">
-                <a href="/favorites/<?= $favorite["id"] ?>" class="card-link">編集</a>
+                <form action="/reserves" method="post">
+                  <?= csrf() ?>
+                  <input type="hidden" name="survey_id" value="<?= $survey["id"] ?>">
+                  <input type="hidden" name="date" class="date-input">
+                  <input type="hidden" name="favorite_id" value="<?= $favorite["id"] ?>">
+                  <button type="submit" class="btn btn-primary">このパターンで予約</button>
+                </form>
               </div>
             </div>
           </div>

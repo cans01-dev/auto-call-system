@@ -108,7 +108,7 @@
             </div>
             <div class="text-end">
               <input type="hidden" name="user_id" value="<?= $user["id"] ?>">
-              <button type="submit" class="btn btn-success">作成</button>
+              <button type="submit" class="btn btn-success">更新</button>
             </div>
           </form>
         </div>
@@ -129,7 +129,7 @@
     </div>
     <div class="mb-3">
       <label class="form-label">メールアドレス</label>
-      <input type="email" name="email" class="form-control">
+      <input type="email" name="email" class="form-control" required>
     </div>
     <div class="mb-3">
       <label class="form-label">パスワード</label>

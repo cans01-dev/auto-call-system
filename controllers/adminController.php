@@ -37,11 +37,58 @@ function storeUser() {
     Session::set("toast", ["danger", "パスワードの再入力が正しくありません"]);
     back();
   }
+
   DB::insert("users", [
     "email" => $_POST["email"],
-    "password" => $_POST["password"],
+    "password" => password_hash($_POST["password"], PASSWORD_DEFAULT),
     "status" => $_POST["status"],
   ]);
+  $user_id = DB::lastInsertId();
+
+  DB::insert("surveys", [
+    "user_id" => $user_id,
+    "title" => "アンケート１",
+    "note" => "デフォルトのアンケート",
+    "greeting" => "こんにちは、これはサンプルのアンケートです",
+    "voice_name" => VOICES[0]["name"]
+  ]);
+  $survey_id = DB::lastInsertId();
+
+  DB::insert("faqs", [
+    "survey_id" => $survey_id,
+    "title" => "デフォルトの質問",
+    "text" => "これはデフォルトの質問です、もう一度お聞きになりたい方は０を押してください。",
+    "order_num" => 0
+  ]);
+  $faq_id = DB::lastInsertId();
+
+  DB::insert("options", [
+    "faq_id" => $faq_id,
+    "title" => "聞き直し",
+    "dial" => 0,
+    "next_faq_id" => $faq_id
+  ]);
+
+  DB::insert("favorites", [
+    "survey_id" => $survey_id,
+    "title" => "予約パターン１",
+    "color" => "#DCF2F1",
+    "start" => "17:00:00",
+    "end" => "21:00:00"
+  ]);
+  $favorite_id = DB::lastInsertId();
+
+  DB::insert("favorites_areas", [
+    "favorite_id" => $favorite_id,
+    "area_id" => 1
+  ]);
+  
+  $dirname = dirname(__DIR__) . "/storage/users/{$user_id}";
+  mkdir($dirname);
+  
+  $survey = Fetch::find("surveys", $survey_id);
+  avfrg($survey);
+
   Session::set("toast", ["success", "ユーザーを新規作成しました"]);
   back();
 }

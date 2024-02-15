@@ -18,10 +18,10 @@ function authenticate($username, $password, $http_authorization) {
   return $credentials[0] === $username && $credentials[1] === $password;
 }
 
-function upload_file($file) {
+function upload_file($file, $file_path=null) {
+  if (!$file_path) $file_path = dirname(__DIR__)."/storage/uploads/{$file["name"]}";
   if ($file) {
     if (is_uploaded_file($file["tmp_name"])) {
-      $file_path = dirname(__DIR__)."/storage/uploads/{$file["name"]}";
       if (move_uploaded_file($file["tmp_name"], $file_path)) {
         return $file_path;
       }
@@ -48,20 +48,18 @@ function send_file(CURLFile $curl_file, $url, $header) {
   return [$response, $http_code];
 }
 
-function gen_result_info_array($reserve_info, array $status_rand_array): array {
+function gen_result_sample($reserve_info, array $status_rand_array): array {
   [
     "id" => $reserve_id,
     "user_id" => $user_id,
     "start" => $start,
     "end" => $end,
-    "greeting_voice_file" => $greeting_voice_file,
     "numbers" => $numbers
   ] = $reserve_info;
 
   $result = [
     "id" => $reserve_id,
     "user_id" => $user_id,
-    "greeting" => $greeting_voice_file,
     "calls" => []
   ];
 
@@ -70,14 +68,14 @@ function gen_result_info_array($reserve_info, array $status_rand_array): array {
   $faqs = Fetch::get("faqs", $survey_id, "survey_id");
   $endings = Fetch::get("endings", $survey_id, "survey_id");
 
+  # calls
   foreach ($numbers as $number) {
     $status = $status_rand_array[array_rand($status_rand_array)];
     $answers = [];
-
     if ($status === 1) {
       $time = date("H:i:s", rand(strtotime($start), strtotime($end)));
       $duration = rand(10, 150);
-      
+      # answers
       $next_id = $faqs[0]["id"];
       $next_type = "faq";
       while (true) {
@@ -100,7 +98,6 @@ function gen_result_info_array($reserve_info, array $status_rand_array): array {
         }
       }
     }
-    
     $result["calls"][] = [
       "number" => $number,
       "status" => $status,
@@ -108,105 +105,12 @@ function gen_result_info_array($reserve_info, array $status_rand_array): array {
       "time" => $time ?? null,
       "answers" => $answers ?? null
     ];
-
-    $file_name = "ac_res{$reserve["id"]}_{$reserve["date"]}.json";
   }
-
-  return [$result, $file_name];
-}
-
-function gen_reserve_info_array($reserve) {
-  $survey = Fetch::find("surveys", $reserve["survey_id"]);
-  $faqs = Fetch::get("faqs", $survey["id"], "survey_id");
-  $endings = Fetch::get("endings", $survey["id"], "survey_id");
-  $areas = Fetch::areasByReserveId($reserve["id"]);
-
-  $stations = [];
-  foreach ($areas as $area) {
-    foreach (Fetch::get("stations", $area["id"], "area_id") as $station) {
-      $stations[] = $station;
-    }
-  }
-
-  $r = [
-    "id" => $reserve["id"],
-    "user_id" => $survey["user_id"],
-    "date" => $reserve["date"],
-    "greeting" => $survey["greeting_voice_file"],
-    "start" => substr($reserve["start"], 0, -3),
-    "end" => substr($reserve["end"], 0, -3),
-    "faqs" => [],
-    "endings" => [],
-    "numbers" => [],
-    // greeting
-  ];
-
-  # faqs
-  foreach ($faqs as $faq) {
-    $f = [
-      "faq_id" => "{$faq["id"]}",
-      "voice" => $faq["voice_file"],
-      "options" => []
-    ];
-      
-    $options = Fetch::get("options", $faq["id"], "faq_id");
-    foreach($options as $option) {
-      $next_type = $option["next_ending_id"] ? "ending" : "faq";
-      $next_id = $next_type === "ending" ? $option["next_ending_id"] : $option["next_faq_id"];
-      // $next = 
-      $f["options"]["{$option["dial"]}"] = [
-        "option_id" => $option["id"],
-        "next_type" => $next_type,
-        "next_index" => $next_id
-      ];
-    }
-    $r["faqs"][] = $f;
-  }
-
-  # endings
-  foreach ($endings as $ending) {
-    $e = [
-      "ending_id" => "{$ending["id"]}",
-      "voice" => $ending["voice_file"]
-    ];
-    $r["endings"][] = $e;
-  }
-
-  # numbers
-  $numbers_length = round((strtotime($reserve["end"]) - strtotime($reserve["start"])) / 3600 * NUMBERS_PER_HOUR);
-  $stations_max = count($stations) - 1;
-
-  while (count($r["numbers"]) < $numbers_length) {
-    $station = $stations[rand(0, $stations_max)];
-    $prefix = $station["prefix"];
-    $n5 = rand(0, 9);
-    $n6789 = sprintf('%04d', rand(0, 9999));
-
-    $number = "{$prefix}{$n5}-{$n6789}";
-
-    // 重複チェック
-
-    $r["numbers"][] = $number;
-  }
-
-  return $r;
-}
-
-function get_reserve_files($reserve) {
-  $files = [];
-  $survey = Fetch::find("surveys", $reserve["survey_id"]);
-  $faqs = Fetch::get("faqs", $survey["id"], "survey_id");
-  $endings = Fetch::get("endings", $survey["id"], "survey_id");
   
-  $files[] = $survey["greeting_voice_file"];
-  foreach ($faqs as $faq) {
-    $files[] = $faq["voice_file"];
-  }
-  foreach ($endings as $ending) {
-    $files[] = $ending["voice_file"];
-  }
-
-  return $files;
+  $file_name = "ac_res{$reserve["id"]}_{$reserve["date"]}.json";
+  $json = json_encode($result, JSON_PRETTY_PRINT);
+  $file_path = dirname(__DIR__)."/storage/outputs/{$file_name}";
+  return [$json, $file_path];
 }
 
 function error_response($message) {

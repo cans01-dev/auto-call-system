@@ -22,80 +22,79 @@
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav">
 					<li class="nav-item">
-					<a
-					class="nav-link"
-					href="/home"
-					>
-						<span class="text-center d-inline-block me-1" style="width: 24px;">
-							<i class="fa-solid fa-house"></i>
-						</span>ホーム
-					</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link link-body-emphasis" href="/home#create">
-						<span class="text-center d-inline-block me-1" style="width: 24px;">
-							<i class="fa-solid fa-square-plus"></i>
-						</span>新規作成
-					</a>
-				</li>
-				<li class="nav-item dropdown">
-					<button class="nav-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-						アンケート
-					</button>
-					<?php if ($svs = Fetch::get("surveys", Auth::user()["id"], "user_id")): ?>
-						<ul class="dropdown-menu">
-							<?php foreach ($svs as $sv): ?>
-							<li class="dropdown-item">
-								<a
-								class="nav-link"
-								href="/surveys/<?= $sv["id"] ?>"
-								>
-								<?= $sv["title"] ?>
-								</a>
-							</li>
-							<?php endforeach ?>
-						</ul>
-					<?php endif; ?>
-				</li>
-				<?php if (Auth::user()["status"] === USER_STATUS_ADMIN): ?>
+						<a
+						class="nav-link"
+						href="/home"
+						>
+							<span class="text-center d-inline-block me-1" style="width: 24px;">
+								<i class="fa-solid fa-house"></i>
+							</span>ホーム
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link link-body-emphasis" href="/home#create">
+							<span class="text-center d-inline-block me-1" style="width: 24px;">
+								<i class="fa-solid fa-square-plus"></i>
+							</span>新規作成
+						</a>
+					</li>
 					<li class="nav-item dropdown">
 						<button class="nav-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-							管理者メニュー
+							アンケート
+						</button>
+						<?php if ($svs = Fetch::get("surveys", Auth::user()["id"], "user_id")): ?>
+							<ul class="dropdown-menu">
+								<?php foreach ($svs as $sv): ?>
+								<li class="dropdown-item">
+									<a
+									class="nav-link"
+									href="/surveys/<?= $sv["id"] ?>"
+									>
+									<?= $sv["title"] ?>
+									</a>
+								</li>
+								<?php endforeach ?>
+							</ul>
+						<?php endif; ?>
+					</li>
+					<?php if (Auth::user()["status"] === USER_STATUS_ADMIN): ?>
+						<li class="nav-item dropdown">
+							<button class="nav-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+								管理者メニュー
+							</button>
+							<ul class="dropdown-menu">
+								<li class="dropdown-item">
+									<a href="/admin/users" class="nav-link">
+										<span class="text-center d-inline-block me-1" style="width: 24px;">
+											<i class="fa-solid fa-users"></i>
+										</span>ユーザー管理
+									</a>
+								</li>
+							</ul>
+						</li>
+					<?php endif; ?>
+					<li class="nav-item">
+						<a href="/support" class="nav-link">
+							<span class="text-center d-inline-block me-1" style="width: 24px;">
+								<i class="fa-solid fa-circle-question"></i>
+							</span>ドキュメント
+						</a>
+					</li>
+					<li class="nav-item dropdown">
+						<button class="nav-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<?= Auth::user()["email"] ?>
 						</button>
 						<ul class="dropdown-menu">
-							<li class="dropdown-item">
-								<a href="/admin/users" class="nav-link">
-									<span class="text-center d-inline-block me-1" style="width: 24px;">
-										<i class="fa-solid fa-users"></i>
-									</span>ユーザー管理
-								</a>
+							<li><a class="dropdown-item" href="/account">アカウント設定</a></li>
+							<li><hr class="dropdown-divider"></li>
+							<li>
+								<form action="/logout" method="post">
+									<?= csrf() ?>
+									<button class="dropdown-item" href="/logout">ログアウト</button>
+								</form>
 							</li>
 						</ul>
 					</li>
-				<?php endif; ?>
-				<li class="nav-item">
-					<a href="/support" class="nav-link">
-						<span class="text-center d-inline-block me-1" style="width: 24px;">
-							<i class="fa-solid fa-circle-question"></i>
-						</span>サポート
-					</a>
-				</li>
-				<li class="nav-item dropdown">
-					<button class="nav-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-						<?= Auth::user()["email"] ?>
-					</button>
-					<ul class="dropdown-menu">
-						<li><a class="dropdown-item" href="/account">アカウント設定</a></li>
-						<li><hr class="dropdown-divider"></li>
-						<li>
-							<form action="/logout" method="post">
-								<?= csrf() ?>
-								<button class="dropdown-item" href="/logout">ログアウト</button>
-							</form>
-						</li>
-					</ul>
-				</li>
-
 				</ul>
 			</div>
 		</div>
@@ -185,6 +184,15 @@
 						</li>
 					<?php endif; ?>
 				</ul>
+				<?php if (Auth::user()["status"] === 2): ?>
+					<div class="alert alert-danger mt-2 mb-0" role="alert">
+						<span class="text-danger">
+							<i class="fa-solid fa-circle-exclamation"></i>
+						</span>
+						アカウントが利用停止されています<br>
+						<small>ご利用を再開するには管理者に<a href="/support">お問い合わせ</a>ください</small>
+					</div>
+				<?php endif; ?>
 			</nav>
 			<hr>
 			<div class="dropdown">

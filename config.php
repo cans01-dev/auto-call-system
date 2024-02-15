@@ -34,8 +34,8 @@ define("NUMBERS_PER_HOUR", 100);
 define("RESERVATION_STATUS", [
   0 => ["text" => "予約済", "bg" => "primary"],
   1 => ["text" => "確定済", "bg" => "info"],
-  2 => ["text" => "実行中", "bg" => "light"],
-  3 => ["text" => "集計中", "bg" => "secondary"],
+  // 2 => ["text" => "実行中", "bg" => "light"],
+  // 3 => ["text" => "集計中", "bg" => "secondary"],
   4 => ["text" => "集計済", "bg" => "dark"],
   9 => ["text" => "お気に入り", "bg" => "black"]
 ]);

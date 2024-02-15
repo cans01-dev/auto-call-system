@@ -3,37 +3,42 @@
 function storeReserve() {
   $survey = Fetch::find("surveys", $_POST["survey_id"]);
   if (!Allow::survey($survey)) abort(403);
-  $start = $_POST["start"] ?? DEFAULT_START_TIME;
-  $end = $_POST["end"] ?? DEFAULT_END_TIME;
-  if (strtotime($start) + 3600 > strtotime($end)) {
-    Session::set("toast", ["danger", "エラー！<br>開始・終了時間は".(MIN_INTERVAL / 3600)."時間以上の間隔をあけてください"]);
-    redirect("/surveys/{$_POST["survey_id"]}#calendar");
-  }
-  DB::insert("reserves", [
-    "survey_id" => $_POST["survey_id"],
-    "date" => $_POST["date"],
-    "start" => $start,
-    "end" => $end
-  ]);
-  $id = DB::lastInsertId();
 
   if ($favorite = Fetch::find("favorites", @$_POST["favorite_id"])) {
     $favorite["areas"] = Fetch::areasByFavoriteId($favorite["id"]);
-    DB::update("reserves", $id, [
+    DB::insert("reserves", [
+      "survey_id" => $_POST["survey_id"],
+      "date" => $_POST["date"],
       "start" => $favorite["start"],
       "end" => $favorite["end"]
     ]);
+    $reserve_id = DB::lastInsertId();
     foreach ($favorite["areas"] as $area) {
       DB::insert("reserves_areas", [
-        "reserve_id" => $id,
+        "reserve_id" => $reserve_id,
         "area_id" => $area["id"]
       ]);
     }
     Session::set("toast", ["success", "パターンから予約を作成しました"]);
     redirect("/surveys/{$_POST["survey_id"]}#calendar");
+
+  } else {
+    $start = $_POST["start"];
+    $end = $_POST["end"];
+    if (strtotime($start) + 3600 > strtotime($end)) {
+      Session::set("toast", ["danger", "エラー！<br>開始・終了時間は".(MIN_INTERVAL / 3600)."時間以上の間隔をあけてください"]);
+      redirect("/surveys/{$_POST["survey_id"]}#calendar");
+    }
+    DB::insert("reserves", [
+      "survey_id" => $_POST["survey_id"],
+      "date" => $_POST["date"],
+      "start" => $start,
+      "end" => $end
+    ]);
+    $reserve_id = DB::lastInsertId();
   }
   Session::set("toast", ["success", "予約を作成しました"]);
-  redirect("/reserves/{$id}");
+  redirect("/reserves/{$reserve_id}");
 }
 
 function updateReserve($vars) {

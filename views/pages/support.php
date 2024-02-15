@@ -31,7 +31,7 @@
         <td><?= $voice["name"] ?></td>
         <td><?= $voice["gender"] ?></td>
         <td>
-          <audio src="<?= "/storage/samples/{$voice["name"]}.wav" ?>" controls></audio>
+          <audio src="<?= "/assets/samples/{$voice["name"]}.wav" ?>" controls></audio>
         </td>
       </tr>
     <?php endforeach; ?>

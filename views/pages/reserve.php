@@ -52,29 +52,36 @@
   <?= Components::hr() ?>
   <section id="area">
     <?= Components::h3("エリア設定"); ?>
-      <div class="card mb-4">
-        <div class="card-header">選択済のエリア</div>
-        <ul class="list-group list-group-flush">
-          <?php if ($reserve["areas"]): ?>
-            <?php foreach ($reserve["areas"] as $area): ?>
-              <li class="list-group-item d-flex align-items-center justify-content-between">
-                <div>
-                  <?= $area["title"] ?>
-                  <a href="/areas/<?= $area["id"] ?>" class="text-body-tertiary">
-                    <i class="fa-solid fa-circle-info"></i>
-                  </a>
-                </div>
-                <form action="/reserves_areas/<?= $area["ra_id"] ?>" method="post">
-                  <?= csrf() ?>
-                  <?= method("DELETE") ?>
-                  <button type="submit" class="btn btn-danger">削除</button>
-                </form>
-              </li>
-            <?php endforeach; ?>
-          <?php else: ?>
-            <li class="list-group-item">エリアが選択されていません</li>
-          <?php endif; ?>
-        </ul>
+      <div class="mb-4">
+        <div class="card">
+          <div class="card-header">選択済のエリア</div>
+          <ul class="list-group list-group-flush">
+            <?php if ($reserve["areas"]): ?>
+              <?php foreach ($reserve["areas"] as $area): ?>
+                <li class="list-group-item d-flex align-items-center justify-content-between">
+                  <div>
+                    <?= $area["title"] ?>
+                    <a href="/areas/<?= $area["id"] ?>" class="text-body-tertiary">
+                      <i class="fa-solid fa-circle-info"></i>
+                    </a>
+                  </div>
+                  <form action="/reserves_areas/<?= $area["ra_id"] ?>" method="post">
+                    <?= csrf() ?>
+                    <?= method("DELETE") ?>
+                    <button type="submit" class="btn btn-danger">削除</button>
+                  </form>
+                </li>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <li class="list-group-item">エリアが選択されていません</li>
+            <?php endif; ?>
+          </ul>
+        </div>
+        <?php if (!$reserve["areas"]): ?>
+          <div class="alert alert-danger mt-2 mb-0" role="alert">
+            エリアが指定されていません
+          </div>
+        <?php endif; ?>
       </div>
       <div class="border p-2 mb-2">
         <p>地域名を入力してまとめて選択</p>

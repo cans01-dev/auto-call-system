@@ -71,6 +71,32 @@ function text_to_speech($text, $voice_name) {
   return base64_decode($array["audioContent"]);
 }
 
+function user_dir($file_name, $user_id=null) {
+  if (!$user_id) $user_id = Auth::user()["id"];
+  return __DIR__."/storage/users/{$user_id}/{$file_name}";
+}
+
+# all_voice_file_regen
+function avfrg($survey) {
+  $survey["endings"] = Fetch::get("endings", $survey["id"], "survey_id");
+  $survey["faqs"] = Fetch::get("faqs", $survey["id"], "survey_id", "order_num");
+
+  $file_name = uniqid("s{$survey["id"]}g_") . ".wav";
+  file_put_contents(user_dir($file_name, $survey["user_id"]), text_to_speech($survey["greeting"], $survey["voice_name"]));
+  DB::update("surveys", $survey["id"], ["greeting_voice_file" => $file_name]);
+
+  foreach ($survey["endings"] as $ending) {
+    $file_name = uniqid("e{$ending["id"]}_") . ".wav";
+    file_put_contents(user_dir($file_name, $survey["user_id"]), text_to_speech($ending["text"], $survey["voice_name"]));  
+    DB::update("endings", $ending["id"], ["voice_file" => $file_name]);
+  }
+
+  foreach ($survey["faqs"] as $faq) {
+    $file_name = uniqid("f{$faq["id"]}_") . ".wav";
+    file_put_contents(user_dir($file_name, $survey["user_id"]), text_to_speech($faq["text"], $survey["voice_name"]));  
+    DB::update("faqs", $faq["id"], ["voice_file" => $file_name]);
+  }
+}
 /**
  * ーーここまでーー
  */

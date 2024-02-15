@@ -4,7 +4,7 @@ require "../config.php";
 require "../models/Fetch.php";
 require "../models/DB.php";
 require "../functions.php";
-require "./api_functions.php";
+require "./functions.php";
 
 $pdo = new_pdo();
 
