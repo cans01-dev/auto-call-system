@@ -23,3 +23,13 @@ function sendContact() {
   back();
 }
 
+function genReserve() {
+  $date = $_POST["date"];
+  if (MODE === MODE_DEVELOPMENT) {
+    $res = exec("php api/gen_reserve_info.php {$date}");
+  } else {
+    $res = exec("php8.2 ../api/gen_reserve_info.php {$date}");
+  }
+  Session::set("toast", ["info", $res]);
+  back();
+}

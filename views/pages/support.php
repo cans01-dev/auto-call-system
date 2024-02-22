@@ -5,7 +5,7 @@
     <li class="breadcrumb-item active">サポート</li>
   </ol>
 </nav>
-<?= Components::h2("サポート") ?>
+<?= Components::h2("ドキュメント") ?>
 
 <?= Components::h4("お問い合わせ") ?>
 <div class="form-text mb-2">ドキュメントを読んでも分からない、その他バグの報告・要望などはこちら</div>

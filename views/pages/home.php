@@ -9,8 +9,7 @@
 
 <div class="d-flex gap-3">
   <div class="w-100">
-    <pre>
-    </pre>
+    
   </div>
   <div class="flex-shrink-0 sticky-aside" style="width: 300px;">
     <div class="sticky-top">

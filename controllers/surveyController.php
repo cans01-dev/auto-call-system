@@ -25,6 +25,7 @@ function updateSurvey($vars) {
     "title" => $_POST["title"],
     "note" => $_POST["note"],
     "voice_name" => $_POST["voice_name"],
+    "success_ending_id" => $_POST["success_ending_id"]
   ]);
   Session::set("toast", ["success", "アンケートの設定を変更しました"]);
   back();

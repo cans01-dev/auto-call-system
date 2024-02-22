@@ -14,7 +14,7 @@ function new_pdo() {
 }
 
 function authenticate($username, $password, $http_authorization) {
-  $credentials = explode(":", base64_decode(substr($http_authorization, 6)));
+  $credentials = explode(":", substr($http_authorization, 6));
   return $credentials[0] === $username && $credentials[1] === $password;
 }
 

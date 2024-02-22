@@ -46,9 +46,14 @@
           <?php foreach ($survey["endings"] as $ending): ?>
             <div class="card mb-2">
               <div class="card-body">
-                <h5 class="card-title mb-3"><span class="badge bg-dark-subtle text-black me-2">エンディング</span><?= $ending["title"] ?></h5>
+                <h5 class="card-title mb-3"><span class="badge bg-dark-subtle text-black me-2">
+                  エンディング</span><?= $ending["title"] ?>
+                </h5>
                 <p class="card-text mb-0"><?= $ending["text"] ?></p>
                 <div class="position-absolute top-0 end-0 p-3">
+                  <?php if ($survey["success_ending_id"] === $ending["id"]): ?>
+                    <span class="badge bg-success me-2">成功</span>
+                  <?php endif; ?>
                   <button type="button" class="btn btn-outline-dark me-2" data-bs-toggle="modal" data-bs-target="#endingModal<?= $ending["id"] ?>">設定</button>
                   <button
                     type="button"
@@ -162,7 +167,7 @@
                     class="btn btn-outline-primary"
                     data-bs-toggle="modal"
                     data-bs-target="#audioModal"
-                    data-bs-whatever="<?= url("/storage/users/{$survey["user_id"]}/{$faq["voice_file"]}") ?>"
+                    data-bs-whatever="<?= "/storage/users/{$survey["user_id"]}/{$faq["voice_file"]}" ?>"
                     <?= $faq["voice_file"] ? "" : "disabled"; ?>
                   >
                     <i class="fa-solid fa-volume-high"></i>
@@ -355,6 +360,19 @@
             <div class="mb-3">
               <label class="form-label">アンケートの説明（任意）</label>
               <textarea class="form-control" name="note" rows="3"><?= $survey["note"] ?></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">成功エンディング</label>
+              <select class="form-select" name="success_ending_id">
+                <?php foreach ($survey["endings"] as $ending): ?>
+                  <option
+                    value="<?= $ending["id"] ?>"
+                    <?= $ending["id"] === $survey["success_ending_id"] ? "selected" : ""; ?>
+                  >
+                  <?= $ending["title"] ?>
+                </option>
+                <?php endforeach; ?>
+              </select>
             </div>
             <div class="mb-3">
               <label class="form-label">
@@ -700,5 +718,15 @@ EOL); ?>
     </form>
   EOM) ?>
 <?php endforeach; ?>
+
+<?php if (Auth::user()["id"] !== $survey["user_id"]): ?>
+  <div class="toast-container position-fixed top-0 start-50 p-3 translate-middle-x">
+    <div class="p-2 align-items-center text-bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">管理者として閲覧専用でこのページを閲覧しています</div>
+      </div>
+    </div>
+  </div>
+<?php endif; ?>
 
 <?php require './views/templates/footer.php'; ?>

@@ -38,25 +38,16 @@
 							</span>新規作成
 						</a>
 					</li>
-					<li class="nav-item dropdown">
-						<button class="nav-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-							アンケート
-						</button>
-						<?php if ($svs = Fetch::get("surveys", Auth::user()["id"], "user_id")): ?>
-							<ul class="dropdown-menu">
-								<?php foreach ($svs as $sv): ?>
-								<li class="dropdown-item">
-									<a
-									class="nav-link"
-									href="/surveys/<?= $sv["id"] ?>"
-									>
-									<?= $sv["title"] ?>
-									</a>
-								</li>
-								<?php endforeach ?>
-							</ul>
-						<?php endif; ?>
-					</li>
+					<?php if ($sv = Fetch::find("surveys", Auth::user()["id"], "user_id")): ?>
+						<li class="nav-item">
+							<a
+							class="nav-link"
+							href="/surveys/<?= $sv["id"] ?>"
+							>
+							<?= $sv["title"] ?>
+							</a>
+						</li>
+					<?php endif; ?>
 					<?php if (Auth::user()["status"] === USER_STATUS_ADMIN): ?>
 						<li class="nav-item dropdown">
 							<button class="nav-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -68,6 +59,13 @@
 										<span class="text-center d-inline-block me-1" style="width: 24px;">
 											<i class="fa-solid fa-users"></i>
 										</span>ユーザー管理
+									</a>
+								</li>
+								<li class="dropdown-item">
+									<a href="/admin/receive_result_log" class="nav-link <?= $_SERVER["REQUEST_URI"] === "/admin/receive_result_log" ? "active" : "link-body-emphasis" ?>">
+										<span class="text-center d-inline-block me-2" style="width: 24px;">
+											<i class="fa-solid fa-file-arrow-down fa-lg"></i>
+										</span>結果ファイル受信ログ
 									</a>
 								</li>
 							</ul>
@@ -127,9 +125,8 @@
 						</a>
 					</li>
 					<li class="nav-item my-2 p-1 border border-2 rounded-2">
-						<?php if ($svs = Fetch::get("surveys", Auth::user()["id"], "user_id")): ?>
+						<?php if ($sv = Fetch::find("surveys", Auth::user()["id"], "user_id")): ?>
 							<ul class="nav nav-pills flex-column">
-								<?php foreach ($svs as $sv): ?>
 								<li class="nav-item">
 									<a
 									class="nav-link <?= $_SERVER["REQUEST_URI"] === "/surveys/{$sv["id"]}" ? "active" : "link-body-emphasis" ?>"
@@ -137,27 +134,32 @@
 									>
 									<?= $sv["title"] ?>
 									</a>
-									<?php if ($_SERVER["REQUEST_URI"] === "/surveys/{$sv["id"]}"): ?>
-										<ul class="nav nav-pills flex-column ps-4 pt-1">
-											<li class="nav-item">
-												<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#greeting-ending">グリーティング・エンディング</a>
-											</li>
-											<li class="nav-item">
-												<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#faqs">質問一覧</a>
-											</li>
-											<li class="nav-item">
-												<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#calendar">カレンダー</a>
-											</li>
-											<li class="nav-item">
-												<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#area">エリア</a>
-											</li>
-											<li class="nav-item">
-												<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#billing">料金</a>
-											</li>
-										</ul>
-									<?php endif; ?>
+									<ul class="nav nav-pills flex-column ps-4 pt-1">
+										<li class="nav-item">
+											<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#greeting-ending">グリーティング・エンディング</a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#faqs">質問一覧</a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#calendar">カレンダー</a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#area">エリア</a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#billing">料金</a>
+										</li>
+										<li class="nav-item">
+											<a
+												class="nav-link <?= $_SERVER["REQUEST_URI"] === "/surveys/{$sv["id"]}/calls" ? "active" : "link-body-emphasis" ?>"
+												href="/surveys/<?= $sv["id"] ?>/calls"
+											>
+												コール一覧
+											</a>
+										</li>
+									</ul>
 								</li>
-								<?php endforeach ?>
 							</ul>
 						<?php else: ?>
 							<div class="px-3 py-2 text-center">
@@ -170,7 +172,7 @@
 						<a href="/support" class="nav-link <?= $_SERVER["REQUEST_URI"] === "/support" ? "active" : "link-body-emphasis" ?>">
 							<span class="text-center d-inline-block me-2" style="width: 24px;">
 								<i class="fa-solid fa-circle-question fa-lg"></i>
-							</span>サポート
+							</span>ドキュメント
 						</a>
 					</li>
 					<?php if (Auth::user()["status"] === USER_STATUS_ADMIN): ?>
@@ -180,6 +182,16 @@
 								<span class="text-center d-inline-block me-2" style="width: 24px;">
 									<i class="fa-solid fa-users fa-lg"></i>
 								</span>ユーザー管理
+							</a>
+							<a href="/admin/gen_reserve_log" class="nav-link <?= $_SERVER["REQUEST_URI"] === "/admin/gen_reserve_log" ? "active" : "link-body-emphasis" ?>">
+								<span class="text-center d-inline-block me-2" style="width: 24px;">
+									<i class="fa-solid fa-file-arrow-up fa-lg"></i>
+								</span>予約情報ファイル生成ログ
+							</a>
+							<a href="/admin/receive_result_log" class="nav-link <?= $_SERVER["REQUEST_URI"] === "/admin/receive_result_log" ? "active" : "link-body-emphasis" ?>">
+								<span class="text-center d-inline-block me-2" style="width: 24px;">
+									<i class="fa-solid fa-file-arrow-down fa-lg"></i>
+								</span>結果ファイル受信ログ
 							</a>
 						</li>
 					<?php endif; ?>

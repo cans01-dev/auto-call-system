@@ -9,31 +9,11 @@ require "./functions.php";
 $pdo = new_pdo();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-  if (!$file_path = upload_file($_FILES["file"])) {
-    DB::insert("receive_result_log", [
-      "status" => 2,
-      "message" => "ファイルのアップロードに失敗"
-    ]);
-    header("HTTP/1.1 500 Internal Server Error");
-    exit();
-  }
-
+  if (!authenticate("admin", "test", $_SERVER["HTTP_AUTHORIZATION"])) error_response("Authentication failed");
+  if (!$file_path = upload_file($_FILES["file"])) exit();
   $array = json_decode(file_get_contents($file_path), true);
 
   $reserve = Fetch::find("reserves", $array["id"]);
-
-  if (Fetch::find2("receive_result_log", [
-    ["reserve_id", "=", $reserve["id"]],
-    ["status", "=", 1]
-  ])) {
-    DB::insert("receive_result_log", [
-      "reserve_id" => $reserve["id"],
-      "status" => 3,
-      "message" => "この結果ファイルは既に受信されています"
-    ]);
-    header("HTTP/1.1 500 Internal Server Error");
-    exit();
-  }
 
   foreach ($array["calls"] as $call) {
     DB::insert("calls", [
@@ -61,11 +41,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     "status" => "4"
   ]);
 
-  DB::insert("receive_result_log", [
-    "reserve_id" => $reserve["id"],
-    "status" => 1,
-    "message" => "成功"
-  ]);
-
-  header("HTTP/1.1 200 OK");
+  header("200 OK");
+  exit(json_encode(["message" => "success"]));
 }

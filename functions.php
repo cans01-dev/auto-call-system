@@ -52,7 +52,8 @@ function text_to_speech($text, $voice_name) {
       "audioConfig" => [
         "audioEncoding" => "LINEAR16",
         "pitch" => 0,
-        "speakingRate" => 1 
+        "speakingRate" => 1,
+        "sampleRateHertz" => 8000
       ],
       "input" => [
         "text" => $text,
@@ -96,6 +97,11 @@ function avfrg($survey) {
     file_put_contents(user_dir($file_name, $survey["user_id"]), text_to_speech($faq["text"], $survey["voice_name"]));  
     DB::update("faqs", $faq["id"], ["voice_file" => $file_name]);
   }
+}
+
+function with_basic($url) {
+  $a = strrpos($url, "://") + 3;
+  return substr_replace($url, "autocall:password@", $a, 0);
 }
 /**
  * ーーここまでーー
@@ -151,7 +157,6 @@ function abort($code) {
       exit;
     case 500:
       header("HTTP/1.1 500 Internal server error");
-      require_once "views/pages/500.php";
       exit;
   }
 }
@@ -167,4 +172,22 @@ function method($method) {
   return <<<EOM
     <input type="hidden" name="_method" value="{$method}">
   EOM;
+}
+
+function pagenation($posts_par_page, $posts_sum, $page) {
+  $first = 1;
+  $last = ceil($posts_sum / $posts_par_page);
+  $offset = $posts_par_page * ($page - 1);
+  return [
+    "current" => $page,
+    "pprev" => $page - 2 < $first ? false : $page - 2,
+    "prev" => $page - 1 < $first ? false : $page - 1,
+    "next" => $page + 1 > $last ? false : $page + 1,
+    "nnext" => $page + 2 > $last ? false : $page + 2,
+    "first" => $page - 2 < $first ? false : $first,
+    "last" => $page + 2 > $last ? false : $last,
+    "offset" => $offset,
+    "current_start" => $offset + 1,
+    "current_end" => $posts_sum < $offset + $posts_par_page ? $posts_sum : $offset + $posts_par_page,
+  ];
 }

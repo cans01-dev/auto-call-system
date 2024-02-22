@@ -41,7 +41,7 @@ function gen_reserve_info($reserve) {
   # faqs
   foreach ($faqs as $faq) {
     $f = [
-      "faq_id" => "{$faq["id"]}",
+      "faq_id" => $faq["id"],
       "voice" => $faq["voice_file"],
       "options" => []
     ];
@@ -53,7 +53,7 @@ function gen_reserve_info($reserve) {
       $f["options"]["{$option["dial"]}"] = [
         "option_id" => $option["id"],
         "next_type" => $next_type,
-        "next_index" => $next_id
+        "next_id" => $next_id
       ];
     }
     $array["faqs"][] = $f;
@@ -62,7 +62,7 @@ function gen_reserve_info($reserve) {
   # endings
   foreach ($endings as $ending) {
     $e = [
-      "ending_id" => "{$ending["id"]}",
+      "ending_id" => $ending["id"],
       "voice" => $ending["voice_file"]
     ];
     $array["endings"][] = $e;
@@ -80,10 +80,10 @@ function gen_reserve_info($reserve) {
 
     $number = "{$prefix}{$n5}-{$n6789}";
 
-    $same_number = DB::query("
+    $same_number = Fetch::query("
       SELECT * FROM calls as c JOIN reserves as r ON c.reserve_id = r.id
       WHERE r.survey_id = {$survey["id"]} AND number = {$number}
-    ")->fetch();
+    ", "fetch");
     if ($same_number) continue;
 
     $array["numbers"][] = $number;
@@ -94,16 +94,27 @@ function gen_reserve_info($reserve) {
   return [$json, $file_path];
 }
 
-
 $pdo = new_pdo();
 
-$date = $argv[1];
-if (!preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/", $date)) {
-  error_response("Invalid date input");
+if (isset($argv[1])) {
+  $date = $argv[1];
+  if (!preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/", $date)) {
+    DB::insert("gen_reserve_log", [
+      "status" => 2,
+      "message" => "日付の形式が正しくありません"
+    ]);
+    exit("日付の形式が正しくありません");
+  }
+} else {
+  $date = date("Y-m-d");
 }
 
 if (!$reserves = Fetch::get2("reserves", [["date", "=", $date]])) {
-  error_response("Reservation not set");
+  DB::insert("gen_reserve_log", [
+    "status" => 3,
+    "message" => "予約がありません"
+  ]);
+  exit("予約がありません");
 }
 
 foreach ($reserves as $reserve) {
@@ -119,9 +130,12 @@ foreach ($reserves as $reserve) {
     "reserve_file" => basename($file_path)
   ]);
   file_put_contents($file_path, $json);
+
+  DB::insert("gen_reserve_log", [
+    "reserve_id" => $reserve["id"],
+    "status" => 1,
+    "message" => "generated: {$file_path}"
+  ]);
+
+  echo "generated: {$file_path}";
 }
-
-header("200 OK");
-exit("success");
-
-?>

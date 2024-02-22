@@ -11,9 +11,21 @@ $pdo = new_pdo();
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $curl_file = new CURLFile($_FILES['file']["tmp_name"], $_FILES['file']["type"], $_FILES['file']["name"]);
   
-  $response = send_file($curl_file, "http://localhost:8080/api/receive_result.php", [
-    "Authorization: Basic YWRtaW46dGVzdA=="
+  $ch = curl_init();
+  curl_setopt_array($ch, [
+    CURLOPT_URL => "http://localhost:8080/api/receive_result.php",
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_HTTPHEADER => [
+      "Authorization: Basic YXV0b2NhbGw6cGFzc3dvcmQ="
+    ],
+    CURLOPT_POST => true,
+    CURLOPT_POSTFIELDS => [
+      'file' => $curl_file
+    ],
   ]);
+  $response = curl_exec($ch);
+  $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  curl_close($ch);
 }
 
 ?>

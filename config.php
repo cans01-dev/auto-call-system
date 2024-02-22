@@ -1,18 +1,25 @@
 <?php 
 
-define("DB_PREFIX", "mysql:");
-define("DB_NAME", "auto_call_system");
-define("DB_HOST", "localhost");
-define("DB_USERNAME", "root");
-define("DB_PASSWORD", "");
+define("MODE_DEVELOPMENT", 1);
+define("MODE_PRODUCT", 2);
+
+define("MODE", MODE_DEVELOPMENT);
+
+if (MODE === MODE_DEVELOPMENT) {
+  define("DB_PREFIX", "mysql:");
+  define("DB_NAME", "auto_call_system");
+  define("DB_HOST", "localhost");
+  define("DB_USERNAME", "root");
+  define("DB_PASSWORD", "");
+} else {
+  define("DB_PREFIX", "mysql:");
+  define("DB_NAME", "autocall_main");
+  define("DB_HOST", "localhost");
+  define("DB_USERNAME", "autocall_main");
+  define("DB_PASSWORD", "cans01dev");
+}
 
 define("PAGE_TITLE", "AutoCallシステム");
-
-# 予約情報ファイルの送信先URL
-define("SEND_FILE_URL", "http://localhost:8080/api/pse_virtual.php");
-
-# 予約情報ファイル送信のBasic認証情報
-define("SEND_FILE_AUTHORIZATION", "Basic YWRtaW46dGVzdA==");
 
 # 予約の締め切り
 define("RESERVATION_DEADLINE_HOUR", 9);
@@ -38,6 +45,14 @@ define("RESERVATION_STATUS", [
   // 3 => ["text" => "集計中", "bg" => "secondary"],
   4 => ["text" => "集計済", "bg" => "dark"],
   9 => ["text" => "お気に入り", "bg" => "black"]
+]);
+
+define("CALL_STATUS", [
+  1 => ["text" => "接続",	"bg" => "primary"],
+  2 => ["text" => "通話中",	"bg" => "secondary"],
+  3 => ["text" => "不在",	"bg" => "dark"],
+  4 => ["text" => "不正な電話番号",	"bg" => "black"],
+  6 => ["text" => "不通番号", "bg" => "black"]
 ]);
 
 define("USER_STATUS", [

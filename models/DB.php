@@ -47,13 +47,6 @@ class DB
     return $pdo->lastInsertId();
   }
 
-  public static function query($query) {
-    global $pdo;
-    $stmt = $pdo->query($query);
-    $stmt->execute();
-    return $stmt;
-  }
-
   public static function exchangeColumn($table, $from, $to, $column) {
     global $pdo;
     $pdo->beginTransaction();

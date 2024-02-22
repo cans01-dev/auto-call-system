@@ -2,7 +2,7 @@
 
 class Allow
 {
-  public static function survey($survey) {
+  public static function survey($survey) {    
     return $survey["user_id"] === Auth::user()["id"];
   }
 
@@ -24,6 +24,11 @@ class Allow
   public static function reserve($reserve) {
     $survey = Fetch::find("surveys", $reserve["survey_id"]);
     return self::survey($survey);
+  }
+
+  public static function call($call) {
+    $reserve = Fetch::find("reserves", $call["reserve_id"]);
+    return self::reserve($reserve);
   }
 
   public static function ra($ra) {

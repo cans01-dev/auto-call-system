@@ -57,6 +57,19 @@ class Fetch
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  public static function query($query, $handle) {
+    global $pdo;
+    $stmt = $pdo->query($query);
+    switch ($handle) {
+      case "fetch":
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+      case "fetchAll":
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+      case "fetchColumn":
+        return $stmt->fetchColumn();
+    }
+  }
+
   public static function reservesBySurveyIdAndYearMonth($survey_id, $month, $year) {
     global $pdo;
     $stmt = $pdo->prepare("SELECT * FROM reserves WHERE survey_id = :survey_id AND MONTH(date) = :month AND YEAR(date) = :year");

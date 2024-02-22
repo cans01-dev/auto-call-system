@@ -28,8 +28,10 @@ CREATE TABLE surveys (
   greeting text(65535),
   greeting_voice_file varchar(255),
   voice_name varchar(255) NOT NULL,
+  success_ending_id int(11),
   PRIMARY KEY (id),
-  FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (success_ending_id) REFERENCES endings (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE endings (
@@ -143,4 +145,24 @@ CREATE TABLE answers (
   FOREIGN KEY (call_id) REFERENCES calls (id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (faq_id) REFERENCES faqs (id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (option_id) REFERENCES options (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE receive_result_log (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  reserve_id int(11),
+  status int(11) NOT NULL,
+  message varchar(255),
+  created_at datetime default current_timestamp,
+  PRIMARY KEY (id),
+  FOREIGN KEY (reserve_id) REFERENCES reserves (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE gen_reserve_log (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  reserve_id int(11),
+  status int(11) NOT NULL,
+  message varchar(255),
+  created_at datetime default current_timestamp,
+  PRIMARY KEY (id),
+  FOREIGN KEY (reserve_id) REFERENCES reserves (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
