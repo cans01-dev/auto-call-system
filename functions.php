@@ -106,6 +106,7 @@ function with_basic($url) {
   $a = strrpos($url, "://") + 3;
   return substr_replace($url, "autocall:password@", $a, 0);
 }
+
 /**
  * ーーここまでーー
  */

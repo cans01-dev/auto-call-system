@@ -81,3 +81,10 @@ main {
     }
   }
 }
+.calls-table-container {
+  white-space: nowrap;
+  overflow: scroll;
+  font-size: 0.875em;
+  height: 100%;
+  max-height: 800px;
+}

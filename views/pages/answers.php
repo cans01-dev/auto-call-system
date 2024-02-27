@@ -13,26 +13,6 @@
     <table class="table table-borderless mb-0">
       <tbody>
         <tr>
-          <td>ステータス</td>
-          <td class="d-flex gap-4">
-            <?php foreach (CALL_STATUS as $key => $value): ?>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value="<?= $key ?>"
-                  name="status[]"
-                  id="callStatus<?= $key ?>"
-                  <?= in_array($key, $status_arr) ? "checked" : "" ?>
-                >
-                <label class="form-check-label" for="callStatus<?= $key ?>">
-                  <span class="badge bg-<?= $value["bg"] ?>"><?= $value["text"] ?></span>
-                </label>
-              </div>
-            <?php endforeach; ?>
-          </td>
-        </tr>
-        <tr>
           <td>開始日 ~ 終了日</td>
           <td>
             <div class="input-group mb-0" style="max-width: 360px;">
@@ -65,27 +45,13 @@
           </td>
         </tr>
         <tr>
-          <td><label for="actionCountRange" class="form-label">アクション数</label></td>
-          <td>
-            <div class="d-flex justify-content-between">
-              <?php for ($i = 0; $i <= count($faqs); $i++) echo "<div>{$i}~</div>" ?>
-            </div>
-            <input
-              type="range" name="action_count" class="form-range"
-              min="0" max="<?= count($faqs) ?>" id="actionCountRange"
-              value="<?= @$_GET["action_count"] ?? 0 ?>"
-            >
-            <div class="form-text">聞き直しのプッシュも含まれます、項目数に反映されません</div>
-          </td>
-        </tr>
-        <tr>
           <td>回答パターン</td>
           <td>
             <table class="table table-sm mb-0">
               <tbody>
                 <?php foreach ($faqs as $faq): ?>
                   <tr>
-                    <td><?= $faq["title"] ?></td>
+                    <td class="fw-bold"><?= $faq["title"] ?></td>
                     <td>
                       <div class="d-flex gap-4">
                         <?php foreach ($faq["options"] as $option): ?>
@@ -126,7 +92,6 @@
       <th>ID</th>
       <th>日付・時間</th>
       <th>電話番号</th>
-      <th>ステータス</th>
       <th>通話成立時間</th>
       <th>質問</th>
       <th>回答</th>
@@ -134,14 +99,13 @@
   </thead>
   <tbody>
     <?php foreach ($answers as $answer): ?>
-      <tr onclick="window.location.assign('/answers/<?= $answer['id'] ?>')">
+      <tr onclick="window.location.assign('/calls/<?= $answer['call_id'] ?>')">
         <td><?= $answer["id"] ?></td>
         <td><a href="/reserves/<?= $answer["reserve_id"] ?>/result"><?= $answer["date"] ?></a> |  <?= $answer["time"] ?></td>
         <td><?= $answer["number"] ?></td>
-        <td><?= $answer["status"] ?></td>
         <td><?= $answer["duration"] ?></td>
-        <td><?= $answer["title"] ?></td>
-        <td><?= $answer["title"] ?></td>
+        <td><?= $answer["faq_title"] ?></td>
+        <td><?= $answer["option_title"] ?></td>
       </tr>
     <?php endforeach; ?>
   </tbody>

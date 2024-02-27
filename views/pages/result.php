@@ -71,24 +71,32 @@
   <section id="result">
     <?= Components::h3("結果") ?>
     <?php if ($calls): ?>
-      <table class="table mb-0">
-        <thead>
-          <tr>
-            <th scope="col">応答率(応答コール数 / 総コール数)</th>
-            <th scope="col">成功率(成功数 / 応答コール数)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
+      <dl class="container">
+        <div class="row">
+          <div class="col">
+            <dt>応答率(応答コール数 / 総コール数)</dt>
+            <dd>
               <?= round($survey["response_rate"] * 100) ?>% (<?= $survey["responsed_numbers"] ?> / <?= $survey["called_numbers"] ?>)
-            </td>
-            <td>
+            </dd>
+          </div>
+          <div class="col">
+            <dt>成功率(成功数 / 応答コール数)</dt>
+            <dd>
               <?= round($survey["success_rate"] * 100) ?>% (<?= $survey["success_numbers"] ?> / <?= $survey["responsed_numbers"] ?>)
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </dd>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <dt>平均アクション数(聞き直しを除く)</dt>
+            <dd><?= round($survey["action_avg"], 2) . " / " . count($survey["faqs"]) ?></dd>
+          </div>
+          <div class="col">
+            <dt>アクション率<br><small>(最低一回でもアクションがあった率 / 応答コール数)</small></dt>
+            <dd><?= round($survey["action_rate"] * 100) ?>% (<?= $survey["action_numbers"] ?> / <?= $survey["responsed_numbers"] ?>)</dd>
+          </div>
+        </div>
+      </dl>
       <?= Components::hr(3) ?>
       <?php foreach ($survey["faqs"] as $faq): ?>
         <div class="card mb-2" id="faq<?= $faq["id"] ?>">

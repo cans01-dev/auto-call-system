@@ -9,6 +9,7 @@
 </nav>
 <?= Components::h2("コール一覧") ?>
 <div class="card p-2 mb-4">
+  <form method="post" id="csvForm"><?= csrf() ?></form>
   <form id="params">
     <table class="table table-borderless mb-0">
       <tbody>
@@ -77,72 +78,49 @@
             >
           </td>
         </tr>
-        <tr>
-          <td>回答パターン</td>
-          <td>
-            <table class="table table-sm mb-0">
-              <tbody>
-                <?php foreach ($faqs as $faq): ?>
-                  <tr>
-                    <td><?= $faq["title"] ?></td>
-                    <td>
-                      <div class="d-flex gap-4">
-                        <?php foreach ($faq["options"] as $option): ?>
-                          <div class="form-check">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              value="<?= $option["id"] ?>"
-                              name="options[]"
-                              id="faq<?= $faq["id"] ?>answer<?= $option["id"] ?>"
-                              <?= in_array($option["id"], @$_GET["options"] ?? []) ? "checked" : "" ?>
-                            >
-                            <label class="form-check-label" for="faq<?= $faq["id"] ?>answer<?= $option["id"] ?>">
-                              <?= $option["title"] ?>
-                            </label>
-                          </div>
-                        <?php endforeach; ?>
-                      </div>
-                    </td>
-                  </tr>
-                <?php endforeach; ?>
-              </tbody>
-            </table>
-            <div class="form-text mt-2">チェックされた選択肢に一つでも当てはまるコールが表示されます</div>
-          </td>
-        </tr>
       </tbody>
     </table>
-    <div class="position-absolute top-0 end-0 p-2">
+    <div class="position-absolute top-0 end-0 p-2">  
+      <button class="btn btn-outline-success" form="csvForm">CSV出力</button>
       <button class="btn btn-primary">確定</button>
     </div>
   </form>
 </div>
 <p><?= "{$pgnt["current"]} / {$pgnt["last_page"]}ページ目 - {$pgnt["current_start"]}~{$pgnt["current_end"]} / {$pgnt["sum"]}件表示中" ?></p>
-<table class="table table-bordered table-hover" style="font-size: 0.875em;">
-  <thead class="sticky-top" style="top: 43px;">
-    <tr>
-      <th>ID</th>
-      <th>日付・時間</th>
-      <th>電話番号</th>
-      <th>ステータス</th>
-      <th>通話成立時間</th>
-      <th>アクション数</th>
-    </tr>
-  </thead>
-  <tbody>
-    <?php foreach ($calls as $call): ?>
-      <tr onclick="window.location.assign('/calls/<?= $call['id'] ?>')">
-        <td><?= $call["id"] ?></td>
-        <td><a href="/reserves/<?= $call["reserve_id"] ?>/result"><?= $call["date"] ?></a> |  <?= $call["time"] ?></td>
-        <td><?= $call["number"] ?></td>
-        <td><?= $call["status"] ?></td>
-        <td><?= $call["duration"] ?></td>
-        <td><?= $call["action_count"] ?></td>
+<div class="calls-table-container">
+  <table class="table table-bordered table-hover calls-table">
+    <thead class="sticky-top">
+      <tr>
+        <th>ID</th>
+        <th>日付・時間</th>
+        <th>電話番号</th>
+        <th>ステータス</th>
+        <th>通話成立時間</th>
+        <th>アクション数</th>
+        <?php foreach ($faqs as $faq): ?>
+          <th><a href="/faqs/<?= $faq["id"] ?>"><?= $faq["title"] ?></a></th>
+        <?php endforeach; ?>
       </tr>
-    <?php endforeach; ?>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <?php foreach ($calls as $call): ?>
+        <tr onclick="window.location.assign('/calls/<?= $call['id'] ?>')">
+          <td><?= $call["id"] ?></td>
+          <td><a href="/reserves/<?= $call["reserve_id"] ?>/result"><?= $call["date"] ?></a> |  <?= $call["time"] ?></td>
+          <td><?= $call["number"] ?></td>
+          <td><?= $call["status"] ?></td>
+          <td><?= $call["duration"] ?></td>
+          <td><?= $call["action_count"] ?></td>
+          <?php foreach ($call["faqs"] as $faq): ?>
+            <td>
+              <?= @$faq["title"] ? $faq["title"] : "-" ?>
+            </td>
+          <?php endforeach; ?>
+        </tr>
+      <?php endforeach; ?>
+    </tbody>
+  </table>
+</div>
 <ul class="pagination mb-0 mt-4" style="justify-content: center;">
   <?php if ($pgnt["first"]): ?>
     <li class="page-item">

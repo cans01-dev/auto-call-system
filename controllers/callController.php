@@ -68,10 +68,44 @@ function calls($vars) {
 
   $faqs = Fetch::get("faqs", $survey["id"], "survey_id", "order_num");
 
-  $sql = "SELECT o.id FROM options as o JOIN faqs as f ON o.faq_id = f.id WHERE f.survey_id = {$survey["id"]}";
-  $options = array_str($options_arr = @$_GET["options"] ?? array_column(Fetch::query($sql, "fetchAll"), "id"));
+  foreach ($calls as $k => $call) {
+    foreach ($faqs as $k2 => $faq) {
+      $sql = "SELECT * FROM answers as a
+              JOIN options as o ON a.option_id = o.id
+              WHERE a.call_id = {$call["id"]}
+              AND a.faq_id = {$faq["id"]}
+              AND (o.next_faq_id <> o.faq_id OR next_ending_id IS NOT NULL)";
+      $calls[$k]["faqs"][$k2] = Fetch::query($sql, "fetch");;
+    }
+  }
 
-  require_once "./views/pages/calls.php";
+  if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $csvFileName = '/tmp/' . time() . rand() . '.csv';
+    $fileName = time() . rand() . '.csv';
+    $res = fopen($csvFileName, 'w');
+    if ($res === FALSE) {
+      throw new Exception('ファイルの書き込みに失敗しました。');
+    }
+  
+    $header = ["id", "name", "email", "password"];
+    fputcsv($res, $header);
+  
+    foreach($calls as $dataInfo) {
+      mb_convert_variables('SJIS', 'UTF-8', $dataInfo);
+      fputcsv($res, $dataInfo);
+    }
+  
+    fclose($res);
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename=' . $fileName); 
+    header('Content-Length: ' . filesize($csvFileName)); 
+    header('Content-Transfer-Encoding: binary');
+    readfile($csvFileName);  
+    exit;
+  } else {
+    require_once "./views/pages/calls.php";
+  }
+
 }
 
 function answers($vars) {
@@ -79,27 +113,32 @@ function answers($vars) {
   if (!Allow::survey($survey)) abort(403);
 
   $page = @$_GET["page"] ?? 1;
-  $limit = 50; //
+  $limit = 100;
   $start = @$_GET["start"] ?? "2024-01-01";
   $end = @$_GET["end"] ?? "2034-01-01";
+  $number = "%" . @$_GET["number"] . "%";
 
   $sql = "SELECT o.id FROM options as o JOIN faqs as f ON o.faq_id = f.id WHERE f.survey_id = {$survey["id"]}";
   $options = array_str($options_arr = @$_GET["options"] ?? array_column(Fetch::query($sql, "fetchAll"), "id"));
 
-  $offset = (($page) - 1) * 50;
-  $sql = "SELECT COUNT(DISTINCT c.id) FROM calls as c
+  $offset = (($page) - 1) * $limit;
+  $sql = "SELECT COUNT(*) FROM answers as a
+          JOIN calls as c ON a.call_id = c.id
           JOIN reserves as r ON c.reserve_id = r.id
-          LEFT OUTER JOIN answers as a ON c.id = a.call_id
           WHERE r.survey_id = {$survey["id"]}
           AND r.date BETWEEN '{$start}' AND '{$end}'
           AND a.option_id IN({$options})";
-
-  $count = Fetch::query($sql, "fetchColumn");
-  $pgnt = pagenation($limit, $count, $page);
-
-  $sql = "SELECT *, c.id as id, c.status as status FROM calls as c
+  $pgnt = pagenation($limit, Fetch::query($sql, "fetchColumn"), $page);
+  
+  $sql = "SELECT *,
+            f.title as faq_title,
+            o.title as option_title,
+            c.id as call_id
+          FROM answers as a
+          JOIN calls as c ON a.call_id = c.id
           JOIN reserves as r ON c.reserve_id = r.id
-          LEFT OUTER JOIN answers as a ON c.id = a.call_id
+          JOIN options as o ON a.option_id = o.id
+          JOIN faqs as f ON a.faq_id = f.id
           WHERE r.survey_id = {$survey["id"]}
           AND r.date BETWEEN '{$start}' AND '{$end}'
           AND a.option_id IN({$options})
@@ -117,5 +156,5 @@ function answers($vars) {
     $faqs[$k]["options"] = Fetch::query($sql, "fetchAll");
   }
 
-  require_once "./views/pages/calls.php";
+  require_once "./views/pages/answers.php";
 }

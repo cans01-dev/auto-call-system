@@ -27,6 +27,23 @@ function result($vars) {
     $survey["success_numbers"] = Fetch::query($sql, "fetchColumn");
   
     $survey["success_rate"] =  $survey["success_numbers"] / $survey["responsed_numbers"];
+
+    $sql = "SELECT COUNT(*) FROM answers as a
+            JOIN options as o ON a.option_id = o.id
+            JOIN calls as c ON a.call_id = c.id
+            JOIN reserves as r ON c.reserve_id = r.id
+            WHERE r.id = {$reserve["id"]}
+            AND (o.next_faq_id <> o.faq_id OR o.next_ending_id IS NOT NULL)";
+    $survey["action_avg"] = Fetch::query($sql, "fetchColumn") / $survey["responsed_numbers"];
+
+    $sql = "SELECT * FROM answers as a
+            JOIN calls as c ON a.call_id = c.id
+            JOIN reserves as r ON c.reserve_id = r.id
+            WHERE r.id = {$reserve["id"]}
+            GROUP BY c.id
+            HAVING COUNT(*) > 0";
+    $survey["action_numbers"] = count(Fetch::query($sql, "fetchAll"));
+    $survey["action_rate"] = $survey["action_numbers"] / $survey["responsed_numbers"];
     
     $survey["faqs"] = Fetch::get("faqs", $survey["id"], "survey_id", "order_num");
     foreach ($survey["faqs"] as $key => $faq) {
