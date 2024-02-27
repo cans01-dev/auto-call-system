@@ -1,5 +1,15 @@
 <?php 
 
+function reserve($vars) {
+  $id = $vars["id"];
+  $reserve = Fetch::find("reserves", $id);
+  $reserve["areas"] = Fetch::areasByReserveId($reserve["id"]);
+  $survey = Fetch::find("surveys", $reserve["survey_id"]);
+  if (!Allow::reserve($reserve)) abort(403);
+
+  require_once "./views/pages/reserve.php";
+}
+
 function storeReserve() {
   $survey = Fetch::find("surveys", $_POST["survey_id"]);
   if (!Allow::survey($survey)) abort(403);

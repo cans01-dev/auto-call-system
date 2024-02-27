@@ -1,5 +1,81 @@
 <?php 
 
+function survey($vars) {
+  $survey_id = $vars["id"];
+  $month = $_GET["month"] ?? date("n");
+  $year = $_GET["year"] ?? date("Y");
+
+  $survey = Fetch::find("surveys", $survey_id);
+  $survey["endings"] = Fetch::get("endings", $survey["id"], "survey_id");
+  $survey["faqs"] = Fetch::get("faqs", $survey["id"], "survey_id", "order_num");
+  $survey["reserves"] = Fetch::reservesBySurveyIdAndYearMonth($survey["id"], $month, $year);
+  $survey["favorites"] = Fetch::get("favorites", $survey["id"], "survey_id");
+  if (Auth::user()["status"] !== 1) {
+    if (!Allow::survey($survey)) abort(403);
+  }
+
+  # calendar
+  $schedules = [];
+  foreach ($survey["reserves"] as $reserve) {
+    $reserve["areas"] = Fetch::areasByReserveId($reserve["id"]);
+    $ts = strtotime($reserve["date"]);
+    $schedules[date("d", $ts)] = $reserve;
+  }
+  $calendar = new Calendar($month, $year, $schedules);
+
+  # area
+  $sql = "SELECT DISTINCT a.title, a.id FROM areas as a
+          JOIN reserves_areas as ra ON a.id = ra.area_id
+          JOIN reserves as r ON ra.reserve_id = r.id
+          WHERE r.survey_id = {$survey_id}";
+  $areas = Fetch::query($sql, "fetchAll");
+  foreach ($areas as $key => $area) {
+    $stations = Fetch::get("stations", $area["id"], "area_id");
+    $areas[$key]["all_numbers"] = count($stations) * 10000;
+    $areas[$key]["called_numbers"] = 0;
+    $areas[$key]["responsed_numbers"] = 0;
+    foreach ($stations as $station) {
+      $sql = "SELECT COUNT(*) FROM calls as c JOIN reserves as r ON c.reserve_id = r.id
+              WHERE r.survey_id = {$survey_id} AND number LIKE '{$station["prefix"]}%'";
+      $areas[$key]["called_numbers"] += Fetch::query($sql, "fetchColumn");
+
+      $sql = "SELECT COUNT(*) FROM calls as c JOIN reserves as r ON c.reserve_id = r.id
+              WHERE r.survey_id = {$survey_id} AND number LIKE '{$station["prefix"]}%' AND c.status = 1";
+      $areas[$key]["responsed_numbers"] += Fetch::query($sql, "fetchColumn");
+    }
+    $areas[$key]["progress_rate"] = $areas[$key]["called_numbers"] / $areas[$key]["all_numbers"];
+    if ($areas[$key]["called_numbers"]) {
+      $areas[$key]["response_rate"] = $areas[$key]["responsed_numbers"] / $areas[$key]["called_numbers"];
+    } else {
+      $areas[$key]["response_rate"] = 0;
+    }
+  }
+
+  # billing
+  $survey_reserves = Fetch::get("reserves", $survey_id, "survey_id");
+  $months = [];
+  foreach ($survey_reserves as $reserve) {
+    $month = date("Y-m", strtotime($reserve["date"]));
+    if (!in_array($month, $months)) {
+      $months[] = $month;
+    }
+  }
+  foreach ($months as $month) {
+    $ts = strtotime($month."-01");
+    $month = date("m", $ts);
+    $year = date("Y", $ts);
+    $sql = "SELECT SUM(c.duration) FROM calls as c JOIN reserves as r
+            WHERE r.survey_id = {$survey["id"]} AND MONTH(r.date) = {$month} AND YEAR(r.date) = {$year}";
+    $total_duration = Fetch::query($sql, "fetchColumn");
+    $survey["billings"][] = [
+      "timestamp" => $ts,
+      "total_duration" => $total_duration
+    ];
+  }
+
+  require_once "./views/pages/survey.php";
+}
+
 function storeSurvey() {
   $surveys = Fetch::find2("surveys", [["user_id", "=" , Auth::user()["id"]]]);
   if ($surveys && count($surveys) > 1) {

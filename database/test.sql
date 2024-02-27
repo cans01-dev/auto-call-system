@@ -8,6 +8,7 @@ CREATE TABLE users (
   email varchar(255) NOT NULL UNIQUE,
   password varchar(255) NOT NULL,
   status int(11) NOT NULL,
+  lines int(11) NOT NULL,
   PRIMARY KEY (id)
 );
 

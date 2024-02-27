@@ -4,10 +4,10 @@
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">ホーム</a></li>
     <li class="breadcrumb-item"><a href="/surveys/<?= $survey["id"] ?>"><?= $survey["title"] ?></a></li>
-    <li class="breadcrumb-item active">コール一覧</li>
+    <li class="breadcrumb-item active">質問回答一覧</li>
   </ol>
 </nav>
-<?= Components::h2("コール一覧") ?>
+<?= Components::h2("質問回答一覧") ?>
 <div class="card p-2 mb-4">
   <form id="params">
     <table class="table table-borderless mb-0">
@@ -75,6 +75,7 @@
               min="0" max="<?= count($faqs) ?>" id="actionCountRange"
               value="<?= @$_GET["action_count"] ?? 0 ?>"
             >
+            <div class="form-text">聞き直しのプッシュも含まれます、項目数に反映されません</div>
           </td>
         </tr>
         <tr>
@@ -127,18 +128,20 @@
       <th>電話番号</th>
       <th>ステータス</th>
       <th>通話成立時間</th>
-      <th>アクション数</th>
+      <th>質問</th>
+      <th>回答</th>
     </tr>
   </thead>
   <tbody>
-    <?php foreach ($calls as $call): ?>
-      <tr onclick="window.location.assign('/calls/<?= $call['id'] ?>')">
-        <td><?= $call["id"] ?></td>
-        <td><a href="/reserves/<?= $call["reserve_id"] ?>/result"><?= $call["date"] ?></a> |  <?= $call["time"] ?></td>
-        <td><?= $call["number"] ?></td>
-        <td><?= $call["status"] ?></td>
-        <td><?= $call["duration"] ?></td>
-        <td><?= $call["action_count"] ?></td>
+    <?php foreach ($answers as $answer): ?>
+      <tr onclick="window.location.assign('/answers/<?= $answer['id'] ?>')">
+        <td><?= $answer["id"] ?></td>
+        <td><a href="/reserves/<?= $answer["reserve_id"] ?>/result"><?= $answer["date"] ?></a> |  <?= $answer["time"] ?></td>
+        <td><?= $answer["number"] ?></td>
+        <td><?= $answer["status"] ?></td>
+        <td><?= $answer["duration"] ?></td>
+        <td><?= $answer["title"] ?></td>
+        <td><?= $answer["title"] ?></td>
       </tr>
     <?php endforeach; ?>
   </tbody>

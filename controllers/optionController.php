@@ -1,5 +1,15 @@
 <?php 
 
+function option($vars) {
+  $id = $vars["id"];
+  $option = Fetch::find("options", $id);
+  $faq = Fetch::find("faqs", $option["faq_id"]);
+  $survey = Fetch::find("surveys", $faq["survey_id"]);
+  $survey["faqs"] = Fetch::get("faqs", $survey["id"], "survey_id");
+  if (!Allow::option($option)) abort(403);
+  require_once "./views/pages/option.php";
+}
+
 function storeOption() {
   $faq = Fetch::find("faqs", $_POST["faq_id"]);
   if (!Allow::faq($faq)) abort(403);

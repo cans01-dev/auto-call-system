@@ -69,7 +69,7 @@ function gen_reserve_info($reserve) {
   }
 
   # numbers
-  $numbers_length = round((strtotime($reserve["end"]) - strtotime($reserve["start"])) / 3600 * NUMBERS_PER_HOUR);
+  $numbers_length = round((strtotime($reserve["end"]) - strtotime($reserve["start"])) / 3600 * NUMBERS_PER_HOUR * $user["number_of_lines"]);
   $stations_max = count($stations) - 1;
 
   while (count($array["numbers"]) < $numbers_length) {
@@ -117,6 +117,7 @@ if (!$reserves = Fetch::get2("reserves", [["date", "=", $date]])) {
   exit("予約がありません");
 }
 
+$i = 0;
 foreach ($reserves as $reserve) {
   $survey = Fetch::find("surveys", $reserve["survey_id"]);
   $user = Fetch::find("users", $survey["user_id"]);
@@ -134,8 +135,9 @@ foreach ($reserves as $reserve) {
   DB::insert("gen_reserve_log", [
     "reserve_id" => $reserve["id"],
     "status" => 1,
-    "message" => "generated: {$file_path}"
+    "message" => "成功"
   ]);
-
-  echo "generated: {$file_path}";
+  $i++;
 }
+
+echo "{$i}件の予約情報ファイルを生成しました";

@@ -1,8 +1,10 @@
 <?php
 
+require "../vendor/autoload.php";
 require "../config.php";
 require "../models/Fetch.php";
 require "../models/DB.php";
+require "../models/Mail.php";
 require "../functions.php";
 require "./functions.php";
 
@@ -25,13 +27,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   if (Fetch::find2("receive_result_log", [
     ["reserve_id", "=", $reserve["id"]],
     ["status", "=", 1]
-  ])) {
+  ]) && !@$_POST["ignore"]) {
     DB::insert("receive_result_log", [
       "reserve_id" => $reserve["id"],
       "status" => 3,
       "message" => "この結果ファイルは既に受信されています"
     ]);
-    header("HTTP/1.1 500 Internal Server Error");
+    header("HTTP/1.1 422 Unprocessable Entity");
     exit();
   }
 
@@ -66,6 +68,43 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     "status" => 1,
     "message" => "成功"
   ]);
+
+  $survey = Fetch::find("surveys", $reserve["survey_id"]);
+  $survey["url"] = url("/surveys/{$survey["id"]}");
+  $user = Fetch::find("users", $survey["user_id"]);
+  $user["send_emails"] = array_column(Fetch::get2("send_emails", [
+    ["user_id", "=", $user["id"]],
+    ["enabled", "=", 1],
+  ]), "email");
+  $user["send_emails"][] = $user["email"];
+  $reserve["url"] = url("/reserves/{$reserve["id"]}/result");
+
+  $mail = new Mail();
+  $mail->setFrom('info@e-ivr.net', 'AutoCallシステム');
+  foreach ($user["send_emails"] as $address) $mail->addAddress($address);
+
+  $mail->isHTML(true);
+  $mail->Subject = "{$reserve["date"]}結果";
+  $mail->Body    = <<<EOL
+    <h1>{$reserve["date"]}結果</h1>
+    <h2>予約</h2>
+    <dl>
+      <dt>アンケート</dt>
+      <dd><a href="{$survey["url"]}">{$survey["title"]}</a></dd>
+      <dt>日付</dt>
+      <dd><a href="{$reserve["date"]}">{$reserve["date"]}</a></dd>
+      <dt>時間</dt>
+      <dd>{$reserve["start"]} ~ {$reserve["end"]}</dd>
+      <dt>url</dt>
+      <dd>
+        <a href="{$reserve["url"]}">ここから結果の詳細を確認できます</a><br>
+        <b>URLのページからCSVファイルを生成・取得できます</b>
+      </dd>
+    </dl>
+    <p></p>
+  EOL;
+  $mail->send();
+
 
   header("HTTP/1.1 200 OK");
 }

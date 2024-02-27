@@ -43,6 +43,12 @@
       <label class="form-label">結果ファイル</label>
       <input type="file" name="file" class="form-control" required>
     </div>
+    <div class="form-check form-switch">
+      <input class="form-check-input" type="checkbox" name="ignore" role="switch" id="flexSwitchCheckDefault">
+      <label class="form-check-label" for="flexSwitchCheckDefault">
+        「この結果ファイルは既に受信されています」エラーを無視する
+      </label>
+    </div>
     <div class="text-end">
       <button type="submit" class="btn btn-success">実行</button>
     </div>

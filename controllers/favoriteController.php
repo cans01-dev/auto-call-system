@@ -1,5 +1,15 @@
 <?php 
 
+function favorite($vars) {
+  $id = $vars["id"];
+  $favorite = Fetch::find("favorites", $id);
+  $favorite["areas"] = Fetch::areasByFavoriteId($favorite["id"]);
+  $survey = Fetch::find("surveys", $favorite["survey_id"]);
+  if (!Allow::favorite($favorite)) abort(403);
+
+  require_once "./views/pages/favorite.php";
+}
+
 function storeFavorite() {
   $survey = Fetch::find("surveys", $_POST["survey_id"]);
   if (!Allow::survey($survey)) abort(403);

@@ -6,6 +6,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("GET", "/login", "login");
 	$r->addRoute("GET", "/surveys/{id:\d+}", "survey");
 	$r->addRoute("GET", "/surveys/{id:\d+}/calls", "calls");
+	// $r->addRoute("GET", "/surveys/{id:\d+}/stats", "stats");
 	$r->addRoute("GET", "/reserves/{id:\d+}", "reserve");
 	$r->addRoute("GET", "/reserves/{id:\d+}/result", "result");
 	$r->addRoute("GET", "/calls/{id:\d+}", "call");
@@ -66,7 +67,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 
 	$r->addRoute("POST", "/admin/users", "storeUser");
 	$r->addRoute("PUT", "/admin/users/{id:\d+}/password", "adminUpdatePassword");
-	$r->addRoute("PUT", "/admin/users/{id:\d+}/status", "adminUpdateStatus");
+	$r->addRoute("PUT", "/admin/users/{id:\d+}", "adminUpdateUser");
 	$r->addRoute("POST", "/admin/gen_reserve", "genReserve");
 
 	$r->addRoute("POST", "/support/contact", "sendContact");

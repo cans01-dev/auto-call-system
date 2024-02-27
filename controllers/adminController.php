@@ -1,5 +1,35 @@
 <?php
 
+function users() {
+  $users = Fetch::all("users");
+
+  require_once "./views/pages/users.php";
+}
+
+function receive_result_log() {
+  $sql = "SELECT *, l.id as id, r.id as reserve_id, s.id as survey_id, l.status as status, r.date as reserve_date FROM receive_result_log as l
+          LEFT JOIN reserves as r ON l.reserve_id = r.id
+          LEFT JOIN surveys as s ON r.survey_id = s.id
+          LEFT JOIN users as u ON s.user_id = u.id
+          ORDER BY l.created_at DESC";
+
+  $logs = Fetch::query($sql, "fetchAll");
+
+  require_once "./views/pages/receive_result_log.php";
+}
+
+function gen_reserve_log() {
+  $sql = "SELECT *, l.id as id, r.id as reserve_id, s.id as survey_id, l.status as status, r.date as reserve_date FROM gen_reserve_log as l
+          LEFT JOIN reserves as r ON l.reserve_id = r.id
+          LEFT JOIN surveys as s ON r.survey_id = s.id
+          LEFT JOIN users as u ON s.user_id = u.id
+          ORDER BY l.created_at DESC";
+
+  $logs = Fetch::query($sql, "fetchAll");
+
+  require_once "./views/pages/gen_reserve_log.php";
+}
+
 function adminUpdatePassword() {
   $user = Fetch::find("users", $_POST["user_id"]);
 
@@ -18,7 +48,7 @@ function adminUpdatePassword() {
   back();
 }
 
-function adminUpdateStatus() {
+function adminUpdateUser() {
   $user = Fetch::find("users", $_POST["user_id"]);
 
   if (!password_verify($_POST["admin_password"], Auth::user()["password"])) {
@@ -26,9 +56,10 @@ function adminUpdateStatus() {
     back();
   }
   DB::update("users", $user["id"], [
-    "status" => $_POST["new_status"]
+    "status" => $_POST["new_status"],
+    "number_of_lines" => $_POST["number_of_lines"]
   ]);
-  Session::set("toast", ["success", "{$user["email"]}のステータスを変更しました"]);
+  Session::set("toast", ["success", "{$user["email"]}のユーザー情報を更新しました"]);
   back();
 }
 
@@ -42,6 +73,7 @@ function storeUser() {
     "email" => $_POST["email"],
     "password" => password_hash($_POST["password"], PASSWORD_DEFAULT),
     "status" => $_POST["status"],
+    "number_of_lines" => $_POST["number_of_lines"]
   ]);
   $user_id = DB::lastInsertId();
 

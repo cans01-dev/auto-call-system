@@ -1,5 +1,23 @@
 <?php 
 
+function faq($vars) {
+  $id = $vars["id"];
+  $faq = Fetch::find("faqs", $id);
+  $faq["options"] = Fetch::get("options", $faq["id"], "faq_id", "dial");
+  $survey = Fetch::find("surveys", $faq["survey_id"]);
+  $survey["faqs"] = Fetch::get("faqs", $survey["id"], "survey_id", "order_num");
+  if (!Allow::faq($faq)) abort(403);
+
+  foreach ($faq["options"] as $option) {
+    if ($option["next_faq_id"]) {
+      $index = array_search($option, $faq["options"]);
+      $faq["options"][$index]["next_faq"] = Fetch::find("faqs", $option["next_faq_id"]);
+    }
+  }
+
+  require_once "./views/pages/faq.php";
+}
+
 function storeFaq() {
   $survey = Fetch::find("surveys", $_POST["survey_id"]);
   if (!Allow::survey($survey)) abort(403);

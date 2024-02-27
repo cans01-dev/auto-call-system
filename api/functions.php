@@ -65,7 +65,7 @@ function gen_result_sample($reserve_info, array $status_rand_array): array {
 
   $reserve = Fetch::find("reserves", $reserve_id);
   $survey_id = $reserve["survey_id"];
-  $faqs = Fetch::get("faqs", $survey_id, "survey_id");
+  $faqs = Fetch::get("faqs", $survey_id, "survey_id", "order_num");
   $endings = Fetch::get("endings", $survey_id, "survey_id");
 
   # calls

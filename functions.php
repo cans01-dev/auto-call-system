@@ -1,5 +1,8 @@
 <?php
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+
 /**
  * オートコールシステムのみ利用
  */
@@ -186,7 +189,9 @@ function pagenation($posts_par_page, $posts_sum, $page) {
     "nnext" => $page + 2 > $last ? false : $page + 2,
     "first" => $page - 2 < $first ? false : $first,
     "last" => $page + 2 > $last ? false : $last,
+    "last_page" => $last,
     "offset" => $offset,
+    "sum" => $posts_sum,
     "current_start" => $offset + 1,
     "current_end" => $posts_sum < $offset + $posts_par_page ? $posts_sum : $offset + $posts_par_page,
   ];

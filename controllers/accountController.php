@@ -1,5 +1,17 @@
 <?php 
 
+function account() {
+  $sendEmails = Fetch::get("send_emails", Auth::user()["id"], "user_id");
+  require_once "./views/pages/account.php";
+}
+
+function sendEmail($vars) {
+  $id = $vars["id"];
+  $sendEmail = Fetch::find("send_emails", $id);
+  if ($sendEmail["user_id"] !== Auth::user()["id"]) abort(403);
+  require_once "./views/pages/sendEmail.php";
+}
+
 function updateEmail() {
   DB::update("users", Auth::user()["id"], [
     "email" => $_POST["email"]

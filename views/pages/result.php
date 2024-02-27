@@ -67,10 +67,10 @@
       <div class="form-text">集計済になるとダウンロードが可能になります</div>
     </div>
   </section>
-  <?php if ($reserve["status"] === 4): ?>
-    <?= Components::hr(4) ?>
-    <section id="result">
-      <?= Components::h3("結果") ?>
+  <?= Components::hr(4) ?>
+  <section id="result">
+    <?= Components::h3("結果") ?>
+    <?php if ($calls): ?>
       <table class="table mb-0">
         <thead>
           <tr>
@@ -104,7 +104,7 @@
                     <th scope="col">ダイヤル番号</th>
                     <th scope="col">TITLE</th>
                     <th scope="col">NEXT</th>
-                    <th class="table-primary" style="text-align: right;">count</th>
+                    <th class="table-primary" style="text-align: right; width: 90px;">count</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -131,16 +131,13 @@
                 </tbody>
               </table>
             <?php endif; ?>
-            <?php if (!$faq["voice_file"]): ?>
-              <div class="alert alert-danger mt-3 mb-0" role="alert">
-                質問の読み上げ文章を更新して音声ファイルを生成してください
-              </div>
-            <?php endif; ?>
           </div>
         </div>
       <?php endforeach; ?>
-    </section>
-  <?php endif; ?>
+    <?php else: ?>
+      <p>データがありません</p>
+    <?php endif; ?>
+  </section>
 </div>
 
 <?php if (Auth::user()["id"] !== $survey["user_id"]): ?>

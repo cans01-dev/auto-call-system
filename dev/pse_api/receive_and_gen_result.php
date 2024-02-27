@@ -16,7 +16,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   [$json, $file_path] = gen_result_sample($reserve_info, [1,1,1,1,2,3,4,6]);
   
   file_put_contents($file_path, $json);
-  echo "サンプル結果ファイルを生成しました: {$file_path}" . PHP_EOL;
+  $download = url('/storage/outputs/' . basename($file_path));
+  echo "サンプル結果ファイルを生成しました: <a href='{$download}' download>{$file_path}</a>" . PHP_EOL;
 }
 
 ?>

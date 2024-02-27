@@ -9,7 +9,7 @@
 </nav>
 <?= Components::h2($call["number"]) ?>
 <table class="table table-bordered">
-  <thead class="sticky-top" style="top: 43px;">
+  <thead style="top: 43px;">
     <tr>
       <th>ID</th>
       <th>日付・時間</th>
@@ -29,14 +29,14 @@
   </tbody>
 </table>
 <?= Components::hr(3) ?>
-<?php foreach ($faqs as $faq): ?>
-  <div class="card mb-2" id="faq<?= $faq["id"] ?>">
+<?php foreach ($answers as $answer): ?>
+  <div class="card mb-2" id="faq<?= $answer["id"] ?>">
     <div class="card-body">
       <h5 class="card-title mb-3">
-        <span class="badge bg-primary-subtle text-black me-2">質問</span><?= $faq["title"] ?>
+        <span class="badge bg-primary-subtle text-black me-2">質問</span><?= $answer["title"] ?>
       </h5>
-      <p class="card-text"><?= $faq["text"] ?></p>
-      <?php if ($faq["options"] = Fetch::get("options", $faq["id"], "faq_id")): ?>
+      <p class="card-text"><?= $answer["text"] ?></p>
+      <?php if ($answer["options"] = Fetch::get("options", $answer["id"], "faq_id")): ?>
         <table class="table table-sm mb-0">
           <thead>
             <tr>
@@ -46,13 +46,13 @@
             </tr>
           </thead>
           <tbody>
-            <?php foreach ($faq["options"] as $option): ?>
-            <tr class="<?= $option["id"] === $faq["option_id"] ? "table-success" : "" ?>">
+            <?php foreach ($answer["options"] as $option): ?>
+            <tr class="<?= $option["id"] === $answer["option_id"] ? "table-success" : "" ?>">
               <th scope="row"><span class=""><?= $option["dial"] ?></span></th>
               <td><?= $option["title"] ?></td>
               <td>
                 <?php if ($option["next_faq"] = Fetch::find2("faqs", [["id", "=", $option["next_faq_id"]]])): ?>
-                  <?php if ($option["next_faq"]["id"] !== $faq["id"]): ?>
+                  <?php if ($option["next_faq"]["id"] !== $answer["id"]): ?>
                     <a href="/faqs/<?= $option["next_faq"]["id"] ?>" class="badge bg-primary-subtle text-black" style="text-decoration: none;">
                       <?= $option["next_faq"]["title"]; ?>
                     </a>
@@ -67,11 +67,6 @@
             <?php endforeach; ?>
           </tbody>
         </table>
-      <?php endif; ?>
-      <?php if (!$faq["voice_file"]): ?>
-        <div class="alert alert-danger mt-3 mb-0" role="alert">
-          質問の読み上げ文章を更新して音声ファイルを生成してください
-        </div>
       <?php endif; ?>
     </div>
   </div>

@@ -32,6 +32,7 @@ body {
 main {
   padding: 0 16px 32px 16px;
   width: 100%;
+  max-width: 1040px;
 }
 .calendar-table {
   table-layout: fixed;
