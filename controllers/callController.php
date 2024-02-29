@@ -70,8 +70,9 @@ function calls($vars) {
 
   foreach ($calls as $k => $call) {
     foreach ($faqs as $k2 => $faq) {
-      $sql = "SELECT * FROM answers as a
+      $sql = "SELECT *, o.title as option_title, f.title as faq_title FROM answers as a
               JOIN options as o ON a.option_id = o.id
+              JOIN faqs as f ON a.faq_id = f.id
               WHERE a.call_id = {$call["id"]}
               AND a.faq_id = {$faq["id"]}
               AND (o.next_faq_id <> o.faq_id OR next_ending_id IS NOT NULL)";
@@ -80,17 +81,25 @@ function calls($vars) {
   }
 
   if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $csvFileName = '/tmp/' . time() . rand() . '.csv';
-    $fileName = time() . rand() . '.csv';
+    $time = time();
+    $csvFileName = dirname(__DIR__) . "/storage/outputs/calls_{$time}.csv";
+    $fileName = "calls_{$time}.csv";
     $res = fopen($csvFileName, 'w');
     if ($res === FALSE) {
       throw new Exception('ファイルの書き込みに失敗しました。');
     }
-  
-    $header = ["id", "name", "email", "password"];
+
+    $header = array_keys($calls[0]);
+    $header = array_splice($header, 0, -1);
+    foreach ($faqs as $faq) $header[] = $faq["title"];
+    mb_convert_variables('SJIS', 'UTF-8', $header);
     fputcsv($res, $header);
-  
-    foreach($calls as $dataInfo) {
+    
+    foreach($calls as $k => $dataInfo) {
+      foreach ($dataInfo["faqs"] as $faq) {
+        $dataInfo[] = @$faq["option_title"];
+      }
+      unset($dataInfo["faqs"]);
       mb_convert_variables('SJIS', 'UTF-8', $dataInfo);
       fputcsv($res, $dataInfo);
     }

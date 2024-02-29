@@ -123,6 +123,13 @@
               <button type="submit" class="btn btn-success">更新</button>
             </div>
           </form>
+          <form action="/admin/users/<?= $user["id"] ?>" method="post" onsubmit="return window.confirm('本当に削除しますか？\r\n削除を実行するとユーザーの保有する質問や予約などのデータが削除されます')">
+            <?= csrf() ?>
+            <?= method("DELETE") ?>
+            <div class="text-end">
+              <button class="btn btn-link">このユーザーを削除</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -138,6 +145,13 @@
         <option value="0">一般</option>
         <option value="1">管理</option>
       </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">回線数</label>
+      <input
+      type="number" name="number_of_lines"
+      class="form-control"min="1" max="300" required
+      >
     </div>
     <div class="mb-3">
       <label class="form-label">メールアドレス</label>

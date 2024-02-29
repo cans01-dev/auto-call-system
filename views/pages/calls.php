@@ -113,7 +113,7 @@
           <td><?= $call["action_count"] ?></td>
           <?php foreach ($call["faqs"] as $faq): ?>
             <td>
-              <?= @$faq["title"] ? $faq["title"] : "-" ?>
+              <?= @$faq["option_title"] ? $faq["option_title"] : "-" ?>
             </td>
           <?php endforeach; ?>
         </tr>

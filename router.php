@@ -68,6 +68,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("POST", "/admin/users", "storeUser");
 	$r->addRoute("PUT", "/admin/users/{id:\d+}/password", "adminUpdatePassword");
 	$r->addRoute("PUT", "/admin/users/{id:\d+}", "adminUpdateUser");
+	$r->addRoute("DELETE", "/admin/users/{id:\d+}", "deleteUser");
 	$r->addRoute("POST", "/admin/gen_reserve", "genReserve");
 
 	$r->addRoute("POST", "/support/contact", "sendContact");

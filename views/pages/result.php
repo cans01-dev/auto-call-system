@@ -71,7 +71,7 @@
   <section id="result">
     <?= Components::h3("結果") ?>
     <?php if ($calls): ?>
-      <dl class="container">
+      <dl class="container mb-2">
         <div class="row">
           <div class="col">
             <dt>応答率(応答コール数 / 総コール数)</dt>
@@ -97,7 +97,12 @@
           </div>
         </div>
       </dl>
-      <?= Components::hr(3) ?>
+      <a
+        href="/surveys/<?= $survey["id"] ?>/calls?start=<?= $reserve["date"] ?>&end=<?= $reserve["date"] ?>"
+        class="btn btn-outline-primary mb-2"
+      >
+        <span class="me-1"><i class="fa-solid fa-table fa-lg"></i></span>コール一覧
+      </a>
       <?php foreach ($survey["faqs"] as $faq): ?>
         <div class="card mb-2" id="faq<?= $faq["id"] ?>">
           <div class="card-body">

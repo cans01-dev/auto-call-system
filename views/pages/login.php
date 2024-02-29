@@ -11,8 +11,8 @@
       <label for="floatingPassword">パスワード</label>
     </div>
     <?= csrf() ?>
-    <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
-    <p class="mt-5 mb-3 text-body-secondary">&copy; cans 2024</p>
+    <button class="btn btn-primary w-100 py-2" type="submit">ログイン</button>
+    <p class="mt-5 mb-3 text-body-secondary">&copy; AutoCallシステム</p>
   </form>
 </main>
 <?php require './views/templates/footerLogin.php'; ?>

@@ -124,3 +124,13 @@ function storeUser() {
   Session::set("toast", ["success", "ユーザーを新規作成しました"]);
   back();
 }
+
+function deleteUser($vars) {
+  $user_id = $vars["id"];
+  $user = Fetch::find("users", $user_id);
+
+  DB::delete("users", $user["id"]);
+
+  Session::set("toast", ["success", "{$user["email"]}のアカウントを削除しました"]);
+  back();
+}

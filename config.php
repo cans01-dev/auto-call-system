@@ -35,7 +35,7 @@ define("MIN_TIME", 60*60*9);
 define("MAX_TIME", 60*60*21);
 
 # Calls Per Hour あらかじめ生成しておく電話番号の数（一時間あたり）
-define("NUMBERS_PER_HOUR", 100);
+define("NUMBERS_PER_HOUR", 150);
 
 # ステータスコードごとのテキストとカラーの指定
 define("RESERVATION_STATUS", [
