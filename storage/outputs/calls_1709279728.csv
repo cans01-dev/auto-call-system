@@ -1,0 +1,6 @@
+電話番号,コールID,"予約URL",ステータス,通話成立時間,時間,アクション数,お住まい,光熱費,ご年齢,お使いの給湯器,太陽光パネルと蓄電池,ご主人、奥様,無料シミュレーション
+090-3587-8466,http://localhost:8080/calls/22520,http://localhost:8080/reserves/1,接続,90,13:00:05,3,,１万円以上,７０歳から７５歳,"ガス給湯器 or 灯油ボイラーを使用",,,
+090-1603-2213,http://localhost:8080/calls/22519,http://localhost:8080/reserves/1,接続,4,13:00:05,0,,,,,,,
+080-2135-3491,http://localhost:8080/calls/22518,http://localhost:8080/reserves/1,接続,3,13:00:04,0,,,,,,,
+090-9179-3384,http://localhost:8080/calls/22516,http://localhost:8080/reserves/1,接続,110,13:00:03,0,,,,,,,
+090-3810-0716,http://localhost:8080/calls/22517,http://localhost:8080/reserves/1,接続,4,13:00:03,0,,,,,,,

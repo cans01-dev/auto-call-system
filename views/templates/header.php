@@ -62,7 +62,7 @@
 									</a>
 								</li>
 								<li class="dropdown-item">
-									<a href="/admin/receive_result_log" class="nav-link <?= $_SERVER["REQUEST_URI"] === "/admin/receive_result_log" ? "active" : "link-body-emphasis" ?>">
+									<a href="/admin/receive_result_log" class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/admin/receive_result_log" ? "active" : "link-body-emphasis" ?>">
 										<span class="text-center d-inline-block me-2" style="width: 24px;">
 											<i class="fa-solid fa-file-arrow-down fa-lg"></i>
 										</span>結果ファイル受信ログ
@@ -109,7 +109,7 @@
 				<ul class="nav nav-pills flex-column">
 					<li class="nav-item">
 						<a
-						class="nav-link <?= $_SERVER["REQUEST_URI"] === "/home" ? "active" : "link-body-emphasis" ?>"
+						class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/home" ? "active" : "link-body-emphasis" ?>"
 						href="/home"
 						>
 							<span class="text-center d-inline-block me-2" style="width: 24px;">
@@ -117,19 +117,12 @@
 							</span>ホーム
 						</a>
 					</li>
-					<li class="nav-item">
-						<a class="nav-link link-body-emphasis" href="/home#create">
-							<span class="text-center d-inline-block me-2" style="width: 24px;">
-								<i class="fa-solid fa-square-plus fa-lg"></i>
-							</span>新規作成
-						</a>
-					</li>
 					<li class="nav-item my-2 p-1 border border-2 rounded-2">
 						<?php if ($sv = Fetch::find("surveys", Auth::user()["id"], "user_id")): ?>
 							<ul class="nav nav-pills flex-column">
 								<li class="nav-item">
 									<a
-									class="nav-link <?= $_SERVER["REQUEST_URI"] === "/surveys/{$sv["id"]}" ? "active" : "link-body-emphasis" ?>"
+									class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/surveys/{$sv["id"]}" ? "active" : "link-body-emphasis" ?>"
 									href="/surveys/<?= $sv["id"] ?>"
 									>
 									<?= $sv["title"] ?>
@@ -145,14 +138,16 @@
 											<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#calendar">カレンダー</a>
 										</li>
 										<li class="nav-item">
-											<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#area">エリア</a>
-										</li>
-										<li class="nav-item">
-											<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#billing">料金</a>
+											<a
+												class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/surveys/{$sv["id"]}/stats" ? "active" : "link-body-emphasis" ?>"
+												href="/surveys/<?= $sv["id"] ?>/stats"
+											>
+												統計
+											</a>
 										</li>
 										<li class="nav-item">
 											<a
-												class="nav-link <?= $_SERVER["REQUEST_URI"] === "/surveys/{$sv["id"]}/calls" ? "active" : "link-body-emphasis" ?>"
+												class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/surveys/{$sv["id"]}/calls" ? "active" : "link-body-emphasis" ?>"
 												href="/surveys/<?= $sv["id"] ?>/calls"
 											>
 												コール一覧
@@ -169,7 +164,7 @@
 						<?php endif; ?>
 					</li>
 					<li class="nav-item">
-						<a href="/support" class="nav-link <?= $_SERVER["REQUEST_URI"] === "/support" ? "active" : "link-body-emphasis" ?>">
+						<a href="/support" class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/support" ? "active" : "link-body-emphasis" ?>">
 							<span class="text-center d-inline-block me-2" style="width: 24px;">
 								<i class="fa-solid fa-circle-question fa-lg"></i>
 							</span>ドキュメント
@@ -178,17 +173,22 @@
 					<?php if (Auth::user()["status"] === USER_STATUS_ADMIN): ?>
 						<li class="nav-item my-2 p-1 border border-2 rounded-2">
 							<h4 class="fs-6">管理者メニュー</h4>
-							<a href="/admin/users" class="nav-link <?= $_SERVER["REQUEST_URI"] === "/admin/users" ? "active" : "link-body-emphasis" ?>">
+							<a href="/admin/users" class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/admin/users" ? "active" : "link-body-emphasis" ?>">
 								<span class="text-center d-inline-block me-2" style="width: 24px;">
 									<i class="fa-solid fa-users fa-lg"></i>
 								</span>ユーザー管理
 							</a>
-							<a href="/admin/gen_reserve_log" class="nav-link <?= $_SERVER["REQUEST_URI"] === "/admin/gen_reserve_log" ? "active" : "link-body-emphasis" ?>">
+							<a href="/admin/reserves" class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/admin/reserves" ? "active" : "link-body-emphasis" ?>">
+								<span class="text-center d-inline-block me-2" style="width: 24px;">
+									<i class="fa-solid fa-table-list fa-lg"></i>
+								</span>全ての予約
+							</a>
+							<a href="/admin/gen_reserve_log" class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/admin/gen_reserve_log" ? "active" : "link-body-emphasis" ?>">
 								<span class="text-center d-inline-block me-2" style="width: 24px;">
 									<i class="fa-solid fa-file-arrow-up fa-lg"></i>
 								</span>予約情報ファイル生成ログ
 							</a>
-							<a href="/admin/receive_result_log" class="nav-link <?= $_SERVER["REQUEST_URI"] === "/admin/receive_result_log" ? "active" : "link-body-emphasis" ?>">
+							<a href="/admin/receive_result_log" class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/admin/receive_result_log" ? "active" : "link-body-emphasis" ?>">
 								<span class="text-center d-inline-block me-2" style="width: 24px;">
 									<i class="fa-solid fa-file-arrow-down fa-lg"></i>
 								</span>結果ファイル受信ログ
@@ -212,7 +212,7 @@
 					<?= Auth::user()["email"] ?>
 				</button>
 				<ul class="dropdown-menu dropdown-menu-dark">
-					<li><a class="dropdown-item" href="/account">アカウント設定</a></li>
+					<li><a class="dropdown-item" href="/users/<?= Auth::user()["id"] ?>">アカウント設定</a></li>
 					<li><hr class="dropdown-divider"></li>
 					<li>
 						<form action="/logout" method="post">

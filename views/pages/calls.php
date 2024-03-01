@@ -87,90 +87,96 @@
   </form>
 </div>
 <p><?= "{$pgnt["current"]} / {$pgnt["last_page"]}ページ目 - {$pgnt["current_start"]}~{$pgnt["current_end"]} / {$pgnt["sum"]}件表示中" ?></p>
-<div class="calls-table-container">
-  <table class="table table-bordered table-hover calls-table">
-    <thead class="sticky-top">
-      <tr>
-        <th>ID</th>
-        <th>日付・時間</th>
-        <th>電話番号</th>
-        <th>ステータス</th>
-        <th>通話成立時間</th>
-        <th>アクション数</th>
-        <?php foreach ($faqs as $faq): ?>
-          <th><a href="/faqs/<?= $faq["id"] ?>"><?= $faq["title"] ?></a></th>
-        <?php endforeach; ?>
-      </tr>
-    </thead>
-    <tbody>
-      <?php foreach ($calls as $call): ?>
-        <tr onclick="window.location.assign('/calls/<?= $call['id'] ?>')">
-          <td><?= $call["id"] ?></td>
-          <td><a href="/reserves/<?= $call["reserve_id"] ?>/result"><?= $call["date"] ?></a> |  <?= $call["time"] ?></td>
-          <td><?= $call["number"] ?></td>
-          <td><?= $call["status"] ?></td>
-          <td><?= $call["duration"] ?></td>
-          <td><?= $call["action_count"] ?></td>
-          <?php foreach ($call["faqs"] as $faq): ?>
-            <td>
-              <?= @$faq["option_title"] ? $faq["option_title"] : "-" ?>
-            </td>
+<?php if ($calls): ?>
+  <div class="calls-table-container">
+    <table class="table table-bordered table-hover calls-table">
+      <thead class="sticky-top">
+        <tr>
+          <th>ID</th>
+          <th>日付・時間</th>
+          <th>電話番号</th>
+          <th>ステータス</th>
+          <th>通話成立時間</th>
+          <th>アクション数</th>
+          <?php foreach ($faqs as $faq): ?>
+            <th><a href="/faqs/<?= $faq["id"] ?>"><?= $faq["title"] ?></a></th>
           <?php endforeach; ?>
         </tr>
-      <?php endforeach; ?>
-    </tbody>
-  </table>
-</div>
-<ul class="pagination mb-0 mt-4" style="justify-content: center;">
-  <?php if ($pgnt["first"]): ?>
-    <li class="page-item">
-      <button name="page" value="<?= $pgnt["first"] ?>" form="params" class="page-link" href="#">
-        <i class="fa-solid fa-angles-left"></i>
-      </button>
-    </li>
-  <?php endif; ?>
-  <?php if ($pgnt["pprev"]): ?>
-    <li class="page-item">
-      <button name="page" value="<?= $pgnt["pprev"]  ?>" form="params" class="page-link" href="#">
-        <?= $pgnt["pprev"] ?>
-      </button>
-    </li>
-  <?php endif; ?>
-  <?php if ($pgnt["prev"]): ?>
-    <li class="page-item">
-      <button name="page" value="<?= $pgnt["prev"]  ?>" form="params" class="page-link" href="#">
-        <?= $pgnt["prev"] ?>
-      </button>
-    </li>
-  <?php endif; ?>
-  <?php if ($pgnt["current"]): ?>
-    <li class="page-item">
-      <button name="page" value="<?= $pgnt["current"] ?>" form="params" class="page-link active" href="#">
-        <?= $pgnt["current"] ?>
-      </button>
-    </li>
-  <?php endif; ?>
-  <?php if ($pgnt["next"]): ?>
-    <li class="page-item">
-      <button name="page" value="<?= $pgnt["next"]  ?>" form="params" class="page-link" href="#">
-        <?= $pgnt["next"] ?>
-      </button>
-    </li>
-  <?php endif; ?>
-  <?php if ($pgnt["nnext"]): ?>
-    <li class="page-item">
-      <button name="page" value="<?= $pgnt["nnext"]  ?>" form="params" class="page-link" href="#">
-        <?= $pgnt["nnext"] ?>
-      </button>
-    </li>
-  <?php endif; ?>
-  <?php if ($pgnt["last"]): ?>
-    <li class="page-item">
-      <button name="page" value="<?= $pgnt["last"]  ?>" form="params" class="page-link" href="#">
-        <i class="fa-solid fa-angles-right"></i>
-      </button>
-    </li>
-  <?php endif; ?>
-</ul>
+      </thead>
+      <tbody>
+        <?php foreach ($calls as $call): ?>
+          <tr onclick="window.location.assign('/calls/<?= $call['id'] ?>')">
+            <td><?= $call["id"] ?></td>
+            <td><a href="/reserves/<?= $call["reserve_id"] ?>/result"><?= $call["date"] ?></a> |  <?= $call["time"] ?></td>
+            <td><?= $call["number"] ?></td>
+            <td><?= CALL_STATUS[$call["status"]]["text"] ?></td>
+            <td><?= $call["duration"] ?></td>
+            <td><?= $call["action_count"] ?></td>
+            <?php foreach ($call["faqs"] as $faq): ?>
+              <td>
+                <?= @$faq["option_title"] ? $faq["option_title"] : "-" ?>
+              </td>
+            <?php endforeach; ?>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+  </div>
+  <ul class="pagination mb-0 mt-4" style="justify-content: center;">
+    <?php if ($pgnt["first"]): ?>
+      <li class="page-item">
+        <button name="page" value="<?= $pgnt["first"] ?>" form="params" class="page-link" href="#">
+          <i class="fa-solid fa-angles-left"></i>
+        </button>
+      </li>
+    <?php endif; ?>
+    <?php if ($pgnt["pprev"]): ?>
+      <li class="page-item">
+        <button name="page" value="<?= $pgnt["pprev"]  ?>" form="params" class="page-link" href="#">
+          <?= $pgnt["pprev"] ?>
+        </button>
+      </li>
+    <?php endif; ?>
+    <?php if ($pgnt["prev"]): ?>
+      <li class="page-item">
+        <button name="page" value="<?= $pgnt["prev"]  ?>" form="params" class="page-link" href="#">
+          <?= $pgnt["prev"] ?>
+        </button>
+      </li>
+    <?php endif; ?>
+    <?php if ($pgnt["current"]): ?>
+      <li class="page-item">
+        <button name="page" value="<?= $pgnt["current"] ?>" form="params" class="page-link active" href="#">
+          <?= $pgnt["current"] ?>
+        </button>
+      </li>
+    <?php endif; ?>
+    <?php if ($pgnt["next"]): ?>
+      <li class="page-item">
+        <button name="page" value="<?= $pgnt["next"]  ?>" form="params" class="page-link" href="#">
+          <?= $pgnt["next"] ?>
+        </button>
+      </li>
+    <?php endif; ?>
+    <?php if ($pgnt["nnext"]): ?>
+      <li class="page-item">
+        <button name="page" value="<?= $pgnt["nnext"]  ?>" form="params" class="page-link" href="#">
+          <?= $pgnt["nnext"] ?>
+        </button>
+      </li>
+    <?php endif; ?>
+    <?php if ($pgnt["last"]): ?>
+      <li class="page-item">
+        <button name="page" value="<?= $pgnt["last"]  ?>" form="params" class="page-link" href="#">
+          <i class="fa-solid fa-angles-right"></i>
+        </button>
+      </li>
+    <?php endif; ?>
+  </ul>
+<?php else: ?>
+  <?= Components::noContent("該当するデータがありません、検索条件を変更して再検索してください") ?>
+<?php endif; ?>
+
+<?= Auth::user()["id"] !== $survey["user_id"]? Components::watchOnAdmin("管理者としてこのページを閲覧しています") : "" ?>
 
 <?php require './views/templates/footer.php'; ?>

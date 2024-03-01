@@ -2,6 +2,10 @@
 
 class Allow
 {
+  public static function user($user) {    
+    return $user["id"] === Auth::user()["id"];
+  }
+
   public static function survey($survey) {    
     return $survey["user_id"] === Auth::user()["id"];
   }

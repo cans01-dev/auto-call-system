@@ -48,10 +48,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $call_id = DB::lastInsertId();
 
     foreach ($call["answers"] as $answer) {
-      if (isset($answer["faq_id"])) {
+      if (isset($answer["option_id"])) {
         DB::insert("answers", [
           "call_id" => $call_id,
-          "faq_id" => $answer["faq_id"],
+          "faq_id" => $answer["id"],
           "option_id" => $answer["option_id"]
         ]);
       }
@@ -77,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     ["enabled", "=", 1],
   ]), "email");
   $user["send_emails"][] = $user["email"];
-  $reserve["url"] = url("/reserves/{$reserve["id"]}/result");
+  $reserve["url"] = url("/reserves/{$reserve["id"]}");
 
   $mail = new Mail();
   $mail->setFrom('info@e-ivr.net', 'AutoCallシステム');

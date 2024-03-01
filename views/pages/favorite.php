@@ -3,8 +3,8 @@
 <nav aria-label="breadcrumb" class="breadcrumb-nav">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">ホーム</a></li>
-    <li class="breadcrumb-item"><a href="/surveys/<?= $survey["id"] ?>"><?= $survey["title"] ?></a></li>
-    <li class="breadcrumb-item active">お気に入り: <?= $favorite["title"] ?></li>
+    <li class="breadcrumb-item"><a href="/surveys/<?= $survey["id"] ?>#calendar"><?= $survey["title"] ?></a></li>
+    <li class="breadcrumb-item active">予約パターン: <?= $favorite["title"] ?></li>
   </ol>
 </nav>
 <?= Components::h2("予約パターン: {$favorite["title"]}") ?>

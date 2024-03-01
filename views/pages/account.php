@@ -18,14 +18,18 @@
           <div class="mb-3">
             <label class="form-label">ステータス</label>
             <div>
-              <span class="badge fs-6 bg-<?= USER_STATUS[Auth::user()["status"]]["bg"] ?>">
-                <?= USER_STATUS[Auth::user()["status"]]["text"]; ?>
+              <span class="badge fs-6 bg-<?= USER_STATUS[$user["status"]]["bg"] ?>">
+                <?= USER_STATUS[$user["status"]]["text"]; ?>
               </span>
             </div>
           </div>
           <div class="mb-3">
             <label class="form-label">メールアドレス</label>
-            <input type="email" name="email" class="form-control" value="<?= Auth::user()["email"] ?>">
+            <input type="email" name="email" class="form-control" value="<?= $user["email"] ?>">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">回線数</label>
+            <input type="numbers" name="number_of_lines" class="form-control" value="<?= $user["number_of_lines"] ?>" disabled>
           </div>
           <div class="mb-3">
             <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
@@ -43,8 +47,8 @@
     <section id="sendEmails">
       <?= Components::h3("送信先メールアドレス") ?>
       <div style="max-width: 480px;">
-        <?php if ($sendEmails): ?>
-          <?php foreach ($sendEmails as $sendEmail): ?>
+        <?php if ($user["sendEmails"]): ?>
+          <?php foreach ($user["sendEmails"] as $sendEmail): ?>
             <div class="card mb-2">
               <div class="card-body">
                 <span class="fw-bold me-2"><?= $sendEmail["email"] ?></span>
@@ -105,5 +109,7 @@ EOL); ?>
     </div>
   </form>
 EOL); ?>
+
+<?= Auth::user()["id"] !== $user["id"]? Components::watchOnAdmin("管理者として閲覧専用でこのページを閲覧しています") : "" ?>
 
 <?php require './views/templates/footer.php'; ?>

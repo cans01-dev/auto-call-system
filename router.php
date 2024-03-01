@@ -6,25 +6,25 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("GET", "/login", "login");
 	$r->addRoute("GET", "/surveys/{id:\d+}", "survey");
 	$r->addRoute("GET", "/surveys/{id:\d+}/calls", "calls");
-	// $r->addRoute("GET", "/surveys/{id:\d+}/answers", "answers");
+	$r->addRoute("GET", "/surveys/{id:\d+}/stats", "stats");
 	$r->addRoute("GET", "/reserves/{id:\d+}", "reserve");
-	$r->addRoute("GET", "/reserves/{id:\d+}/result", "result");
 	$r->addRoute("GET", "/calls/{id:\d+}", "call");
 	$r->addRoute("GET", "/faqs/{id:\d+}", "faq");
-	$r->addRoute("GET", "/options/{id:\d+}", "option");	
 	$r->addRoute("GET", "/favorites/{id:\d+}", "favorite");
-	$r->addRoute("GET", "/account", "account");
+	$r->addRoute("GET", "/users/{id:\d+}", "account");
 	$r->addRoute("GET", "/send-emails/{id:\d+}", "sendEmail");
+	$r->addRoute("GET", "/areas/{id:\d+}", "area");
 	$r->addRoute("GET", "/support", "support");
 	$r->addRoute("GET", "/admin/users", "users");
 	$r->addRoute("GET", "/admin/receive_result_log", "receive_result_log");
 	$r->addRoute("GET", "/admin/gen_reserve_log", "gen_reserve_log");
+	$r->addRoute("GET", "/admin/reserves", "adminReserves");
 
 	$r->addRoute("POST", "/login", "loginPost");
 	$r->addRoute("POST", "/logout", "logout");
 
-	$r->addRoute("PUT", "/account/email", "updateEmail");
-	$r->addRoute("PUT", "/account/password", "updatePassword");
+	$r->addRoute("PUT", "/users/{id:\d+}/email", "updateEmail");
+	$r->addRoute("PUT", "/users/{id:\d+}/password", "updatePassword");
 
 	$r->addRoute("POST", "/send-emails", "storeSendEmail");
 	$r->addRoute("PUT", "/send-emails/{id:\d+}", "updateSendEmail");
@@ -64,15 +64,19 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 
 	$r->addRoute("POST", "/favorites_areas", "storeFavoritesAreas");
 	$r->addRoute("DELETE", "/favorites_areas/{id:\d+}", "deleteFavoritesAreas");
+	
+	$r->addRoute("POST", "/areas", "storeArea");
+	$r->addRoute("PUT", "/areas/{id:\d+}", "updateArea");
+	$r->addRoute("DELETE", "/areas/{id:\d+}", "deleteArea");
+
+	$r->addRoute("POST", "/support/contact", "sendContact");
+	$r->addRoute("POST", "/surveys/{id:\d+}/calls", "callsCsv");
 
 	$r->addRoute("POST", "/admin/users", "storeUser");
 	$r->addRoute("PUT", "/admin/users/{id:\d+}/password", "adminUpdatePassword");
 	$r->addRoute("PUT", "/admin/users/{id:\d+}", "adminUpdateUser");
 	$r->addRoute("DELETE", "/admin/users/{id:\d+}", "deleteUser");
+	$r->addRoute("DELETE", "/admin/receive_result_log/{id:\d+}", "cancelResultInfo");
 	$r->addRoute("POST", "/admin/gen_reserve", "genReserve");
-
-	$r->addRoute("POST", "/support/contact", "sendContact");
-
-	$r->addRoute("POST", "/surveys/{id:\d+}/calls", "calls");
 });
 

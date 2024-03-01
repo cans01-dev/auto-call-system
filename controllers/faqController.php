@@ -25,9 +25,15 @@ function storeFaq() {
   DB::insert("faqs", [
     "survey_id" => $survey["id"],
     "title" => $_POST["title"],
+    "text" => $_POST["text"],
     "order_num" => count($faqs) ? max(array_column($faqs, "order_num")) + 1 : 0
   ]);
   $faq_id = DB::lastInsertId();
+  $file_name = uniqid("f{$faq_id}_") . ".wav";
+  file_put_contents(user_dir($file_name, $survey["user_id"]), text_to_speech($_POST["text"], $survey["voice_name"]));
+  DB::update("faqs", $faq_id, [
+    "voice_file" => $file_name
+  ]);
   DB::insert("options", [
     "faq_id" => $faq_id,
     "title" => "聞き直し",
@@ -44,7 +50,7 @@ function updatefaq($vars) {
   $survey = Fetch::find("surveys", $faq["survey_id"]);
   if (!Allow::faq($faq)) abort(403);
   $file_name = uniqid("f{$faq["id"]}_") . ".wav";
-  file_put_contents(dirname(__DIR__)."/storage/outputs/{$file_name}", text_to_speech($_POST["text"], $survey["voice_name"]));
+  file_put_contents(user_dir($file_name, $survey["user_id"]), text_to_speech($_POST["text"], $survey["voice_name"]));
   DB::update("faqs", $id, [
     "title" => $_POST["title"],
     "text" => $_POST["text"],

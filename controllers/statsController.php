@@ -49,7 +49,7 @@ function stats($vars) {
     $year = date("Y", $ts);
     $sql = "SELECT SUM(c.duration) FROM calls as c JOIN reserves as r
             WHERE r.survey_id = {$survey["id"]} AND MONTH(r.date) = {$month} AND YEAR(r.date) = {$year}";
-    $total_duration = $pdo->query($sql)->fetchColumn();
+    $total_duration = Fetch::query($sql, "fetchColumn");
     $survey["billings"][] = [
       "timestamp" => $ts,
       "total_duration" => $total_duration

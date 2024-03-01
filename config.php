@@ -22,7 +22,7 @@ if (MODE === MODE_DEVELOPMENT) {
 define("PAGE_TITLE", "AutoCallシステム");
 
 # 予約の締め切り
-define("RESERVATION_DEADLINE_HOUR", 9);
+define("RESERVATION_DEADLINE_HOUR", 0);
 
 # 開始・終了時間の指定のステップ（秒）
 define("TIME_STEP", 900);

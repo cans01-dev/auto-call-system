@@ -2,12 +2,14 @@
  
 function loginPost() {
   if (Auth::attempt($_POST["email"], $_POST["password"])) {
+    // $path = $_POST["redirect"] ? parse_url($_POST["redirect"], PHP_URL_PASS) : "/";
     session_regenerate_id(true);
     Session::set("toast", ["success", "ログインしました"]);
+    // redirect($path);
     redirect("/");
   }
   Session::set("toast", ["danger", "メールアドレスもしくはパスワードが異なります"]);
-  redirect("/login");
+  back();
 }
 
 function logout() {

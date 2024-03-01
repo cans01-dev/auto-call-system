@@ -11,6 +11,7 @@
       <label for="floatingPassword">パスワード</label>
     </div>
     <?= csrf() ?>
+    <!-- <input type="hidden" name="redirect" value="<?= @$_SERVER["HTTP_REFERER"] ?? "" ?>"> -->
     <button class="btn btn-primary w-100 py-2" type="submit">ログイン</button>
     <p class="mt-5 mb-3 text-body-secondary">&copy; AutoCallシステム</p>
   </form>

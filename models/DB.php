@@ -58,6 +58,12 @@ class DB
     ]);
     $pdo->commit();
   }
+
+  public static function query($query) {
+    global $pdo;
+    $stmt = $pdo->query($query);
+    return $stmt->rowCount();
+  }
 }
 
 

@@ -17,7 +17,7 @@
     <?php foreach ($users as $user): ?>
       <tr>
         <th><?= $user["id"] ?></th>
-        <td><?= $user["email"] ?></td>
+        <td><a href="/users/<?= $user["id"] ?>"><?= $user["email"] ?></a></td>
         <td>
           <span class="badge bg-<?= USER_STATUS[$user["status"]]["bg"] ?>">
             <?= USER_STATUS[$user["status"]]["text"]; ?>
@@ -50,10 +50,6 @@
       CSRF
       METHOD_PUT
       <div class="mb-3">
-        <label class="form-label"><b>変更を行う管理者</b>のパスワード</label>
-        <input type="password" name="admin_password" class="form-control" required>
-      </div>
-      <div class="mb-3">
         <label class="form-label"><b>{$user["email"]}</b>の新しいパスワード</label>
         <input type="password" name="new_password" class="form-control" required>
       </div>
@@ -83,10 +79,6 @@
           <form action="/admin/users/<?= $user["id"] ?>" method="post">
             <?= csrf() ?>
             <?= method("PUT") ?>
-            <div class="mb-3">
-              <label class="form-label"><b>変更を行う管理者</b>のパスワード</label>
-              <input type="password" name="admin_password" class="form-control" required>
-            </div>
             <div class="mb-3">
               <label class="form-label"><b><?= $user["email"] ?></b>のステータス</label>
               <?php foreach (USER_STATUS as $k => $v): ?>

@@ -11,7 +11,7 @@ require __DIR__."/functions.php";
 function gen_reserve_info($reserve) {
   $survey = Fetch::find("surveys", $reserve["survey_id"]);
   $user = Fetch::find("users", $survey["user_id"]);
-  $faqs = Fetch::get("faqs", $survey["id"], "survey_id");
+  $faqs = Fetch::get("faqs", $survey["id"], "survey_id", "order_num");
   $endings = Fetch::get("endings", $survey["id"], "survey_id");
   $areas = Fetch::areasByReserveId($reserve["id"]);
 
@@ -22,8 +22,10 @@ function gen_reserve_info($reserve) {
     }
   }
 
+  $f_date = str_replace("-", "_", $reserve["date"]);
+
   # file_path
-  $file_path = user_dir("user{$user["id"]}_{$reserve["date"]}.json", $user["id"]);
+  $file_path = user_dir("user{$user["id"]}_{$f_date}.json", $user["id"]);
 
   $array = [
     "id" => $reserve["id"],

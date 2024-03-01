@@ -72,5 +72,6 @@
   </div>
 <?php endforeach; ?>
 
+<?= Auth::user()["id"] !== $survey["user_id"]? Components::watchOnAdmin("管理者としてこのページを閲覧しています") : "" ?>
 
 <?php require './views/templates/footer.php'; ?>

@@ -1,7 +1,11 @@
 <?php 
 
-function account() {
-  $sendEmails = Fetch::get("send_emails", Auth::user()["id"], "user_id");
+function account($vars) {
+  $user_id = $vars["id"];
+  $user = Fetch::find("users", $user_id);
+  $user["sendEmails"] = Fetch::get("send_emails", $user["id"], "user_id");
+  if (Auth::user()["status"] !== 1) if (!Allow::user($user)) abort(403);
+  
   require_once "./views/pages/account.php";
 }
 

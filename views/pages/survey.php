@@ -7,7 +7,6 @@
   </ol>
 </nav>
 <?= Components::h2($survey["title"]) ?>
-
 <div class="d-flex gap-3">
   <div class="w-100" data-bs-spy="scroll" data-bs-target="#navbar-example2" tabindex="0">
     <section id="greeting-ending">
@@ -16,35 +15,36 @@
         グリーティングで通話の最初に流れるテキストを編集できます。<br>
         エンディングは回答の結果によって変更することができます。
       </div>
-      <div>
-        <div class="card mb-4">
-          <div class="card-body">
-            <h5 class="card-title mb-3"><span class="badge bg-dark-subtle text-black me-2">グリーティング</span></h5>
-            <p class="card-text mb-0"><?= $survey["greeting"] ?></p>
-            <div class="position-absolute top-0 end-0 p-3">
-              <button type="button" class="btn btn-outline-dark me-2" data-bs-toggle="modal" data-bs-target="#greetingModal">設定</button>
-              <button
-                type="button"
-                class="btn btn-outline-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#audioModal"
-                data-bs-whatever="<?= url("/storage/users/{$survey["user_id"]}/{$survey["greeting_voice_file"]}") ?>"
-                <?= $survey["greeting_voice_file"] ? "" : "disabled"; ?>
-              >
-                <i class="fa-solid fa-volume-high"></i>
-                音声
-              </button>
-            </div>
-            <?php if (!$survey["greeting_voice_file"]): ?>
-              <div class="alert alert-danger mt-3 mb-0" role="alert">
-                グリーティングの読み上げ文章を更新して音声ファイルを生成してください
-              </div>
-            <?php endif; ?>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title mb-3"><span class="badge bg-secondary-subtle text-black me-3">グリーティング</span></h5>
+          <p class="card-text mb-0"><?= $survey["greeting"] ?></p>
+          <div class="position-absolute top-0 end-0 p-3">
+            <button type="button" class="btn btn-outline-dark me-2" data-bs-toggle="modal" data-bs-target="#greetingModal">設定</button>
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#audioModal"
+              data-bs-whatever="<?= url("/storage/users/{$survey["user_id"]}/{$survey["greeting_voice_file"]}") ?>"
+              <?= $survey["greeting_voice_file"] ? "" : "disabled"; ?>
+            >
+              <i class="fa-solid fa-volume-high"></i>
+              音声
+            </button>
           </div>
+          <?php if (!$survey["greeting_voice_file"]): ?>
+            <div class="alert alert-danger mt-3 mb-0" role="alert">
+              グリーティングの読み上げ文章を更新して音声ファイルを生成してください
+            </div>
+          <?php endif; ?>
         </div>
-        <?php if ($survey["endings"]): ?>
+      </div>
+      <?= Components::hr(3) ?>
+      <?php if ($survey["endings"]): ?>
+        <div class="vstack gap-3 mb-3">
           <?php foreach ($survey["endings"] as $ending): ?>
-            <div class="card mb-2">
+            <div class="card">
               <div class="card-body">
                 <h5 class="card-title mb-3"><span class="badge bg-dark-subtle text-black me-2">
                   エンディング</span><?= $ending["title"] ?>
@@ -75,11 +75,11 @@
               </div>
             </div>
           <?php endforeach; ?>
-        <?php else: ?>
-          <?= Components::noContent("エンディングがありません") ?>
-        <?php endif; ?>
-        <?= Components::modalOpenButton("endingsCreateModal") ?>
-      </div>
+        </div>
+      <?php else: ?>
+        <?= Components::noContent("エンディングがありません") ?>
+      <?php endif; ?>
+      <?= Components::modalOpenButton("endingsCreateModal") ?>
     </section>
     <?= Components::hr() ?>
     <section id="faqs">
@@ -87,10 +87,10 @@
       <div class="form-text mb-2">
         一番上に配置された質問が最初の質問（グリーティングの後に再生される質問）となります
       </div>
-      <div>
-        <?php if ($survey["faqs"]): ?>
+      <?php if ($survey["faqs"]): ?>
+        <div class="vstack gap-3 mb-3">
           <?php foreach ($survey["faqs"] as $faq): ?>
-            <div class="card mb-2" id="faq<?= $faq["id"] ?>">
+            <div class="card" id="faq<?= $faq["id"] ?>">
               <div class="card-body">
                 <h5 class="card-title mb-3">
                   <span class="badge bg-primary-subtle text-black me-2">質問</span><?= $faq["title"] ?>
@@ -167,7 +167,7 @@
                     class="btn btn-outline-primary"
                     data-bs-toggle="modal"
                     data-bs-target="#audioModal"
-                    data-bs-whatever="<?= "/storage/users/{$survey["user_id"]}/{$faq["voice_file"]}" ?>"
+                    data-bs-whatever="<?= url("/storage/users/{$survey["user_id"]}/{$faq["voice_file"]}") ?>"
                     <?= $faq["voice_file"] ? "" : "disabled"; ?>
                   >
                     <i class="fa-solid fa-volume-high"></i>
@@ -177,11 +177,11 @@
               </div>
             </div>
           <?php endforeach; ?>
-        <?php else: ?>
-          <?= Components::noContent("質問がありません") ?>
-        <?php endif; ?>
-        <?= Components::modalOpenButton("faqsCreateModal"); ?>
-      </div>
+        </div>
+      <?php else: ?>
+        <?= Components::noContent("質問がありません") ?>
+      <?php endif; ?>
+      <?= Components::modalOpenButton("faqsCreateModal"); ?>
     </section>
     <?= Components::hr() ?>
     <section id="calendar">
@@ -227,7 +227,7 @@
                     <?php if ($reserve = $day->schedule): ?>
                       <a
                       class="badge text-bg-<?= RESERVATION_STATUS[$reserve["status"]]["bg"] ?> bg-gradient text-wrap w-100" style="text-decoration: none;"
-                      href="/reserves/<?= $reserve["id"] ?><?= $reserve["status"]? "/result": null; ?>"
+                      href="/reserves/<?= $reserve["id"] ?>"
                       >
                         <?= date("H:i", strtotime($reserve["start"])) ?> - <?= date("H:i", strtotime($reserve["end"])) ?>
                         <?php if (count($reserve["areas"]) === 0): ?>
@@ -245,7 +245,7 @@
                         <?php endif; ?>
                       </a>
                     <?php else: ?>
-                      <?php // if (time() < $day->timestamp + RESERVATION_DEADLINE_HOUR * 3600): ?>
+                      <?php if (time() < $day->timestamp + RESERVATION_DEADLINE_HOUR * 3600): ?>
                         <button
                         type="button"
                         class="day-modal-button"
@@ -255,7 +255,7 @@
                         >
                           <i class="fa-solid fa-plus fa-2xl"></i>
                         </button>
-                      <?php // endif; ?>
+                      <?php endif; ?>
                     <?php endif; ?>
                   <?php endif; ?>
                 </td>
@@ -275,79 +275,10 @@
         </div>
       </div>
     </section>
-    <?= Components::hr() ?>
-    <section id="area">
-      <?= Components::h3("エリア") ?>
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">エリア</th>
-            <th scope="col">進捗率(総コール数 / エリア内番号数)</th>
-            <th scope="col">応答率</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php if ($areas): ?>
-            <?php foreach ($areas as $area): ?>
-              <tr>
-                <th scope="row"><?= $area["title"] ?></th>
-                <td>
-                  <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="44" aria-valuemin="0" aria-valuemax="100">
-                    <div class="progress-bar" style="width: <?= round($area["progress_rate"] * 100) ?>%">
-                      <?= round($area["progress_rate"] * 100) ?>%
-                    </div>
-                  </div>
-                  <span>(<?= $area["called_numbers"] ?> / <?= $area["all_numbers"] ?>) <?= round($area["progress_rate"] * 100, 4) ?>%</span>
-                </td>
-                <td>
-                  <?= round($area["response_rate"] * 100) ?>% (<?= $area["responsed_numbers"] ?> / <?= $area["called_numbers"] ?>)
-                </td>
-              </tr>
-            <?php endforeach; ?>
-          <?php else: ?>
-            <tr>
-              <td colspan="4">
-                <?= Components::noContent("データがありません") ?>
-              </td>
-            </tr>
-          <?php endif; ?>
-        </tbody>
-      </table>
-    </section>
-    <?= Components::hr() ?>
-    <section id="billing">
-      <?= Components::h3("料金") ?>
-      <p>ここで表示される料金は概算であり、実際の請求と異なる場合があります</p>
-      <?php if (@$survey["billings"]): ?>
-        <div class="accordion accordion-flush border" id="accordionFlushExample">
-          <?php foreach ($survey["billings"] as $i => $billing): ?>
-            <div class="accordion-item">
-              <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse<?= $i ?>" aria-expanded="false" aria-controls="flush-collapse<?= $i ?>">
-                  <?= date("Y年 n月", $billing["timestamp"]) ?> 料金
-                </button>
-              </h2>
-              <div id="flush-collapse<?= $i ?>" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                <div class="accordion-body">
-                  <dl>
-                    <dt>通話成立時間(秒)</dt>
-                    <dd><?= $billing["total_duration"] ?></dd>
-                    <dt>料金<span class="badge bg-secondary ms-2">通話成立時間(秒) x <?= PRICE_PER_SECOND ?>円</span></dt>
-                    <dd>\<?= round($billing["total_duration"] * PRICE_PER_SECOND) ?></dd>
-                  </dl>
-                </div>
-              </div>
-            </div>
-          <?php endforeach; ?>
-        </div>
-      <?php else: ?>
-        <?= Components::noContent("データがありません") ?>
-      <?php endif; ?>
-    </section>
   </div>
   <div class="flex-shrink-0 sticky-aside" style="width: 300px;">
     <div class="sticky-top">
-      <section id="summary">
+      <section id="setting">
         <?= Components::h4("設定"); ?>
         <div class="mb-2">
           <form method="post">
@@ -364,6 +295,7 @@
             <div class="mb-3">
               <label class="form-label">成功エンディング</label>
               <select class="form-select" name="success_ending_id">
+                <option value="">--未設定--</option>
                 <?php foreach ($survey["endings"] as $ending): ?>
                   <option
                     value="<?= $ending["id"] ?>"
@@ -405,7 +337,7 @@
         </div>
       </section>
       <?= Components::hr(4) ?>
-      <section id="settings">
+      <section id="favorite">
         <?= Components::h4("予約パターン"); ?>
         <div class="form-text mb-2 vstack gap-1">
           <span>開始・終了時間やエリア設定のテンプレートを利用してスムーズに予約の指定ができます。</span>
@@ -550,8 +482,12 @@ EOL); ?>
   <form action="/faqs" method="post">
     CSRF
     <div class="mb-3">
-      <label class="form-label">質問のタイトル</label>
-      <input type="text" name="title" class="form-control" placeholder="〇〇に関する質問">
+      <label class="form-label">タイトル</label>
+      <input type="text" name="title" class="form-control" placeholder="〇〇に関する質問" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">読み上げテキスト</label>
+      <textarea name="text" class="form-control" rows="5" required></textarea>
     </div>
     <div class="text-end">
       <input type="hidden" name="survey_id" value="{$survey["id"]}">
@@ -677,11 +613,11 @@ EOL); ?>
     CSRF
     <div class="mb-3">
       <label class="form-label">エンディングのタイトル</label>
-      <input type="text" name="title" class="form-control" placeholder="〇〇のエンディング">
+      <input type="text" name="title" class="form-control" placeholder="〇〇のエンディング" required>
     </div>
     <div class="mb-3">
       <label class="form-label">エンディングのテキスト</label>
-      <textarea name="text" class="form-control" rows="5"></textarea>
+      <textarea name="text" class="form-control" rows="5" required></textarea>
     </div>
     <div class="text-end">
       <input type="hidden" name="survey_id" value="{$survey["id"]} ?>">
@@ -719,14 +655,6 @@ EOL); ?>
   EOM) ?>
 <?php endforeach; ?>
 
-<?php if (Auth::user()["id"] !== $survey["user_id"]): ?>
-  <div class="toast-container position-fixed top-0 start-50 p-3 translate-middle-x">
-    <div class="p-2 align-items-center text-bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="d-flex">
-        <div class="toast-body">管理者として閲覧専用でこのページを閲覧しています</div>
-      </div>
-    </div>
-  </div>
-<?php endif; ?>
+<?= Auth::user()["id"] !== $survey["user_id"]? Components::watchOnAdmin("管理者として閲覧専用でこのページを閲覧しています") : "" ?>
 
 <?php require './views/templates/footer.php'; ?>
