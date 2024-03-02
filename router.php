@@ -34,6 +34,8 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("PUT", "/surveys/{id:\d+}", "updateSurvey");
 	$r->addRoute("PUT", "/surveys/{id:\d+}/greeting", "updateGreeting");
 	$r->addRoute("POST", "/surveys/{id:\d+}/all_voice_file_re_gen", "allVoiceFileReGen");
+	$r->addRoute("POST", "/surveys/{id:\d+}/number_lists", "storeNumberList");
+	$r->addRoute("DELETE", "/number_lists/{id:\d+}", "deleteNumberList");
 
 	$r->addRoute("POST", "/endings", "storeEnding");
 	$r->addRoute("PUT", "/endings/{id:\d+}", "updateEnding");
@@ -53,21 +55,24 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("PUT", "/reserves/{id:\d+}", "updateReserve");
 	$r->addRoute("DELETE", "/reserves/{id:\d+}", "deleteReserve");
 
-	$r->addRoute("POST", "/reserves_areas", "storeReservesAreas");
+	$r->addRoute("POST", "/reserves/{id:\d+}/areas", "storeReservesAreas");
+	$r->addRoute("POST", "/reserves/{id:\d+}/areas_by_word", "storeReservesAreasByWord");
 	$r->addRoute("DELETE", "/reserves_areas/{id:\d+}", "deleteReservesAreas");
-	$r->addRoute("POST", "/reserves_areas/by-word", "storeReservesAreasByWord");
 
 	$r->addRoute("POST", "/favorites", "storeFavorite");
 	$r->addRoute("PUT", "/favorites/{id:\d+}", "updateFavorite");
 	$r->addRoute("DELETE", "/favorites/{id:\d+}", "deleteFavorite");
-	$r->addRoute("POST", "/favorites_areas/by-word", "storeFavoritesAreasByWord");
-
-	$r->addRoute("POST", "/favorites_areas", "storeFavoritesAreas");
+	
+	$r->addRoute("POST", "/favorites/{id:\d+}/areas", "storeFavoritesAreas");
+	$r->addRoute("POST", "/favorites/{id:\d+}/areas_by_word", "storeFavoritesAreasByWord");
 	$r->addRoute("DELETE", "/favorites_areas/{id:\d+}", "deleteFavoritesAreas");
 	
 	$r->addRoute("POST", "/areas", "storeArea");
 	$r->addRoute("PUT", "/areas/{id:\d+}", "updateArea");
 	$r->addRoute("DELETE", "/areas/{id:\d+}", "deleteArea");
+	$r->addRoute("POST", "/areas/{id:\d+}/stations", "storeStation");
+	
+	$r->addRoute("DELETE", "/stations/{id:\d+}", "deleteStation");
 
 	$r->addRoute("POST", "/support/contact", "sendContact");
 	$r->addRoute("POST", "/surveys/{id:\d+}/calls", "callsCsv");

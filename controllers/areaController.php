@@ -21,6 +21,50 @@ function storeArea() {
   $area_id = DB::lastInsertId();
 
   Session::set("toast", ["success", "マイエリアを新規登録しました"]);
-  // redirect("/areas/{$area_id}");
+  redirect("/areas/{$area_id}");
+}
+
+function updateArea($vars) {
+  $area = Fetch::find("areas", $vars["id"]);
+  if (!Allow::area($area)) abort(403);
+  
+  DB::update("areas", $area["id"], [
+    "title" => $_POST["title"]
+  ]);
+
+  Session::set("toast", ["success", "マイエリアを更新しました"]);
+  back();
+}
+
+function deleteArea($vars) {
+  $area = Fetch::find("areas", $vars["id"]);
+  if (!Allow::area($area)) abort(403);
+
+  DB::delete("areas", $area["id"]);
+
+  Session::set("toast", ["info", "マイエリアを削除しました"]);
+  redirect("/surveys/{$area["survey_id"]}");
+}
+
+function storeStation($vars) {
+  $area = Fetch::find("areas", $vars["id"]);
+  if (!Allow::area($area)) abort(403);
+
+  DB::insert("stations", [
+    "prefix" => $_POST["prefix"],
+    "area_id" => $area["id"]
+  ]);
+
+  Session::set("toast", ["success", "マイエリアに局番を追加しました"]);
+  back();
+}
+
+function deleteStation($vars) {
+  $station = Fetch::find("stations", $vars["id"]);
+  if (!Allow::station($station)) abort(403);
+
+  DB::delete("stations", $station["id"]);
+
+  Session::set("toast", ["info", "マイエリアから局番を削除しました"]);
   back();
 }

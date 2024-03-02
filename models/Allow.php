@@ -9,6 +9,21 @@ class Allow
   public static function survey($survey) {    
     return $survey["user_id"] === Auth::user()["id"];
   }
+  
+  public static function area($area) {    
+    $survey = Fetch::find("surveys", $area["survey_id"]);
+    return self::survey($survey);
+  }
+
+  public static function number_list($number_list) {    
+    $survey = Fetch::find("surveys", $number_list["survey_id"]);
+    return self::survey($survey);
+  }
+
+  public static function station($station) {    
+    $area = Fetch::find("areas", $station["area_id"]);
+    return self::area($area);
+  }
 
   public static function ending($ending) {
     $survey = Fetch::find("surveys", $ending["survey_id"]);

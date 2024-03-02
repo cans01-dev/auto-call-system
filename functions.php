@@ -197,3 +197,15 @@ function pagenation($posts_par_page, $posts_sum, $page) {
     "current_end" => $posts_sum < $offset + $posts_par_page ? $posts_sum : $offset + $posts_par_page,
   ];
 }
+
+function upload_file($file, $file_path=null) {
+  if (!$file_path) $file_path = __DIR__ . "/storage/uploads/{$file["name"]}";
+  if ($file) {
+    if (is_uploaded_file($file["tmp_name"])) {
+      if (move_uploaded_file($file["tmp_name"], $file_path)) {
+        return $file_path;
+      }
+    }
+  }
+  return false;
+}

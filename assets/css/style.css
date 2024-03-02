@@ -89,6 +89,10 @@ main {
   max-height: 800px;
 }
 .area-list-group {
-  max-height: 400px;
+  max-height: 440px;
   overflow-y: scroll;
+}
+.stationButton:disabled {
+  color: #fff;
+  background-color: #212529;
 }

@@ -9,8 +9,9 @@ function reserve($vars) {
 
   $survey = Fetch::find("surveys", $reserve["survey_id"]);
   $survey["areas"] = Fetch::get("areas", $survey["id"], "survey_id");
-
-  $areas = Fetch::query("SELECT * FROM areas WHERE survey_id IS NULL", "fetchAll");
+  $survey["number_lists"] = Fetch::get("number_lists", $reserve["survey_id"], "survey_id");
+  foreach ($survey["number_lists"] as $k => $number_list) $survey["number_lists"][$k]["count"]
+    = Fetch::query("SELECT COUNT(*) FROM numbers WHERE number_list_id = {$number_list["id"]}", "fetchColumn");
 
   if ($reserve["status"] === 4) {
     $calls = Fetch::get("calls", $reserve["id"], "reserve_id");
@@ -121,7 +122,8 @@ function updateReserve($vars) {
   }
   DB::update("reserves", $reserve["id"], [
     "start" => $_POST["start"],
-    "end" => $_POST["end"]
+    "end" => $_POST["end"],
+    "number_list_id" => $_POST["number_list_id"] ? $_POST["number_list_id"] : null
   ]);
   Session::set("toast", ["success", "予約の開始・終了時間を変更しました"]);
   back();
@@ -136,37 +138,37 @@ function deleteReserve($vars) {
   redirect("/surveys/{$reserve["survey_id"]}");
 }
 
-function storeReservesAreas() {
-  $reserve = Fetch::find("reserves", $_POST["reserve_id"]);
+function storeReservesAreas($vars) {
+  $reserve = Fetch::find("reserves", $vars["id"]);
   if (!Allow::reserve($reserve)) abort(403);
   DB::insert("reserves_areas", [
-    "reserve_id" => $_POST["reserve_id"],
+    "reserve_id" => $reserve["id"],
     "area_id" => $_POST["area_id"]
   ]);
   Session::set("toast", ["success", "エリアを追加しました"]);
-  redirect("/reserves/{$_POST["reserve_id"]}#area");
+  back();
 }
 
-function storeReservesAreasByWord() {
-  $reserve = Fetch::find("reserves", $_POST["reserve_id"]);
+function storeReservesAreasByWord($vars) {
+  $reserve = Fetch::find("reserves", $vars["id"]);
   if (!Allow::reserve($reserve)) abort(403);
   $word = $_POST["word"];
   $areas = Fetch::get2("areas", [["title", "LIKE", "%{$word}%"]]);
   $count = 0;
   foreach ($areas as $area) {
     if (!Fetch::find2("reserves_areas", [
-      ["reserve_id", "=", $_POST["reserve_id"]],
+      ["reserve_id", "=", $reserve["id"]],
       ["area_id", "=", $area["id"]],
     ])) {
       $count++;
       DB::insert("reserves_areas", [
-        "reserve_id" => $_POST["reserve_id"],
+        "reserve_id" => $reserve["id"],
         "area_id" => $area["id"]
       ]);
     }
   }
   Session::set("toast", ["success", "{$count}件のエリアを追加しました"]);
-  redirect("/reserves/{$_POST["reserve_id"]}#area");
+  redirect("/reserves/{$reserve["id"]}#area");
 }
 
 function deleteReservesAreas($vars) {
