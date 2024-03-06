@@ -111,6 +111,12 @@ function storeUser() {
   ]);
   $user_id = DB::lastInsertId();
 
+  DB::insert("send_emails", [
+    "user_id" => $user_id,
+    "email" => $_POST["email"],
+    "enabled" => 1
+  ]);
+
   DB::insert("surveys", [
     "user_id" => $user_id,
     "title" => "アンケート１",

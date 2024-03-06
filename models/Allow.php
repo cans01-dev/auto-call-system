@@ -20,6 +20,11 @@ class Allow
     return self::survey($survey);
   }
 
+  public static function number($number) {
+    $number_list = Fetch::find("number_lists", $number["number_list_id"]);
+    return self::number_list($number_list);
+  }
+
   public static function station($station) {    
     $area = Fetch::find("areas", $station["area_id"]);
     return self::area($area);

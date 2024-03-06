@@ -2,12 +2,21 @@
 
 function survey($vars) {
   $survey_id = $vars["id"];
-  $month = $_GET["month"] ?? date("n");
-  $year = $_GET["year"] ?? date("Y");
 
   $survey = Fetch::find("surveys", $survey_id);
   $survey["endings"] = Fetch::get("endings", $survey["id"], "survey_id");
   $survey["faqs"] = Fetch::get("faqs", $survey["id"], "survey_id", "order_num");
+  if (Auth::user()["status"] !== 1) if (!Allow::survey($survey)) abort(403);
+
+  require_once "./views/pages/survey.php";
+}
+
+function calendar($vars) {
+  $survey_id = $vars["id"];
+  $month = $_GET["month"] ?? date("n");
+  $year = $_GET["year"] ?? date("Y");
+
+  $survey = Fetch::find("surveys", $survey_id);
   $survey["reserves"] = Fetch::reservesBySurveyIdAndYearMonth($survey["id"], $month, $year);
   $survey["favorites"] = Fetch::get("favorites", $survey["id"], "survey_id");
   if (Auth::user()["status"] !== 1) if (!Allow::survey($survey)) abort(403);
@@ -21,7 +30,7 @@ function survey($vars) {
   }
   $calendar = new Calendar($month, $year, $schedules);
 
-  require_once "./views/pages/survey.php";
+  require_once "./views/pages/calendar.php";
 }
 
 function storeSurvey() {

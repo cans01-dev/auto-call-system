@@ -38,6 +38,7 @@
         <th>ユーザー</th>
         <th>日付</th>
         <th>開始・終了時間</th>
+        <th>マイリスト</th>
         <th>ステータス</th>
       </tr>
     </thead>
@@ -51,6 +52,11 @@
           <td><a href="/users/<?= $reserve["user_id"] ?>"><?= $reserve["email"] ?></a></td>
           <td><?= $reserve["date"] ?></td>
           <td><?= substr($reserve["start"], 0, -3) . " ~ " . substr($reserve["end"], 0, -3) ?></td>
+          <td>
+            <?php if ($reserve["number_list_id"]): ?>
+              <?= Fetch::find("number_lists", $reserve["number_list_id"])["title"] ?>
+            <?php endif; ?>
+          </td>
           <td>
             <span class="badge text-bg-<?= RESERVATION_STATUS[$reserve["status"]]["bg"] ?> bg-gradient fs-6 me-1">
               <?= RESERVATION_STATUS[$reserve["status"]]["text"] ?>
@@ -114,22 +120,5 @@
 <?php else: ?>
   <?= Components::noContent("該当するデータがありません、検索条件を変更して再検索してください") ?>
 <?php endif; ?>
-<?= Components::hr(3) ?>
-<a class="btn btn-link" href="/dev/pse_api/receive_and_gen_result.php">【テスト用】予約ファイルから結果ファイルを生成</a>
-<?= Components::modal("genReserveModal", "手動で予約情報ファイルを生成", <<<EOL
-  <form action="/admin/gen_reserve" method="post" enctype="multipart/form-data">
-    CSRF
-    <div class="mb-3">
-      <label class="form-label">生成する日付</label>
-      <input type="date" name="date" class="form-control" required>
-    </div>
-    <div class="text-end">
-      <button type="submit" class="btn btn-success">生成</button>
-    </div>
-    <div class="form-text">
-      その日付に含まれる複数のファイルが生成されます
-    </div>
-  </form>
-EOL); ?>
 
 <?php require './views/templates/footer.php'; ?>

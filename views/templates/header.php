@@ -22,29 +22,39 @@
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav">
 					<li class="nav-item">
-						<a
-						class="nav-link"
-						href="/home"
-						>
+						<a class="nav-link" href="/home">
 							<span class="text-center d-inline-block me-1" style="width: 24px;">
 								<i class="fa-solid fa-house"></i>
 							</span>ホーム
 						</a>
 					</li>
-					<li class="nav-item">
-						<a class="nav-link link-body-emphasis" href="/home#create">
-							<span class="text-center d-inline-block me-1" style="width: 24px;">
-								<i class="fa-solid fa-square-plus"></i>
-							</span>新規作成
-						</a>
-					</li>
 					<?php if ($sv = Fetch::find("surveys", Auth::user()["id"], "user_id")): ?>
 						<li class="nav-item">
-							<a
-							class="nav-link"
-							href="/surveys/<?= $sv["id"] ?>"
-							>
-							<?= $sv["title"] ?>
+							<a class="nav-link" href="/surveys/<?= $sv["id"] ?>">
+								<span class="text-center d-inline-block me-1" style="width: 24px;">
+									<i class="fa-solid fa-comments"></i>
+								</span>会話と音声
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/surveys/<?= $sv["id"] ?>/calendar">
+								<span class="text-center d-inline-block me-1" style="width: 24px;">
+									<i class="fa-solid fa-calendar"></i>
+								</span>カレンダー
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/surveys/<?= $sv["id"] ?>/stats">
+								<span class="text-center d-inline-block me-1" style="width: 24px;">
+									<i class="fa-solid fa-chart-simple"></i>
+								</span>統計
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/surveys/<?= $sv["id"] ?>/calls">
+								<span class="text-center d-inline-block me-1" style="width: 24px;">
+									<i class="fa-solid fa-phone"></i>
+								</span>コール一覧
 							</a>
 						</li>
 					<?php endif; ?>
@@ -56,13 +66,27 @@
 							<ul class="dropdown-menu">
 								<li class="dropdown-item">
 									<a href="/admin/users" class="nav-link">
-										<span class="text-center d-inline-block me-1" style="width: 24px;">
+										<span class="text-center d-inline-block me-2" style="width: 24px;">
 											<i class="fa-solid fa-users"></i>
 										</span>ユーザー管理
 									</a>
 								</li>
 								<li class="dropdown-item">
-									<a href="/admin/receive_result_log" class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/admin/receive_result_log" ? "active" : "link-body-emphasis" ?>">
+									<a href="/admin/reserves" class="nav-link">
+										<span class="text-center d-inline-block me-2" style="width: 24px;">
+											<i class="fa-solid fa-table-list fa-lg"></i>
+										</span>全ての予約
+									</a>
+								</li>
+								<li class="dropdown-item">
+									<a href="/admin/gen_reserve_log" class="nav-link">
+										<span class="text-center d-inline-block me-2" style="width: 24px;">
+											<i class="fa-solid fa-file-arrow-up fa-lg"></i>
+										</span>予約情報ファイル生成ログ
+									</a>
+								</li>
+								<li class="dropdown-item">
+									<a href="/admin/receive_result_log" class="nav-link">
 										<span class="text-center d-inline-block me-2" style="width: 24px;">
 											<i class="fa-solid fa-file-arrow-down fa-lg"></i>
 										</span>結果ファイル受信ログ
@@ -106,7 +130,7 @@
 			</h1>
 			<hr>
 			<nav id="navbar-example2" class="mb-auto">
-				<ul class="nav nav-pills flex-column">
+				<ul class="nav nav-pills vstack gap-1">
 					<li class="nav-item">
 						<a
 						class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/home" ? "active" : "link-body-emphasis" ?>"
@@ -117,52 +141,53 @@
 							</span>ホーム
 						</a>
 					</li>
-					<li class="nav-item my-2 p-1 border border-2 rounded-2">
-						<?php if ($sv = Fetch::find("surveys", Auth::user()["id"], "user_id")): ?>
-							<ul class="nav nav-pills flex-column">
-								<li class="nav-item">
-									<a
-									class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/surveys/{$sv["id"]}" ? "active" : "link-body-emphasis" ?>"
-									href="/surveys/<?= $sv["id"] ?>"
-									>
-									<?= $sv["title"] ?>
-									</a>
-									<ul class="nav nav-pills flex-column ps-4 pt-1">
-										<li class="nav-item">
-											<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#greeting-ending">グリーティング・エンディング</a>
-										</li>
-										<li class="nav-item">
-											<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#faqs">質問一覧</a>
-										</li>
-										<li class="nav-item">
-											<a class="nav-link" href="/surveys/<?= $sv["id"] ?>#calendar">カレンダー</a>
-										</li>
-										<li class="nav-item">
-											<a
-												class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/surveys/{$sv["id"]}/stats" ? "active" : "link-body-emphasis" ?>"
-												href="/surveys/<?= $sv["id"] ?>/stats"
-											>
-												統計
-											</a>
-										</li>
-										<li class="nav-item">
-											<a
-												class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/surveys/{$sv["id"]}/calls" ? "active" : "link-body-emphasis" ?>"
-												href="/surveys/<?= $sv["id"] ?>/calls"
-											>
-												コール一覧
-											</a>
-										</li>
-									</ul>
-								</li>
-							</ul>
-						<?php else: ?>
-							<div class="px-3 py-2 text-center">
-								<p>アンケートがありません</p>
-								<a class="btn btn-outline-info" href="/home#create">アンケートを作成する</a>
-							</div>
-						<?php endif; ?>
-					</li>
+					<?php if ($sv = Fetch::find("surveys", Auth::user()["id"], "user_id")): ?>
+						<li class="nav-item">
+							<a
+								class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/surveys/{$sv["id"]}" ? "active" : "link-body-emphasis" ?>"
+								href="/surveys/<?= $sv["id"] ?>"
+							>
+								<span class="text-center d-inline-block me-2" style="width: 24px;">
+									<i class="fa-solid fa-comments fa-lg"></i>
+								</span>会話と音声
+							</a>
+						</li>
+						<li class="nav-item">
+							<a
+								class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/surveys/{$sv["id"]}/calendar" ? "active" : "link-body-emphasis" ?>"
+								href="/surveys/<?= $sv["id"] ?>/calendar"
+							>
+								<span class="text-center d-inline-block me-2" style="width: 24px;">
+									<i class="fa-solid fa-calendar fa-lg"></i>
+								</span>カレンダー
+							</a>
+						</li>
+						<li class="nav-item">
+							<a
+								class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/surveys/{$sv["id"]}/stats" ? "active" : "link-body-emphasis" ?>"
+								href="/surveys/<?= $sv["id"] ?>/stats"
+							>
+								<span class="text-center d-inline-block me-2" style="width: 24px;">
+									<i class="fa-solid fa-chart-simple fa-lg"></i>
+								</span>統計
+							</a>
+						</li>
+						<li class="nav-item">
+							<a
+								class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/surveys/{$sv["id"]}/calls" ? "active" : "link-body-emphasis" ?>"
+								href="/surveys/<?= $sv["id"] ?>/calls"
+							>
+								<span class="text-center d-inline-block me-2" style="width: 24px;">
+									<i class="fa-solid fa-phone fa-lg"></i>
+								</span>コール一覧
+							</a>
+						</li>
+					<?php else: ?>
+						<div class="px-3 py-2 text-center">
+							<p>アンケートがありません</p>
+							<a class="btn btn-outline-info" href="/home#create">アンケートを作成する</a>
+						</div>
+					<?php endif; ?>
 					<li class="nav-item">
 						<a href="/support" class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/support" ? "active" : "link-body-emphasis" ?>">
 							<span class="text-center d-inline-block me-2" style="width: 24px;">

@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $reserve_info = json_decode(file_get_contents($file_path), true);
   echo "予約情報ファイルを正常に受信しました" . PHP_EOL;
 
-  [$json, $file_path] = gen_result_sample($reserve_info, [1,1,1,1,2,3,4,6]);
+  [$json, $file_path] = gen_result_sample($reserve_info, [1,2,3,4,6]);
   
   file_put_contents($file_path, $json);
   $download = url('/storage/outputs/' . basename($file_path));

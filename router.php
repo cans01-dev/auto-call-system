@@ -3,45 +3,53 @@
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("GET", "/", "index");
 	$r->addRoute("GET", "/home", "home");
-	$r->addRoute("GET", "/login", "login");
-	$r->addRoute("GET", "/surveys/{id:\d+}", "survey");
-	$r->addRoute("GET", "/surveys/{id:\d+}/calls", "calls");
-	$r->addRoute("GET", "/surveys/{id:\d+}/stats", "stats");
-	$r->addRoute("GET", "/reserves/{id:\d+}", "reserve");
-	$r->addRoute("GET", "/calls/{id:\d+}", "call");
-	$r->addRoute("GET", "/faqs/{id:\d+}", "faq");
-	$r->addRoute("GET", "/favorites/{id:\d+}", "favorite");
-	$r->addRoute("GET", "/users/{id:\d+}", "account");
-	$r->addRoute("GET", "/send-emails/{id:\d+}", "sendEmail");
 	$r->addRoute("GET", "/areas/{id:\d+}", "area");
+
 	$r->addRoute("GET", "/support", "support");
 	$r->addRoute("GET", "/admin/users", "users");
 	$r->addRoute("GET", "/admin/receive_result_log", "receive_result_log");
 	$r->addRoute("GET", "/admin/gen_reserve_log", "gen_reserve_log");
 	$r->addRoute("GET", "/admin/reserves", "adminReserves");
 
+	$r->addRoute("GET", "/login", "login");
 	$r->addRoute("POST", "/login", "loginPost");
 	$r->addRoute("POST", "/logout", "logout");
 
+	$r->addRoute("GET", "/users/{id:\d+}", "account");
 	$r->addRoute("PUT", "/users/{id:\d+}/email", "updateEmail");
 	$r->addRoute("PUT", "/users/{id:\d+}/password", "updatePassword");
+	$r->addRoute("POST", "/users/{id:\d+}/send-emails", "storeSendEmail");
 
-	$r->addRoute("POST", "/send-emails", "storeSendEmail");
+	$r->addRoute("GET", "/send-emails/{id:\d+}", "sendEmail");
 	$r->addRoute("PUT", "/send-emails/{id:\d+}", "updateSendEmail");
 	$r->addRoute("DELETE", "/send-emails/{id:\d+}", "deleteSendEmail");
 
 	$r->addRoute("POST", "/surveys", "storeSurvey");
+	$r->addRoute("GET", "/surveys/{id:\d+}", "survey");
 	$r->addRoute("PUT", "/surveys/{id:\d+}", "updateSurvey");
+	$r->addRoute("GET", "/surveys/{id:\d+}/calendar", "calendar");
+	$r->addRoute("GET", "/surveys/{id:\d+}/calls", "calls");
+	$r->addRoute("GET", "/surveys/{id:\d+}/stats", "stats");
 	$r->addRoute("PUT", "/surveys/{id:\d+}/greeting", "updateGreeting");
 	$r->addRoute("POST", "/surveys/{id:\d+}/all_voice_file_re_gen", "allVoiceFileReGen");
 	$r->addRoute("POST", "/surveys/{id:\d+}/number_lists", "storeNumberList");
+
+	$r->addRoute("GET", "/calls/{id:\d+}", "call");
+
+	$r->addRoute("GET", "/number_lists/{id:\d+}", "numberList");
+	$r->addRoute("PUT", "/number_lists/{id:\d+}", "updateNumberList");
 	$r->addRoute("DELETE", "/number_lists/{id:\d+}", "deleteNumberList");
+	$r->addRoute("POST", "/number_lists/{id:\d+}/numbers", "storeNumber");
+	$r->addRoute("POST", "/number_lists/{id:\d+}/numbers_csv", "storeNumberCsv");
+
+	$r->addRoute("DELETE", "/numbers/{id:\d+}", "deleteNumber");
 
 	$r->addRoute("POST", "/endings", "storeEnding");
 	$r->addRoute("PUT", "/endings/{id:\d+}", "updateEnding");
 	$r->addRoute("DELETE", "/endings/{id:\d+}", "deleteEnding");
 
 	$r->addRoute("POST", "/faqs", "storeFaq");
+	$r->addRoute("GET", "/faqs/{id:\d+}", "faq");
 	$r->addRoute("PUT", "/faqs/{id:\d+}", "updateFaq");
 	$r->addRoute("DELETE", "/faqs/{id:\d+}", "deleteFaq");
 	$r->addRoute("POST", "/faqs/{id:\d+}/order", "orderFaq");
@@ -52,6 +60,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("POST", "/options/{id:\d+}/order", "orderOption");
 
 	$r->addRoute("POST", "/reserves", "storeReserve");
+	$r->addRoute("GET", "/reserves/{id:\d+}", "reserve");
 	$r->addRoute("PUT", "/reserves/{id:\d+}", "updateReserve");
 	$r->addRoute("DELETE", "/reserves/{id:\d+}", "deleteReserve");
 
@@ -59,6 +68,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("POST", "/reserves/{id:\d+}/areas_by_word", "storeReservesAreasByWord");
 	$r->addRoute("DELETE", "/reserves_areas/{id:\d+}", "deleteReservesAreas");
 
+	$r->addRoute("GET", "/favorites/{id:\d+}", "favorite");
 	$r->addRoute("POST", "/favorites", "storeFavorite");
 	$r->addRoute("PUT", "/favorites/{id:\d+}", "updateFavorite");
 	$r->addRoute("DELETE", "/favorites/{id:\d+}", "deleteFavorite");

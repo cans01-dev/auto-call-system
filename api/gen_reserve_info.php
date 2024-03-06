@@ -13,18 +13,9 @@ function gen_reserve_info($reserve) {
   $user = Fetch::find("users", $survey["user_id"]);
   $faqs = Fetch::get("faqs", $survey["id"], "survey_id", "order_num");
   $endings = Fetch::get("endings", $survey["id"], "survey_id");
-  $areas = Fetch::areasByReserveId($reserve["id"]);
-
-  $stations = [];
-  foreach ($areas as $area) {
-    foreach (Fetch::get("stations", $area["id"], "area_id") as $station) {
-      $stations[] = $station;
-    }
-  }
 
   $f_date = str_replace("-", "_", $reserve["date"]);
 
-  # file_path
   $file_path = user_dir("user{$user["id"]}_{$f_date}.json", $user["id"]);
 
   $array = [
@@ -36,8 +27,7 @@ function gen_reserve_info($reserve) {
     "end" => substr($reserve["end"], 0, -3),
     "faqs" => [],
     "endings" => [],
-    "numbers" => [],
-    // greeting
+    "numbers" => []
   ];
 
   # faqs
@@ -71,28 +61,47 @@ function gen_reserve_info($reserve) {
   }
 
   # numbers
-  $numbers_length = round((strtotime($reserve["end"]) - strtotime($reserve["start"])) / 3600 * NUMBERS_PER_HOUR * $user["number_of_lines"]);
-  $stations_max = count($stations) - 1;
-
-  while (count($array["numbers"]) < $numbers_length) {
-    $station = $stations[rand(0, $stations_max)];
-    $prefix = $station["prefix"];
-    $n5 = rand(0, 9);
-    $n6789 = sprintf('%04d', rand(0, 9999));
-
-    $number = "{$prefix}{$n5}-{$n6789}";
-
-    $same_number = Fetch::query("
-      SELECT * FROM calls as c JOIN reserves as r ON c.reserve_id = r.id
-      WHERE r.survey_id = {$survey["id"]} AND number = {$number}
-    ", "fetch");
-    if ($same_number) continue;
-
-    $array["numbers"][] = $number;
+  if ($reserve["number_list_id"]) {
+    $numbers = Fetch::get("numbers", $reserve["number_list_id"], "number_list_id");
+    foreach ($numbers as $number) {
+      $same_number = Fetch::query("
+        SELECT * FROM calls as c JOIN reserves as r ON c.reserve_id = r.id
+        WHERE r.survey_id = {$survey["id"]} AND number = {$number["number"]}
+      ", "fetch");
+      if ($same_number) continue;
+      $array["numbers"][] = $number["number"];
+    }
+  } else {
+    $areas = Fetch::areasByReserveId($reserve["id"]);
+    $stations = [];
+    foreach ($areas as $area) {
+      foreach (Fetch::get("stations", $area["id"], "area_id") as $station) {
+        $stations[] = $station;
+      }
+    }
+  
+    $numbers_length = round((strtotime($reserve["end"]) - strtotime($reserve["start"])) / 3600 * NUMBERS_PER_HOUR * $user["number_of_lines"]);
+    $stations_max = count($stations) - 1;
+  
+    while (count($array["numbers"]) < $numbers_length) {
+      $station = $stations[rand(0, $stations_max)];
+      $prefix = $station["prefix"];
+      $n5 = rand(0, 9);
+      $n6789 = sprintf('%04d', rand(0, 9999));
+  
+      $number = "{$prefix}{$n5}-{$n6789}";
+  
+      $same_number = Fetch::query("
+        SELECT * FROM calls as c JOIN reserves as r ON c.reserve_id = r.id
+        WHERE r.survey_id = {$survey["id"]} AND number = {$number}
+      ", "fetch");
+      if ($same_number) continue;
+  
+      $array["numbers"][] = $number;
+    }
   }
 
   $json = json_encode($array, JSON_PRETTY_PRINT);
-
   return [$json, $file_path];
 }
 

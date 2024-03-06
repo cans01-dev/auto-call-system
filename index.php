@@ -89,6 +89,7 @@ switch ($routeInfo[0]) {
 			}
 			echo !empty($vars) ? $handler($vars) : $handler();
 			Session::delete("toast");
+			Session::delete("storeNumberCsvResult");
 		} else {
 			Session::set("toast", ["success", "ログインしてください"]);
 			redirect("/login");

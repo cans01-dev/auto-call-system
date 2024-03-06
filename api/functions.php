@@ -18,17 +18,17 @@ function authenticate($username, $password, $http_authorization) {
   return $credentials[0] === $username && $credentials[1] === $password;
 }
 
-function upload_file($file, $file_path=null) {
-  if (!$file_path) $file_path = dirname(__DIR__)."/storage/uploads/{$file["name"]}";
-  if ($file) {
-    if (is_uploaded_file($file["tmp_name"])) {
-      if (move_uploaded_file($file["tmp_name"], $file_path)) {
-        return $file_path;
-      }
-    }
-  }
-  return false;
-}
+// function upload_file($file, $file_path=null) {
+//   if (!$file_path) $file_path = dirname(__DIR__)."/storage/uploads/{$file["name"]}";
+//   if ($file) {
+//     if (is_uploaded_file($file["tmp_name"])) {
+//       if (move_uploaded_file($file["tmp_name"], $file_path)) {
+//         return $file_path;
+//       }
+//     }
+//   }
+//   return false;
+// }
 
 function send_file(CURLFile $curl_file, $url, $header) {
   $ch = curl_init();
@@ -86,14 +86,10 @@ function gen_result_sample($reserve_info, array $status_rand_array): array {
           $next_type = $option["next_ending_id"] ? "ending" : "faq";
           $next_id = $next_type === "ending" ? $option["next_ending_id"] : $option["next_faq_id"];
           $answers[] = [
-            "faq_id" => $faq["id"],
+            "id" => $faq["id"],
             "option_id" => $option["id"],
           ];
         } else {
-          $ending = $endings[array_search($next_id, array_column($endings, "id"))];
-          $answers[] = [
-            "ending_id" => $ending["id"]
-          ];
           break;
         }
       }

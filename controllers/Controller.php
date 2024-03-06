@@ -5,11 +5,32 @@ function index() {
 }
 
 function home() {
-  $survey = Fetch::find("surveys", Auth::user()["id"], "user_id");
-  redirect("/surveys/{$survey["id"]}");
+  $surveys = Fetch::get("surveys", Auth::user()["id"], "user_id");
 
-  // $surveys = Fetch::get("surveys", Auth::user()["id"], "user_id");
-  // require_once "./views/pages/home.php";
+  $page = @$_GET["page"] ?? 1;
+  $limit = 100;
+  $start = @$_GET["start"] ?? date('Y-m-d', strtotime('first day of this month'));
+  $end = @$_GET["end"] ?? date('Y-m-d', strtotime('last day of this month'));
+  $offset = (($page) - 1) * $limit;
+  $user_id = Auth::user()["id"];
+
+  $sql = "SELECT COUNT(*) FROM reserves as r
+          JOIN surveys as s ON r.survey_id = s.id
+          JOIN users as u ON s.user_id = u.id
+          WHERE r.date BETWEEN '{$start}' AND '{$end}
+          AND u.id = {$user_id}'";
+  $pgnt = pagenation($limit, Fetch::query($sql, "fetchColumn"), $page);
+
+  $sql = "SELECT *, r.status as status, r.id as id, u.id as user_id FROM reserves as r
+          JOIN surveys as s ON r.survey_id = s.id
+          JOIN users as u ON s.user_id = u.id
+          WHERE r.date BETWEEN '{$start}' AND '{$end}'
+          AND u.id = {$user_id}
+          ORDER BY r.date DESC
+          LIMIT {$limit} OFFSET {$offset}";
+  $reserves = Fetch::query($sql, "fetchAll");
+
+  require_once "./views/pages/home.php";
 }
 
 function login() {

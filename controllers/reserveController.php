@@ -5,11 +5,18 @@ function reserve($vars) {
   $reserve = Fetch::find("reserves", $id);
   $reserve["areas"] = Fetch::areasByReserveId($reserve["id"]);
   $reserve["date_ts"] = strtotime($reserve["date"]);
+  if ($reserve["number_list_id"]) {
+    $reserve["number_list"] = Fetch::find("number_lists", $reserve["number_list_id"]);
+    $reserve["number_list"]["count"]
+      = Fetch::query("SELECT COUNT(*) FROM numbers WHERE number_list_id = {$reserve["number_list"]["id"]}", "fetchColumn");
+  }
   if (Auth::user()["status"] !== 1) if (!Allow::reserve($reserve)) abort(403);
 
   $survey = Fetch::find("surveys", $reserve["survey_id"]);
   $survey["areas"] = Fetch::get("areas", $survey["id"], "survey_id");
   $survey["number_lists"] = Fetch::get("number_lists", $reserve["survey_id"], "survey_id");
+  foreach ($survey["areas"] as $k => $myArea) $survey["areas"][$k]["count"]
+    = Fetch::query("SELECT COUNT(*) FROM stations WHERE area_id = {$myArea["id"]}", "fetchColumn");
   foreach ($survey["number_lists"] as $k => $number_list) $survey["number_lists"][$k]["count"]
     = Fetch::query("SELECT COUNT(*) FROM numbers WHERE number_list_id = {$number_list["id"]}", "fetchColumn");
 
@@ -78,7 +85,8 @@ function storeReserve() {
       "survey_id" => $_POST["survey_id"],
       "date" => $_POST["date"],
       "start" => $favorite["start"],
-      "end" => $favorite["end"]
+      "end" => $favorite["end"],
+      "number_list_id" => $favorite["number_list_id"]
     ]);
     $reserve_id = DB::lastInsertId();
     foreach ($favorite["areas"] as $area) {
@@ -91,14 +99,14 @@ function storeReserve() {
     $month = date("n", $ts);
     $year = date("Y", $ts);
     Session::set("toast", ["success", "パターンから予約を作成しました"]);
-    redirect("/surveys/{$_POST["survey_id"]}?month={$month}&year={$year}#calendar");
+    redirect("/surveys/{$_POST["survey_id"]}/calendar?month={$month}&year={$year}");
 
   } else {
     $start = $_POST["start"];
     $end = $_POST["end"];
     if (strtotime($start) + 3600 > strtotime($end)) {
       Session::set("toast", ["danger", "エラー！<br>開始・終了時間は".(MIN_INTERVAL / 3600)."時間以上の間隔をあけてください"]);
-      redirect("/surveys/{$_POST["survey_id"]}#calendar");
+      redirect("/surveys/{$_POST["survey_id"]}/calendar");
     }
     DB::insert("reserves", [
       "survey_id" => $_POST["survey_id"],
@@ -125,7 +133,7 @@ function updateReserve($vars) {
     "end" => $_POST["end"],
     "number_list_id" => $_POST["number_list_id"] ? $_POST["number_list_id"] : null
   ]);
-  Session::set("toast", ["success", "予約の開始・終了時間を変更しました"]);
+  Session::set("toast", ["success", "予約の基本設定を変更しました"]);
   back();
 }
 

@@ -40,9 +40,11 @@ function updatePassword() {
   back();
 }
 
-function storeSendEmail() {
+function storeSendEmail($vars) {
+  $user = Fetch::find("users", $vars["id"]);
+  if (!Allow::user($user)) abort(403);
   DB::insert("send_emails", [
-    "user_id" => Auth::user()["id"],
+    "user_id" => $user["id"],
     "email" => $_POST["email"],
     "enabled" => "1"
   ]);

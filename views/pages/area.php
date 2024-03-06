@@ -8,8 +8,9 @@
   </ol>
 </nav>
 <?= Components::h2("マイエリア: {$area["title"]}") ?>
+<?php $number = "09012345678" ?>
 <div class="d-flex gap-3">
-  <div class="w-100" data-bs-spy="scroll" data-bs-target="#navbar-example2" tabindex="0">
+  <div class="w-100">
     <section id="addStation">
       <?= Components::h3("局番を追加"); ?>
       <div class="card text-bg-light mb-3">
@@ -21,7 +22,7 @@
           <form action="/areas/<?= $area["id"] ?>/stations" method="post">
             <?= csrf() ?>
             <div class="input-group" style="max-width: 320px;">
-              <input type="text" name="prefix" class="form-control" placeholder="012-345" pattern="\d{3}-\d{3}">
+              <input type="text" name="prefix" class="form-control" placeholder="090-123" pattern="^0[789]0-[0-9]{3}$">
               <button class="btn btn-outline-secondary" id="button-addon1">追加</button>
             </div>
           </form>
@@ -79,7 +80,7 @@
                     <?= csrf() ?>
                     <?= method("DELETE") ?>
                     <?= $station["prefix"] ?>
-                    <button type="submit" class="d-inline bg-transparent border-0">
+                    <button type="submit" class="bg-transparent border-0">
                       <i class="fa-solid fa-xmark text-white"></i>
                     </button>
                   </form>

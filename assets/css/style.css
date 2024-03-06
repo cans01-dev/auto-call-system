@@ -96,3 +96,7 @@ main {
   color: #fff;
   background-color: #212529;
 }
+.numberButton:disabled {
+  color: #fff;
+  background-color: #212529;
+}

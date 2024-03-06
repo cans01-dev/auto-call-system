@@ -22,7 +22,12 @@
       <?php if ($areas): ?>
         <?php foreach ($areas as $area): ?>
           <tr>
-            <th scope="row"><?= $area["title"] ?></th>
+            <th scope="row">
+              <?= $area["title"] ?>
+              <?php if ($area["survey_id"]): ?>
+                <span class="badge bg-primary">マイエリア</span>
+              <?php endif; ?>
+            </th>
             <td>
               <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="44" aria-valuemin="0" aria-valuemax="100">
                 <div class="progress-bar" style="width: <?= round($area["progress_rate"] * 100) ?>%">

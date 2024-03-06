@@ -4,11 +4,11 @@
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">ホーム</a></li>
     <?php if (@$favorite): ?>
-      <li class="breadcrumb-item"><a href="/surveys/<?= $survey["id"] ?>#calendar"><?= $survey["title"] ?></a></li>
+      <li class="breadcrumb-item"><a href="/surveys/<?= $survey["id"] ?>/calendar"><?= $survey["title"] ?></a></li>
       <li class="breadcrumb-item active">予約パターン: <?= $favorite["title"] ?></li>
     <?php else: ?>
       <li class="breadcrumb-item">
-        <a href="/surveys/<?= $survey["id"] ?>?month=<?= date("n", $reserve["date_ts"]) ?>&year=<?= date("Y", $reserve["date_ts"]) ?>#calendar">
+        <a href="/surveys/<?= $survey["id"] ?>/calendar?month=<?= date("n", $reserve["date_ts"]) ?>&year=<?= date("Y", $reserve["date_ts"]) ?>">
           <?= $survey["title"] ?>
         </a>
       </li>
@@ -23,24 +23,120 @@
 <?php endif; ?>
 
 <div class="d-flex gap-3">
-  <div class="w-100" data-bs-spy="scroll" data-bs-target="#navbar-example2" tabindex="0">
+  <div class="w-100">
     <?php if (@$favorite || $reserve["status"] === 0): ?>
-      <section id="area">
+      <section id="number_list">
+        <?= Components::h3("エリアモード") ?>
+        <ul class="list-group mb-2">
+          <li class="list-group-item">
+            <input
+            class="form-check-input me-1" name="number_list_id" type="radio" id="firstCheckbox"
+            onchange="submit(this.form)" value=""
+            form="updateReserveForm"
+            <?= $reserve["number_list_id"] ? "" : "checked" ?>
+            >
+            <label class="form-check-label" for="firstCheckbox">
+              <b>デフォルト（指定されたエリアからランダムに電話番号が生成されます）</b>
+            </label>
+          </li>
+          <?php foreach ($survey["number_lists"] as $myList): ?>
+            <li class="list-group-item">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <input
+                    class="form-check-input me-1" name="number_list_id" type="radio" id="numberListRadio<?= $myList["id"] ?>"
+                    form="updateReserveForm" value="<?= $myList["id"] ?>"
+                    <?= $reserve["number_list_id"] === $myList["id"] ? "checked" : "" ?>
+                    onchange="submit(this.form)"
+                  >
+                  <label class="form-check-label" for="numberListRadio<?= $myList["id"] ?>">
+                    マイリスト: <?= $myList["title"] ?>
+                    <span class="badge bg-secondary"><?= $myList["count"] ?>件の電話番号</span>
+                  </label>
+                </div>
+                <div>
+                  <a href="/number_lists/<?= $myList["id"] ?>" class="">編集</a>
+                </div>
+              </div>
+            </li>
+          <?php endforeach; ?>
+        </ul>
+        <?= Components::modalOpenButton("numberListCreateModal"); ?>
+      </section>
+      <?= Components::hr(4) ?>
+      <section id="area" class="<?= $reserve["number_list_id"] ? "opacity-50 pe-none" : "" ?>">
         <?= Components::h3("エリア設定"); ?>
         <div class="form-text mb-2">
           指定されたエリアからランダムで電話番号が指定されコールされます
         </div>
-        <div class="card mb-4">
-          <div class="card-header">
-            マイエリア
+        <div class="vstack gap-4">
+          <div>
+            <div class="card mb-2">
+              <div class="card-header">
+                マイエリア
+              </div>
+              <?php if ($survey["areas"]): ?>
+                <ul class="list-group list-group-flush area-list-group">
+                  <?php foreach ($survey["areas"] as $area): ?>
+                    <li class="list-group-item d-flex align-items-center justify-content-between">
+                      <div>
+                        <?= $area["title"] ?>
+                        <span class="badge bg-secondary"><?= $area["count"] ?>件の局番</span>
+                      </div>
+                      <div>
+                        <a href="/areas/<?= $myArea["id"] ?>" class="card-link me-2">編集</a>
+                        <div class="d-inline-block">
+                          <?php if (@$favorite): ?>
+                            <form action="/favorites/<?= $favorite["id"] ?>/areas" method="post">
+                          <?php else: ?>
+                            <form action="/reserves/<?= $reserve["id"] ?>/areas" method="post">
+                          <?php endif; ?>
+                            <?= csrf() ?>
+                            <input type="hidden" name="area_id" value="<?= $area["id"] ?>">
+                            <button
+                              type="submit" class="btn btn-primary"
+                              <?= in_array($area["id"], array_column($reserve["areas"], "id")) ? "disabled" : "" ?>
+                            >
+                              追加
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    </li>
+                  <?php endforeach; ?>
+                </ul>
+              <?php else: ?>
+                <div class="text-center py-3">マイエリアが登録されていません</div>
+              <?php endif; ?>
+            </div>
+            <?= Components::modalOpenButton("areaCreateModal"); ?>
           </div>
-          <?php if ($survey["areas"]): ?>
+          <div class="card">
+            <div class="card-header">
+              <div class="">デフォルトのエリア</div>
+            </div>
+            <div class="p-2 bg-white text-bg-light">
+              <p>地域名を入力してまとめて選択</p>
+              <?php if (@$favorite): ?>
+                <form action="/favorites/<?= $favorite["id"] ?>/areas_by_word" method="post">
+              <?php else: ?>
+                <form action="/reserves/<?= $reserve["id"] ?>/areas_by_word" method="post">
+              <?php endif; ?>
+                <?= csrf() ?>
+                <div class="input-group" style="max-width: 320px;">
+                  <input type="text" class="form-control" name="word" placeholder="関東、中部などと入力して実行" required>
+                  <button type="submit" class="btn btn-outline-secondary">実行</button>
+                </div>
+              </form>
+            </div>
             <ul class="list-group list-group-flush area-list-group">
-              <?php foreach ($survey["areas"] as $area): ?>
+              <?php foreach (Fetch::query("SELECT * FROM areas WHERE survey_id IS NULL", "fetchAll") as $area): ?>
                 <li class="list-group-item d-flex align-items-center justify-content-between">
                   <div>
                     <?= $area["title"] ?>
-                    <span class="badge bg-primary">マイエリア</span>
+                    <a href="/areas/<?= $area["id"] ?>" class="text-body-tertiary">
+                      <i class="fa-solid fa-circle-info"></i>
+                    </a>
                   </div>
                   <?php if (@$favorite): ?>
                     <form action="/favorites/<?= $favorite["id"] ?>/areas" method="post">
@@ -59,54 +155,7 @@
                 </li>
               <?php endforeach; ?>
             </ul>
-          <?php else: ?>
-            <div class="text-center py-3">マイエリアが登録されていません</div>
-          <?php endif; ?>
-        </div>
-        <div class="card mb-4">
-          <div class="card-header">
-            <div class="">デフォルトのエリア</div>
           </div>
-          <div class="p-2 bg-white text-bg-light">
-            <p>地域名を入力してまとめて選択</p>
-            <?php if (@$favorite): ?>
-              <form action="/favorites/<?= $favorite["id"] ?>/areas_by_word" method="post">
-            <?php else: ?>
-              <form action="/reserves/<?= $reserve["id"] ?>/areas_by_word" method="post">
-            <?php endif; ?>
-              <?= csrf() ?>
-              <div class="input-group" style="max-width: 320px;">
-                <input type="text" class="form-control" name="word" placeholder="関東、中部などと入力して実行" required>
-                <button type="submit" class="btn btn-outline-secondary">実行</button>
-              </div>
-            </form>
-          </div>
-          <ul class="list-group list-group-flush area-list-group">
-            <?php foreach (Fetch::query("SELECT * FROM areas WHERE survey_id IS NULL", "fetchAll") as $area): ?>
-              <li class="list-group-item d-flex align-items-center justify-content-between">
-                <div>
-                  <?= $area["title"] ?>
-                  <a href="/areas/<?= $area["id"] ?>" class="text-body-tertiary">
-                    <i class="fa-solid fa-circle-info"></i>
-                  </a>
-                </div>
-                <?php if (@$favorite): ?>
-                  <form action="/favorites/<?= $favorite["id"] ?>/areas" method="post">
-                <?php else: ?>
-                  <form action="/reserves/<?= $reserve["id"] ?>/areas" method="post">
-                <?php endif; ?>
-                  <?= csrf() ?>
-                  <input type="hidden" name="area_id" value="<?= $area["id"] ?>">
-                  <button
-                    type="submit" class="btn btn-primary"
-                    <?= in_array($area["id"], array_column($reserve["areas"], "id")) ? "disabled" : "" ?>
-                  >
-                    追加
-                  </button>
-                </form>
-              </li>
-            <?php endforeach; ?>
-          </ul>
         </div>
       </section>
     <?php else: ?>
@@ -269,22 +318,6 @@
               </select>
             </div>
           </div>
-          <div class="mb-3">
-            <label class="form-label">エリアモード</label>
-            <select class="form-select" name="number_list_id">
-              <option value="">デフォルト</option>
-              <!-- 2024 3/2 エリアモードの実装をする -->
-              <?php foreach ($survey["number_lists"] as $myList): ?>>
-                <option
-                  value="<?= $myList["id"] ?>"
-                  <?= $myList["id"] === $reserve["number_list_id"] ? "selected" : ""; ?>
-                >
-                  <?= $myList["title"] ?>
-                </option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-
           <?php if (@$favorite): ?>
             <div class="mb-3">
               <label class="form-label">予約パターンのタイトル</label>
@@ -307,29 +340,43 @@
         </form>
         <div class="mb-3">
           <label class="form-label">エリア</label>
-          <?php if ($reserve["areas"]): ?>
-            <div>
-              <?php foreach ($reserve["areas"] as $area): ?>
-                <span class="badge bg-secondary fs-6 mb-1">
-                  <?php if (@$favorite): ?>
-                    <form action="/favorites_areas/<?= $area["fa_id"] ?>" method="post">
-                  <?php else: ?>
-                    <form action="/reserves_areas/<?= $area["ra_id"] ?>" method="post">
-                  <?php endif; ?>
-                    <?= csrf() ?>
-                    <?= method("DELETE") ?>
-                    <?= $area["title"] ?>
-                    <?php if (@$favorite || $reserve["status"] === 0): ?>
-                      <button type="submit" class="d-inline bg-transparent border-0">
-                        <i class="fa-solid fa-xmark text-white"></i>
-                      </button>
-                    <?php endif; ?>
-                  </form>
-                </span>
-              <?php endforeach; ?>
+          <?php if (@$reserve["number_list"]): ?>
+            <div class="card mb-2">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <?= $reserve["number_list"]["title"] ?>
+                </h5>
+                <span class="badge bg-secondary fs-6"><?= $reserve["number_list"]["count"] ?>件の電話番号</span>
+                <div class="position-absolute top-0 end-0 p-3">
+                  <a href="/number_lists/<?= $reserve["number_list"]["id"] ?>" class="btn btn-link">編集</a>
+                </div>
+              </div>
             </div>
           <?php else: ?>
-            <?= Components::noContent("局番が設定されていません") ?>
+            <?php if ($reserve["areas"]): ?>
+              <div>
+                <?php foreach ($reserve["areas"] as $area): ?>
+                  <span class="badge bg-secondary fs-6 mb-1">
+                    <?php if (@$favorite): ?>
+                      <form action="/favorites_areas/<?= $area["fa_id"] ?>" method="post">
+                    <?php else: ?>
+                      <form action="/reserves_areas/<?= $area["ra_id"] ?>" method="post">
+                    <?php endif; ?>
+                      <?= csrf() ?>
+                      <?= method("DELETE") ?>
+                      <?= $area["title"] ?>
+                      <?php if (@$favorite || $reserve["status"] === 0): ?>
+                        <button type="submit" class="d-inline bg-transparent border-0">
+                          <i class="fa-solid fa-xmark text-white"></i>
+                        </button>
+                      <?php endif; ?>
+                    </form>
+                  </span>
+                <?php endforeach; ?>
+              </div>
+            <?php else: ?>
+              <?= Components::noContent("局番が設定されていません") ?>
+            <?php endif; ?>
           <?php endif; ?>
         </div>
         <div class="text-end">
@@ -347,68 +394,6 @@
             <input type="submit" class="btn btn-link" value="この予約を削除">
           </div>
         </form>
-      </section>
-      <?= Components::hr(4) ?>
-      <section id="myArea">
-        <?= Components::h4("マイエリア"); ?>
-        <?php if ($survey["areas"]): ?>
-          <?php foreach ($survey["areas"] as $myArea): ?>
-            <div class="card mb-2">
-              <div class="card-body">
-                <h5 class="card-title">
-                  <?= $myArea["title"] ?>
-                </h5>
-                <?php if ($myArea["stations"] = Fetch::get("stations", $myArea["id"], "area_id")): ?>
-                  <?php if (count($myArea["stations"]) < 4): ?>
-                    <div>
-                      <?php foreach ($myArea["stations"] as $station): ?>
-                        <span class="badge bg-secondary fs-6">
-                          <?= $station["prefix"] ?>
-                        </span>
-                      <?php endforeach; ?>
-                    </div>
-                  <?php else: ?>
-                    <span class="badge bg-secondary fs-6"><?= count($myArea["stations"]) ?>件の局番</span>
-                  <?php endif; ?>
-                <?php else: ?>
-                  <?= Components::noContent("局番が設定されていません") ?>
-                <?php endif; ?>
-                <div class="position-absolute top-0 end-0 p-3">
-                  <a href="/areas/<?= $myArea["id"] ?>" class="card-link">編集</a>
-                </div>
-              </div>
-            </div>
-          <?php endforeach; ?>
-        <?php else: ?>
-          <?= Components::noContent("マイエリアがありません") ?>
-        <?php endif; ?>
-        <?= Components::modalOpenButton("areaCreateModal"); ?>
-      </section>
-      <?= Components::hr(4) ?>
-      <section id="myList">
-        <?= Components::h4("マイリスト"); ?>
-        <?php if ($survey["number_lists"]): ?>
-          <?php foreach ($survey["number_lists"] as $myList): ?>
-            <div class="card mb-2">
-              <div class="card-body">
-                <h5 class="card-title">
-                  <?= $myList["title"] ?>
-                </h5>
-                <span class="badge bg-secondary fs-6"><?= $myList["count"] ?>件の電話番号</span>
-                <div class="position-absolute top-0 end-0 p-3">
-                  <form action="/number_lists/<?= $myList["id"] ?>" onsubmit="return window.confirm('本当に削除しますか？')" method="post">
-                    <?= csrf() ?>
-                    <?= method("DELETE") ?>
-                    <button class="btn btn-link">削除</button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          <?php endforeach; ?>
-        <?php else: ?>
-          <?= Components::noContent("マイリストがありません") ?>
-        <?php endif; ?>
-        <?= Components::modalOpenButton("numberListCreateModal"); ?>
       </section>
     </div>
   </div>

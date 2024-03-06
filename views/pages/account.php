@@ -98,7 +98,7 @@
 EOL); ?>
 
 <?= Components::modal("sendEmailsCreateModal", "送信先メールアドレス新規登録", <<<EOL
-  <form action="/send-emails" method="post">
+  <form action="/users/{$user["id"]}/send-emails" method="post">
     CSRF
     <div class="mb-3">
       <label class="form-label">メールアドレス</label>

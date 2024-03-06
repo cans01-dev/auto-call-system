@@ -9,7 +9,7 @@
 </nav>
 <?= Components::h2("質問: {$faq["title"]}") ?>
 <div class="d-flex gap-3">
-  <div class="w-100" data-bs-spy="scroll" data-bs-target="#navbar-example2" tabindex="0">
+  <div class="w-100">
     <section id="summary">
       <?= Components::h3("設定"); ?>
       <form method="post">

@@ -7,7 +7,7 @@ function stats($vars) {
 
   # area
   global $pdo;
-  $sql = "SELECT DISTINCT a.title, a.id FROM areas as a
+  $sql = "SELECT DISTINCT a.title, a.id, a.survey_id FROM areas as a
           JOIN reserves_areas as ra ON a.id = ra.area_id
           JOIN reserves as r ON ra.reserve_id = r.id
           WHERE r.survey_id = {$survey_id}";
