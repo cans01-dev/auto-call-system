@@ -81,23 +81,24 @@ function gen_reserve_info($reserve) {
     foreach ($areas as $area) {
       $stations = Fetch::get("stations", $area["id"], "area_id");
       foreach ($stations as $station) {
-        $sql = "SELECT MAX(c.number) FROM calls as c
+        $sql = "SELECT * FROM calls as c
                 JOIN reserves as r ON c.reserve_id = r.id
                 WHERE r.survey_id = {$survey["id"]}
                 AND c.number LIKE '{$station["prefix"]}%'";
-        $last_n56789 = substr(str_replace("-", "", Fetch::query($sql, "fetchColumn")), 7, 12);
+        $calls = Fetch::query($sql, "fetchAll");
+        foreach ($calls as $call) {
+          $n56789 = substr(str_replace("-", "", $call["number"]), 6, 5);
+          $called_number_n56789_int_arr[] = intval($n56789);
+        }
+        $uncalled_n56789_int_arr = array_diff(array_diff(range(0, 99999), $called_number_n56789_int_arr));
 
-        while (true) {
-          $n56789_int = intval($last_n56789) + 1;
-          if ($n56789_int > 99999) break;
-
-          $n56789 = sprintf('%05d', intval($last_n56789) + 1);
+        foreach ($uncalled_n56789_int_arr as $n56789_int) {
+          $n56789 = sprintf('%05d', intval($n56789_int));
           $n5 = substr($n56789, 0, 1);
           $n6789 = substr($n56789, 1, 4);
           $number = "{$station["prefix"]}{$n5}-{$n6789}";
           
           $array["numbers"][] = $number;
-          $last_n56789 = $n56789;
 
           if (count($array["numbers"]) >= $numbers_length) break 3;
         }

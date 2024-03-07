@@ -12,40 +12,42 @@
 <?= Components::hr(3) ?>
 <p><?= "{$pgnt["current"]} / {$pgnt["last_page"]}ページ目 - {$pgnt["current_start"]}~{$pgnt["current_end"]} / {$pgnt["sum"]}件表示中" ?></p>
 <?php if ($logs): ?>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>予約情報</th>
-        <th>ステータス</th>
-        <th>メッセージ</th>
-        <th>ログ日時</th>
-        <th>操作</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php foreach ($logs as $log): ?>
+  <div class="calls-table-container">
+    <table class="table">
+      <thead>
         <tr>
-          <th><?= $log["id"] ?></th>
-          <td>
-            <?= $log["email"] ?> | 
-            <a href="/surveys/<?= $log["survey_id"] ?>"><?= $log["title"] ?></a> | 
-            <a href="/reserves/<?= $log["reserve_id"] ?>"><?= $log["reserve_date"] ?></a>
-          </td>
-          <td><?= $log["status"] ?></td>
-          <td><?= $log["message"] ?></td>
-          <td><?= $log["created_at"] ?></td>
-          <td>
-            <form method="post" action="/admin/receive_result_log/<?= $log["id"] ?>" onsubmit="return window.confirm('本当に削除しますか？')">
-              <?= csrf() ?>
-              <?= method("DELETE") ?>
-              <button class="btn btn-dark">取消</button>
-            </form>
-          </td>
+          <th>ID</th>
+          <th>予約情報</th>
+          <th>ステータス</th>
+          <th>メッセージ</th>
+          <th>ログ日時</th>
+          <th>操作</th>
         </tr>
-      <?php endforeach; ?>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <?php foreach ($logs as $log): ?>
+          <tr>
+            <th><?= $log["id"] ?></th>
+            <td>
+              <?= $log["email"] ?> | 
+              <a href="/surveys/<?= $log["survey_id"] ?>"><?= $log["title"] ?></a> | 
+              <a href="/reserves/<?= $log["reserve_id"] ?>"><?= $log["reserve_date"] ?></a>
+            </td>
+            <td><?= $log["status"] ?></td>
+            <td><?= $log["message"] ?></td>
+            <td><?= $log["created_at"] ?></td>
+            <td>
+              <form method="post" action="/admin/receive_result_log/<?= $log["id"] ?>" onsubmit="return window.confirm('本当に削除しますか？')">
+                <?= csrf() ?>
+                <?= method("DELETE") ?>
+                <button class="btn btn-dark">取消</button>
+              </form>
+            </td>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+  </div>
   <ul class="pagination mb-0 mt-4" style="justify-content: center;">
     <?php if ($pgnt["first"]): ?>
       <li class="page-item">
