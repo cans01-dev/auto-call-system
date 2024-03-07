@@ -1,5 +1,8 @@
 <?php
 
+require "../../vendor/autoload.php";
+$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__, 2))->load();
+
 require dirname(__DIR__, 2)."/config.php";
 require dirname(__DIR__, 2)."/models/Fetch.php";
 require dirname(__DIR__, 2)."/models/DB.php";
@@ -65,7 +68,7 @@ function gen_result_sample($reserve_info, array $status_rand_array): array {
   
   $file_name = "ac_res{$reserve["id"]}_{$reserve["date"]}.json";
   $json = json_encode($result, JSON_PRETTY_PRINT);
-  $file_path = dirname(__DIR__)."/storage/outputs/{$file_name}";
+  $file_path = dirname(__DIR__, 2)."/storage/outputs/{$file_name}";
   return [$json, $file_path];
 }
 

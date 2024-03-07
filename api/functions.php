@@ -3,9 +3,9 @@
 function new_pdo() {
   try {
     $pdo = new PDO(
-      DB_PREFIX."dbname=".DB_NAME.";host=".DB_HOST,
-      DB_USERNAME,
-      DB_PASSWORD
+      $_ENV["DB_PREFIX"]."dbname=".$_ENV["DB_NAME"].";host=".$_ENV["DB_HOST"],
+      $_ENV["DB_USERNAME"],
+      $_ENV["DB_PASSWORD"]
     );
     return $pdo;
   } catch (PDOException $e) {
@@ -17,18 +17,6 @@ function authenticate($username, $password, $http_authorization) {
   $credentials = explode(":", substr($http_authorization, 6));
   return $credentials[0] === $username && $credentials[1] === $password;
 }
-
-// function upload_file($file, $file_path=null) {
-//   if (!$file_path) $file_path = dirname(__DIR__)."/storage/uploads/{$file["name"]}";
-//   if ($file) {
-//     if (is_uploaded_file($file["tmp_name"])) {
-//       if (move_uploaded_file($file["tmp_name"], $file_path)) {
-//         return $file_path;
-//       }
-//     }
-//   }
-//   return false;
-// }
 
 function send_file(CURLFile $curl_file, $url, $header) {
   $ch = curl_init();

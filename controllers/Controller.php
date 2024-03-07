@@ -98,7 +98,7 @@ function sendContact() {
 
 function genReserve() {
   $date = $_POST["date"];
-  if ($_ENV["MODE"] === MODE_DEVELOPMENT) {
+  if ($_ENV["MODE"] == MODE_DEVELOPMENT) {
     $res = exec("php api/gen_reserve_info.php {$date}");
   } else {
     $res = exec("php8.2 api/gen_reserve_info.php {$date}");

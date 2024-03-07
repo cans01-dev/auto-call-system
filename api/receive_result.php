@@ -1,6 +1,8 @@
 <?php
 
 require "../vendor/autoload.php";
+$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__))->load();
+
 require "../config.php";
 require "../models/Fetch.php";
 require "../models/DB.php";
