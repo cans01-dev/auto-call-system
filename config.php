@@ -3,22 +3,6 @@
 define("MODE_DEVELOPMENT", 1);
 define("MODE_PRODUCT", 2);
 
-define("MODE", MODE_DEVELOPMENT);
-
-if (MODE === MODE_DEVELOPMENT) {
-  define("DB_PREFIX", "mysql:");
-  define("DB_NAME", "auto_call_system");
-  define("DB_HOST", "localhost");
-  define("DB_USERNAME", "root");
-  define("DB_PASSWORD", "");
-} else {
-  define("DB_PREFIX", "mysql:");
-  define("DB_NAME", "autocall_main");
-  define("DB_HOST", "localhost");
-  define("DB_USERNAME", "autocall_main");
-  define("DB_PASSWORD", "cans01dev");
-}
-
 define("PAGE_TITLE", "AutoCallシステム");
 
 # 予約の締め切り
@@ -83,5 +67,3 @@ define("COLOR_PALLET", ["#DCF2F1", "#7FC7D9", "#365486", "#0F1035"]);
 
 # 課金表示画面に適用される秒数あたりの料金
 define("PRICE_PER_SECOND", 0.138);
-
-define("GOOGLE_API_KEY", "AIzaSyCVOtglUcy3xRxk-x1qI2m8e-JmJ_RZZJU");

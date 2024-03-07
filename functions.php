@@ -42,7 +42,7 @@ function hour_to_sec(string $str): int
 }
 
 function text_to_speech($text, $voice_name) {
-  $google_tts_api_url = "https://texttospeech.googleapis.com/v1/text:synthesize?key=".GOOGLE_API_KEY;
+  $google_tts_api_url = "https://texttospeech.googleapis.com/v1/text:synthesize?key=".$_ENV["GOOGLE_API_KEY"];
   
   $ch = curl_init();
   curl_setopt_array($ch, [
