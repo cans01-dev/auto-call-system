@@ -76,35 +76,32 @@ function gen_reserve_info($reserve) {
     }
   } else {
     $areas = Fetch::areasByReserveId($reserve["id"]);
-    $stations = [];
+    $numbers_length = round((strtotime($reserve["end"]) - strtotime($reserve["start"])) / 3600 * NUMBERS_PER_HOUR * $user["number_of_lines"]);
+
     foreach ($areas as $area) {
-      foreach (Fetch::get("stations", $area["id"], "area_id") as $station) {
+      $stations = Fetch::get("stations", $area["id"], "area_id");
+      foreach ($stations as $station) {
         $sql = "SELECT MAX(c.number) FROM calls as c
                 JOIN reserves as r ON c.reserve_id = r.id
                 WHERE r.survey_id = {$survey["id"]}
                 AND c.number LIKE '{$station["prefix"]}%'";
-        $station["last_n56789"] = substr(str_replace("-", "", Fetch::query($sql, "fetchColumn")), 7, 12);
-        $stations[] = $station;
+        $last_n56789 = substr(str_replace("-", "", Fetch::query($sql, "fetchColumn")), 7, 12);
+
+        while (true) {
+          $n56789_int = intval($last_n56789) + 1;
+          if ($n56789_int > 99999) break;
+
+          $n56789 = sprintf('%05d', intval($last_n56789) + 1);
+          $n5 = substr($n56789, 0, 1);
+          $n6789 = substr($n56789, 1, 4);
+          $number = "{$station["prefix"]}{$n5}-{$n6789}";
+          
+          $array["numbers"][] = $number;
+          $last_n56789 = $n56789;
+
+          if (count($array["numbers"]) >= $numbers_length) break 3;
+        }
       }
-    }
-  
-    $numbers_length = round((strtotime($reserve["end"]) - strtotime($reserve["start"])) / 3600 * NUMBERS_PER_HOUR * $user["number_of_lines"]);
-    $stations_max = count($stations) - 1;
-  
-    for ($i = 0; $i < $numbers_length; $i++) {
-      $station_idx = rand(0, $stations_max);
-      $station = $stations[$station_idx];
-
-      $n56789_int = intval($station["last_n56789"]) + 1;
-      if ($n56789_int > 99999) break;
-
-      $n56789 = sprintf('%05d', intval($station["last_n56789"]) + 1);
-      $n5 = substr($n56789, 0, 1);
-      $n6789 = substr($n56789, 1, 4);
-      $number = "{$station["prefix"]}{$n5}-{$n6789}";
-      
-      $array["numbers"][] = $number;
-      $stations[$station_idx]["last_n56789"] = $n56789;
     }
   }
 
