@@ -20,9 +20,7 @@ function reserve($vars) {
   foreach ($survey["number_lists"] as $k => $number_list) $survey["number_lists"][$k]["count"]
     = Fetch::query("SELECT COUNT(*) FROM numbers WHERE number_list_id = {$number_list["id"]}", "fetchColumn");
 
-  if ($reserve["status"] === 4) {
-    $calls = Fetch::get("calls", $reserve["id"], "reserve_id");
-
+  if ($reserve["status"] === 4 && $calls = Fetch::get("calls", $reserve["id"], "reserve_id")) {
     $sql = "SELECT COUNT(*) FROM calls WHERE reserve_id = {$reserve["id"]}";
     $survey["called_numbers"] = Fetch::query($sql, "fetchColumn");
   

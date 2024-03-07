@@ -5,7 +5,7 @@ function area($vars) {
   $area = Fetch::find("areas", $area_id);
   $area["stations"] = Fetch::get("stations", $area["id"], "area_id");
   $survey = Fetch::find("surveys", $area["survey_id"]);
-  if (!Allow::survey($survey)) abort(403);
+  if (Auth::user()["status"] !== 1) if (!Allow::survey($survey)) abort(403);
   
   require_once "./views/pages/area.php";
 }

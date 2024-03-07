@@ -7,7 +7,7 @@
     <li class="breadcrumb-item active">コール一覧</li>
   </ol>
 </nav>
-<?= Components::h2("コール一覧") ?>
+<?= Components::h2("{$survey["title"]}: コール一覧") ?>
 <div class="card p-2 mb-4">
   <form method="post" id="csvForm"><?= csrf() ?></form>
   <form id="params">

@@ -7,7 +7,7 @@
     <li class="breadcrumb-item active">統計</li>
   </ol>
 </nav>
-<?= Components::h2("統計") ?>
+<?= Components::h2("{$survey["title"]}: 統計") ?>
 <section id="area">
   <?= Components::h3("エリア") ?>
   <table class="table">

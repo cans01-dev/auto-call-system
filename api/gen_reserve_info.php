@@ -14,10 +14,11 @@ function gen_reserve_info($reserve) {
   $faqs = Fetch::get("faqs", $survey["id"], "survey_id", "order_num");
   $endings = Fetch::get("endings", $survey["id"], "survey_id");
 
+  # file_path
   $f_date = str_replace("-", "_", $reserve["date"]);
-
   $file_path = user_dir("user{$user["id"]}_{$f_date}.json", $user["id"]);
 
+  # basis
   $array = [
     "id" => $reserve["id"],
     "user_id" => $user["id"],
@@ -31,13 +32,13 @@ function gen_reserve_info($reserve) {
   ];
 
   # faqs
+  $faqs = Fetch::get("faqs", $survey["id"], "survey_id", "order_num");
   foreach ($faqs as $faq) {
     $f = [
       "faq_id" => $faq["id"],
       "voice" => $faq["voice_file"],
       "options" => []
     ];
-      
     $options = Fetch::get("options", $faq["id"], "faq_id");
     foreach($options as $option) {
       $next_type = $option["next_ending_id"] ? "ending" : "faq";
@@ -52,12 +53,12 @@ function gen_reserve_info($reserve) {
   }
 
   # endings
+  $endings = Fetch::get("endings", $survey["id"], "survey_id");
   foreach ($endings as $ending) {
-    $e = [
+    $array["endings"][] = [
       "ending_id" => $ending["id"],
       "voice" => $ending["voice_file"]
     ];
-    $array["endings"][] = $e;
   }
 
   # numbers
@@ -83,6 +84,23 @@ function gen_reserve_info($reserve) {
     $numbers_length = round((strtotime($reserve["end"]) - strtotime($reserve["start"])) / 3600 * NUMBERS_PER_HOUR * $user["number_of_lines"]);
     $stations_max = count($stations) - 1;
   
+    for ($i = 0; $i < $numbers_length; $i++) {
+      $station = $stations[rand(0, $stations_max)];
+      $prefix = $station["prefix"];
+      while (true) {
+        $n5 = rand(0, 9);
+        $n6789 = sprintf('%04d', rand(0, 9999));
+        $number = "{$prefix}{$n5}-{$n6789}";
+        $sql = "SELECT * FROM calls as c JOIN reserves as r ON c.reserve_id = r.id
+                WHERE r.survey_id = {$survey["id"]} AND number = {$number}";
+        $same_number = Fetch::query($sql, "fetch");
+        if ($same_number) {          
+          continue;
+        }
+        $array["numbers"][] = $number;
+        break;
+      }
+    }
     while (count($array["numbers"]) < $numbers_length) {
       $station = $stations[rand(0, $stations_max)];
       $prefix = $station["prefix"];

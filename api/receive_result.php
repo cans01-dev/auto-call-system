@@ -37,25 +37,40 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     exit();
   }
 
-  foreach ($array["calls"] as $call) {
-    DB::insert("calls", [
-      "reserve_id" => $reserve["id"],
-      "number" => $call["number"],
-      "status" => $call["status"],
-      "duration" => $call["duration"],
-      "time" => $call["time"]
-    ]);
-    $call_id = DB::lastInsertId();
-
-    foreach ($call["answers"] as $answer) {
-      if (isset($answer["option_id"])) {
-        DB::insert("answers", [
-          "call_id" => $call_id,
-          "faq_id" => $answer["id"],
-          "option_id" => $answer["option_id"]
-        ]);
+  DB::beginTransaction();
+  try {
+    foreach ($array["calls"] as $call) {
+      DB::insert("calls", [
+        "reserve_id" => $reserve["id"],
+        "number" => $call["number"],
+        "status" => $call["status"],
+        "duration" => $call["duration"],
+        "time" => $call["time"]
+      ]);
+      $call_id = DB::lastInsertId();
+      
+      if ($call["status"] === 1) {
+        foreach ($call["answers"] as $answer) {
+          if (isset($answer["option_id"])) {
+            DB::insert("answers", [
+              "call_id" => $call_id,
+              "faq_id" => $answer["id"],
+              "option_id" => $answer["option_id"]
+            ]);
+          }
+        }
       }
     }
+    DB::commit();    
+  } catch (Exception $e) {
+    DB::rollback();
+    DB::insert("receive_result_log", [
+      "reserve_id" => $reserve["id"],
+      "status" => 3,
+      "message" => "予期せぬエラー"
+    ]);
+    header("HTTP/1.1 500 Internal Server Error");
+    exit();
   }
 
   DB::update("reserves", $reserve["id"], [

@@ -7,11 +7,10 @@
     <li class="breadcrumb-item active">カレンダー</li>
   </ol>
 </nav>
-<?= Components::h2($survey["title"]) ?>
+<?= Components::h2("{$survey["title"]}: カレンダー") ?>
 <div class="d-flex gap-3">
   <div class="w-100">
     <section id="calendar">
-      <?= Components::h3("カレンダー") ?>
       <div class="text-center mb-4">
         <form action="" id="prevForm">
           <input type="hidden" name="month" value="<?= date("m", $calendar->getPrev()) ?>">

@@ -130,7 +130,7 @@
 			</h1>
 			<hr>
 			<nav id="navbar-example2" class="mb-auto">
-				<ul class="nav nav-pills vstack gap-1">
+				<ul class="nav nav-pills vstack gap-2">
 					<li class="nav-item">
 						<a
 						class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/home" ? "active" : "link-body-emphasis" ?>"

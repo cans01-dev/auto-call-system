@@ -23,7 +23,7 @@
       <td><?= $call["id"] ?></td>
       <td><a href="/reserves/<?= $call["reserve_id"] ?>"><?= $call["date"] ?></a> | <?= $call["time"] ?></td>
       <td><?= $call["number"] ?></td>
-      <td><?= $call["status"] ?></td>
+      <td><?= CALL_STATUS[$call["status"]]["text"] ?></td>
       <td><?= $call["duration"] ?></td>
     </tr>
   </tbody>

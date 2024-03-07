@@ -387,13 +387,20 @@
             更新
           </button>
         </div>
-        <form method="post" onsubmit="return window.confirm('本当に削除しますか？')">
-          <?= csrf() ?>
-          <?= method("DELETE") ?>
-          <div class="text-end">
-            <input type="submit" class="btn btn-link" value="この予約を削除">
-          </div>
-        </form>
+        <?php if (!@$reserve["status"]): ?>
+          <form method="post" onsubmit="return window.confirm('本当に削除しますか？')">
+            <?= csrf() ?>
+            <?= method("DELETE") ?>
+            <div class="text-end">
+              <input
+                type="submit" class="btn btn-link"
+                value="<?= @$favorite ? "この予約パターンを削除" : "この予約を削除" ?>"
+              >
+            </div>
+          </form>
+        <?php else: ?>
+          <div class="form-text">確定後の予約は削除できません</div>
+        <?php endif; ?>
       </section>
     </div>
   </div>

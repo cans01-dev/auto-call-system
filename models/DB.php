@@ -64,6 +64,21 @@ class DB
     $stmt = $pdo->query($query);
     return $stmt->rowCount();
   }
+
+  public static function beginTransaction() {
+    global $pdo;
+    $pdo->beginTransaction();
+  }
+
+  public static function commit() {
+    global $pdo;
+    $pdo->commit();
+  }
+
+  public static function rollback() {
+    global $pdo;
+    $pdo->rollback();
+  }
 }
 
 

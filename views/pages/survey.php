@@ -6,7 +6,7 @@
     <li class="breadcrumb-item active"><?= $survey["title"] ?></li>
   </ol>
 </nav>
-<?= Components::h2($survey["title"]) ?>
+<?= Components::h2("{$survey["title"]}: 会話と音声") ?>
 <div class="d-flex gap-3">
   <div class="w-100">
     <section id="greeting-ending">

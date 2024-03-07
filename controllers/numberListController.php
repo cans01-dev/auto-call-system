@@ -17,7 +17,7 @@ function numberList($vars) {
           WHERE n.number_list_id = {$number_list["id"]}";
   $numbers = Fetch::query($sql, "fetchAll");
 
-  if (!Allow::survey($survey)) abort(403);
+  if (Auth::user()["status"] !== 1) if (!Allow::survey($survey)) abort(403);
 
   require "./views/pages/numberList.php";
 }

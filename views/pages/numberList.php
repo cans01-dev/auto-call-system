@@ -3,7 +3,7 @@
 <nav aria-label="breadcrumb" class="breadcrumb-nav">
   <ol class="breadcrumb">
   <li class="breadcrumb-item"><a href="/">ホーム</a></li>
-    <li class="breadcrumb-item"><a href="/surveys/<?= $survey["id"] ?>"><?= $survey["title"] ?></a></li>
+    <li class="breadcrumb-item"><a href="/surveys/<?= $survey["id"] ?>/calendar"><?= $survey["title"] ?></a></li>
     <li class="breadcrumb-item active">マイリスト: <?= $number_list["title"] ?></li>
   </ol>
 </nav>
@@ -106,5 +106,7 @@
     </div>
   </div>
 </div>
+
+<?= Auth::user()["id"] !== $survey["user_id"]? Components::watchOnAdmin("管理者として閲覧専用でこのページを閲覧しています") : "" ?>
 
 <?php require './views/templates/footer.php'; ?>
