@@ -22,7 +22,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     exit();
   }
 
-  $array = json_decode(file_get_contents($file_path), true);
+  $json = file_get_contents($file_path);
+  $array = json_decode($json, true);
 
   $reserve = Fetch::find("reserves", $array["id"]);
 

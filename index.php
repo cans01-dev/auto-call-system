@@ -18,14 +18,17 @@ require "./controllers/reserveController.php";
 require "./controllers/surveyController.php";
 require "./controllers/favoriteController.php";
 require "./controllers/optionController.php";
-require "./controllers/adminController.php";
 require "./controllers/callController.php";
 require "./controllers/statsController.php";
 require "./controllers/areaController.php";
 require "./controllers/numberListController.php";
+require "./controllers/admin/Controller.php";
+require "./controllers/admin/userController.php";
+require "./controllers/admin/reserveController.php";
 require "./config.php";
 require "./router.php";
 require "./functions.php";
+require "./api/functions.php";
 
 date_default_timezone_set("Asia/Tokyo");
 

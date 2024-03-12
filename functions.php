@@ -11,7 +11,7 @@ function array_str($array, $delimiter=", ") {
   $last = array_slice($array, -1)[0];
   foreach ($array as $item) {
     $str .= $item;
-    if ($item !== $last) $str .= ", ";
+    if ($item !== $last) $str .= $delimiter;
   }
   return $str;
 }

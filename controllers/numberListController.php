@@ -5,16 +5,33 @@ function numberList($vars) {
   $survey = Fetch::find("surveys", $number_list["survey_id"]);
 
   $page = @$_GET["page"] ?? 1;
-  $limit = 100;
-  $sql = "SELECT *, n.id as id, a.title as area_title, n.number as number FROM numbers as n
+  $limit = 50;
+  $offset = (($page) - 1) * $limit;
+
+  $call_status = @$_GET["call_status"] ?? null;
+  $and_c_status = $call_status ? "AND c.status = {$call_status}" : "";
+
+  // 3/12 ステータス選択によるパフォーマンス低下を改善
+  $sql = "SELECT COUNT(*) FROM numbers as n
           LEFT OUTER JOIN (
-            SELECT c.id as call_id, c.number FROM calls as c
+                    SELECT c.id as call_id, c.number, c.status FROM calls as c
+                    JOIN reserves as r ON c.reserve_id = r.id
+                    WHERE r.survey_id = {$survey["id"]}
+                  ) as c ON n.number = c.number
+          WHERE n.number_list_id = {$number_list["id"]}
+          {$and_c_status}";
+  $pgnt = pagenation($limit, Fetch::query($sql, "fetchColumn"), $page);
+
+  $sql = "SELECT *, n.id as id, n.number as number, c.status as call_status
+          FROM numbers as n
+          LEFT OUTER JOIN (
+            SELECT c.id as call_id, c.number, c.status FROM calls as c
             JOIN reserves as r ON c.reserve_id = r.id
             WHERE r.survey_id = {$survey["id"]}
           ) as c ON n.number = c.number
-          LEFT OUTER JOIN stations as s ON n.number LIKE s.prefix+'%'
-          LEFT OUTER JOIN areas as a ON s.area_id = a.id
-          WHERE n.number_list_id = {$number_list["id"]}";
+          WHERE n.number_list_id = {$number_list["id"]}
+          {$and_c_status}
+          LIMIT {$limit} OFFSET {$offset}";
   $numbers = Fetch::query($sql, "fetchAll");
 
   if (Auth::user()["status"] !== 1) if (!Allow::survey($survey)) abort(403);

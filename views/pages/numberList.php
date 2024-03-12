@@ -67,19 +67,130 @@
     <?= Components::hr(4) ?>
     <section id="numbers">
       <?= Components::h3("電話番号") ?>
-      <p>件数: <b><?= Fetch::query("SELECT COUNT(*) FROM numbers WHERE number_list_id = {$number_list["id"]}", "fetchColumn") ?></b></p>
-      <?php foreach ($numbers as $number): ?>
-        <span class="badge bg-light text-black fs-6 mb-1">
-          <form action="/numbers/<?= $number["id"] ?>" method="post">
-            <?= csrf() ?>
-            <?= method("DELETE") ?>
-            <?= $number["number"] ?>
-            <button type="submit" class="bg-transparent border-0">
-              <i class="fa-solid fa-xmark"></i>
+      <div class="card p-2 mb-4">
+        <form id="params">
+          <table class="table table-borderless mb-0">
+            <tbody>
+              <tr>
+                <td>ステータス</td>
+                <td class="d-flex gap-4">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="call_status"
+                      value=""
+                      id="callStatusNull"
+                      onchange="submit(this.form)"
+                      <?= @$_GET["call_status"] ? "" : "checked" ?>
+                    >
+                    <label class="form-check-label" for="callStatusNull">
+                      未コール
+                    </label>
+                  </div>
+                  <?php foreach (CALL_STATUS as $key => $value): ?>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        value="<?= $key ?>"
+                        name="call_status"
+                        id="callStatus<?= $key ?>"
+                        onchange="submit(this.form)"
+                        <?= @$_GET["call_status"] == $key ? "checked" : "" ?>
+                      >
+                      <label class="form-check-label" for="callStatus<?= $key ?>">
+                        <span class="badge bg-<?= $value["bg"] ?>"><?= $value["text"] ?></span>
+                      </label>
+                    </div>
+                  <?php endforeach; ?>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </form>
+      </div>
+      <p><?= "{$pgnt["current"]} / {$pgnt["last_page"]}ページ目 - {$pgnt["current_start"]}~{$pgnt["current_end"]} / {$pgnt["sum"]}件表示中" ?></p>
+      <div class="calls-table-container">
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>電話番号</th>
+              <th>コールのステータス</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($numbers as $number): ?>
+              <tr>
+                <td><?= $number["number"] ?></td>
+                <td><?= $number["call_status"] ? CALL_STATUS[$number["call_status"]]["text"] : "-" ?></td>
+                <td>
+                  <form action="/numbers/<?= $number["id"] ?>" method="post">
+                    <?= csrf() ?>
+                    <?= method("DELETE") ?>
+                    <button type="submit" class="btn btn-sm btn-outline-dark">
+                      削除
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
+      <ul class="pagination mb-0 mt-4" style="justify-content: center;">
+        <form id="params"></form>
+        <?php if ($pgnt["first"]): ?>
+          <li class="page-item">
+            <button name="page" value="<?= $pgnt["first"] ?>" form="params" class="page-link" href="#">
+              <i class="fa-solid fa-angles-left"></i>
             </button>
-          </form>
-      </span>
-      <?php endforeach; ?>
+          </li>
+        <?php endif; ?>
+        <?php if ($pgnt["pprev"]): ?>
+          <li class="page-item">
+            <button name="page" value="<?= $pgnt["pprev"]  ?>" form="params" class="page-link" href="#">
+              <?= $pgnt["pprev"] ?>
+            </button>
+          </li>
+        <?php endif; ?>
+        <?php if ($pgnt["prev"]): ?>
+          <li class="page-item">
+            <button name="page" value="<?= $pgnt["prev"]  ?>" form="params" class="page-link" href="#">
+              <?= $pgnt["prev"] ?>
+            </button>
+          </li>
+        <?php endif; ?>
+        <?php if ($pgnt["current"]): ?>
+          <li class="page-item">
+            <button name="page" value="<?= $pgnt["current"] ?>" form="params" class="page-link active" href="#">
+              <?= $pgnt["current"] ?>
+            </button>
+          </li>
+        <?php endif; ?>
+        <?php if ($pgnt["next"]): ?>
+          <li class="page-item">
+            <button name="page" value="<?= $pgnt["next"]  ?>" form="params" class="page-link" href="#">
+              <?= $pgnt["next"] ?>
+            </button>
+          </li>
+        <?php endif; ?>
+        <?php if ($pgnt["nnext"]): ?>
+          <li class="page-item">
+            <button name="page" value="<?= $pgnt["nnext"]  ?>" form="params" class="page-link" href="#">
+              <?= $pgnt["nnext"] ?>
+            </button>
+          </li>
+        <?php endif; ?>
+        <?php if ($pgnt["last"]): ?>
+          <li class="page-item">
+            <button name="page" value="<?= $pgnt["last"]  ?>" form="params" class="page-link" href="#">
+              <i class="fa-solid fa-angles-right"></i>
+            </button>
+          </li>
+        <?php endif; ?>
+      </ul>
     </section>
   </div>
   <div class="flex-shrink-0 sticky-aside" style="width: 300px;">

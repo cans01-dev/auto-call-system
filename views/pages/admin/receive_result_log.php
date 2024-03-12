@@ -3,13 +3,6 @@
 <div class="pt-3">
   <?= Components::h2("結果ファイル受信ログ") ?>
 </div>
-<button
-  type="button"
-  class="btn btn-primary me-2"
-  data-bs-toggle="modal"
-  data-bs-target="#sendResultModal"
->手動で結果ファイルを受信</button>
-<?= Components::hr(3) ?>
 <p><?= "{$pgnt["current"]} / {$pgnt["last_page"]}ページ目 - {$pgnt["current_start"]}~{$pgnt["current_end"]} / {$pgnt["sum"]}件表示中" ?></p>
 <?php if ($logs): ?>
   <div class="calls-table-container">
@@ -21,7 +14,6 @@
           <th>ステータス</th>
           <th>メッセージ</th>
           <th>ログ日時</th>
-          <th>操作</th>
         </tr>
       </thead>
       <tbody>
@@ -36,13 +28,6 @@
             <td><?= $log["status"] ?></td>
             <td><?= $log["message"] ?></td>
             <td><?= $log["created_at"] ?></td>
-            <td>
-              <form method="post" action="/admin/receive_result_log/<?= $log["id"] ?>" onsubmit="return window.confirm('本当に削除しますか？')">
-                <?= csrf() ?>
-                <?= method("DELETE") ?>
-                <button class="btn btn-dark">取消</button>
-              </form>
-            </td>
           </tr>
         <?php endforeach; ?>
       </tbody>
@@ -102,26 +87,5 @@
 <?php else: ?>
   <?= Components::noContent("該当するデータがありません、検索条件を変更して再検索してください") ?>
 <?php endif; ?>
-<?= Components::modal("sendResultModal", "手動で結果ファイルを受信", <<<EOL
-  <form action="/api/receive_result.php" method="post" enctype="multipart/form-data">
-    <div class="mb-3">
-      <label class="form-label">結果ファイル</label>
-      <input type="file" name="file" class="form-control" required>
-    </div>
-    <div class="form-check form-switch">
-      <input class="form-check-input" type="checkbox" name="ignore" role="switch" id="flexSwitchCheckDefault">
-      <label class="form-check-label" for="flexSwitchCheckDefault">
-        「この結果ファイルは既に受信されています」エラーを無視する
-      </label>
-    </div>
-    <div class="text-end">
-      <button type="submit" class="btn btn-success">実行</button>
-    </div>
-    <div class="form-text">
-      実行を押すとBasic認証のユーザー名、パスワードが求められます<br>
-      ページが遷移しますが手動でブラウザバックしてこのページに戻ってください
-    </div>
-  </form>
-EOL); ?>
 
 <?php require './views/templates/footer.php'; ?>

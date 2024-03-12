@@ -25,18 +25,32 @@
         </td>
         <td><?= $user["number_of_lines"] ?></td>
         <td>
-        <button
-          type="button"
-          class="btn btn-primary me-2"
-          data-bs-toggle="modal"
-          data-bs-target="#editModal<?= $user["id"] ?>"
-        >編集</button>
-        <button
-          type="button"
-          class="btn btn-dark"
-          data-bs-toggle="modal"
-          data-bs-target="#changePasswordModal<?= $user["id"] ?>"
-        >パスワードを変更</button>
+          <form
+            action="/admin/users/<?= $user["id"] ?>/clean_dir"
+            method="post" id="cleanUser<?= $user["id"] ?>DirForm"
+            onsubmit="return window.confirm('本当に削除しますか？\r\n削除を実行するとユーザーの予約情報ファイル、音声ファイルが削除されます。')"
+          >
+            <?= csrf() ?>
+          </form>
+          <div class="btn-group">
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#editModal<?= $user["id"] ?>"
+            >
+              編集
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#changePasswordModal<?= $user["id"] ?>"
+            >
+              パスワードを変更
+            </button>
+            <button class="btn btn-outline-primary" form="cleanUser<?= $user["id"] ?>DirForm">ディレクトリをクリーニング</button>
+          </div>
         </td>
       </tr>
     <?php endforeach; ?>
@@ -48,7 +62,6 @@
   <?= Components::modal("changePasswordModal{$user["id"]}", "パスワードを変更", <<<EOL
     <form action="/admin/users/{$user["id"]}/password" method="post">
       CSRF
-      METHOD_PUT
       <div class="mb-3">
         <label class="form-label"><b>{$user["email"]}</b>の新しいパスワード</label>
         <input type="password" name="new_password" class="form-control" required>
@@ -68,7 +81,7 @@
   EOL); ?>
 
   <!-- editModal<?= $user["id"] ?> -->
-  <div class="modal fade" id="editModal<?= $user["id"] ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal fade" id="editModal<?= $user["id"] ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">

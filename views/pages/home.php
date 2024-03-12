@@ -6,16 +6,6 @@
   </ol>
 </nav>
 <?= Components::h2("ホーム") ?>
-<pre>
-  <?php 
-    $sql = "SELECT * FROM areas as a
-    JOIN reserves_areas as ra ON a.id = ra.area_id
-    JOIN reserves as r ON ra.reserve_id = r.id
-    WHERE r.survey_id = {$survey_id}";
-$areas = Fetch::query($sql, "fetchAll");
-print_r($areas)
-  ?>
-</pre>
 <div class="d-flex gap-3">
   <div class="w-100">
     <section id="reserves">

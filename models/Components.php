@@ -54,7 +54,7 @@ class Components
     $children = str_replace("METHOD_DELETE", method("DELETE"), $children);
     return <<<EOM
       <!-- {$id} -->
-      <div class="modal fade" id="{$id}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal fade" id="{$id}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">

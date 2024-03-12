@@ -6,11 +6,6 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("GET", "/areas/{id:\d+}", "area");
 
 	$r->addRoute("GET", "/support", "support");
-	$r->addRoute("GET", "/admin/users", "users");
-	$r->addRoute("GET", "/admin/receive_result_log", "receive_result_log");
-	$r->addRoute("GET", "/admin/gen_reserve_log", "gen_reserve_log");
-	$r->addRoute("GET", "/admin/reserves", "adminReserves");
-
 	$r->addRoute("GET", "/login", "login");
 	$r->addRoute("POST", "/login", "loginPost");
 	$r->addRoute("POST", "/logout", "logout");
@@ -30,6 +25,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("GET", "/surveys/{id:\d+}/calendar", "calendar");
 	$r->addRoute("GET", "/surveys/{id:\d+}/calls", "calls");
 	$r->addRoute("GET", "/surveys/{id:\d+}/stats", "stats");
+	$r->addRoute("GET", "/surveys/{survey_id:\d+}/stats/areas/{area_id:\d+}", "statsArea");
 	$r->addRoute("PUT", "/surveys/{id:\d+}/greeting", "updateGreeting");
 	$r->addRoute("POST", "/surveys/{id:\d+}/all_voice_file_re_gen", "allVoiceFileReGen");
 	$r->addRoute("POST", "/surveys/{id:\d+}/number_lists", "storeNumberList");
@@ -87,11 +83,20 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("POST", "/support/contact", "sendContact");
 	$r->addRoute("POST", "/surveys/{id:\d+}/calls", "callsCsv");
 
+	$r->addRoute("GET", "/admin/users", "users");
 	$r->addRoute("POST", "/admin/users", "storeUser");
-	$r->addRoute("PUT", "/admin/users/{id:\d+}/password", "adminUpdatePassword");
+	$r->addRoute("POST", "/admin/users/{id:\d+}/password", "adminChangeUserPassword");
+	$r->addRoute("POST", "/admin/users/{id:\d+}/clean_dir", "adminCleanUserDir");
 	$r->addRoute("PUT", "/admin/users/{id:\d+}", "adminUpdateUser");
 	$r->addRoute("DELETE", "/admin/users/{id:\d+}", "deleteUser");
-	$r->addRoute("DELETE", "/admin/receive_result_log/{id:\d+}", "cancelResultInfo");
-	$r->addRoute("POST", "/admin/gen_reserve", "genReserve");
+
+	$r->addRoute("GET", "/admin/receive_result_log", "receive_result_log");
+	$r->addRoute("GET", "/admin/gen_reserve_log", "gen_reserve_log");
+	
+	$r->addRoute("GET", "/admin/reserves", "adminReserves");
+	$r->addRoute("POST", "/admin/reserves/{id:\d+}/forward_confirmed", "adminReserveForwardConfirmed");
+	$r->addRoute("POST", "/admin/reserves/{id:\d+}/back_reserved", "adminReserveBackReserved");
+	$r->addRoute("POST", "/admin/reserves/{id:\d+}/forward_collected", "adminReserveForwardCollected");
+	$r->addRoute("POST", "/admin/reserves/{id:\d+}/back_confirmed", "adminReserveBackConfirmed");
 });
 

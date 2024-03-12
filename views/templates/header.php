@@ -198,26 +198,36 @@
 					<?php if (Auth::user()["status"] === USER_STATUS_ADMIN): ?>
 						<li class="nav-item my-2 p-1 border border-2 rounded-2">
 							<h4 class="fs-6">管理者メニュー</h4>
-							<a href="/admin/users" class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/admin/users" ? "active" : "link-body-emphasis" ?>">
-								<span class="text-center d-inline-block me-2" style="width: 24px;">
-									<i class="fa-solid fa-users fa-lg"></i>
-								</span>ユーザー管理
-							</a>
-							<a href="/admin/reserves" class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/admin/reserves" ? "active" : "link-body-emphasis" ?>">
-								<span class="text-center d-inline-block me-2" style="width: 24px;">
-									<i class="fa-solid fa-table-list fa-lg"></i>
-								</span>全ての予約
-							</a>
-							<a href="/admin/gen_reserve_log" class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/admin/gen_reserve_log" ? "active" : "link-body-emphasis" ?>">
-								<span class="text-center d-inline-block me-2" style="width: 24px;">
-									<i class="fa-solid fa-file-arrow-up fa-lg"></i>
-								</span>予約情報ファイル生成ログ
-							</a>
-							<a href="/admin/receive_result_log" class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/admin/receive_result_log" ? "active" : "link-body-emphasis" ?>">
-								<span class="text-center d-inline-block me-2" style="width: 24px;">
-									<i class="fa-solid fa-file-arrow-down fa-lg"></i>
-								</span>結果ファイル受信ログ
-							</a>
+							<ul class="nav nav-pills vstack gap-1">
+								<li class="nav-item">
+									<a href="/admin/users" class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/admin/users" ? "active" : "link-body-emphasis" ?>">
+										<span class="text-center d-inline-block me-2" style="width: 24px;">
+											<i class="fa-solid fa-users fa-lg"></i>
+										</span>ユーザー管理
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/admin/reserves" class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/admin/reserves" ? "active" : "link-body-emphasis" ?>">
+										<span class="text-center d-inline-block me-2" style="width: 24px;">
+											<i class="fa-solid fa-table-list fa-lg"></i>
+										</span>全ての予約
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/admin/gen_reserve_log" class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/admin/gen_reserve_log" ? "active" : "link-body-emphasis" ?>">
+										<span class="text-center d-inline-block me-2" style="width: 24px;">
+											<i class="fa-solid fa-file-arrow-up fa-lg"></i>
+										</span>予約情報ファイル生成ログ
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/admin/receive_result_log" class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/admin/receive_result_log" ? "active" : "link-body-emphasis" ?>">
+										<span class="text-center d-inline-block me-2" style="width: 24px;">
+											<i class="fa-solid fa-file-arrow-down fa-lg"></i>
+										</span>結果ファイル受信ログ
+									</a>
+								</li>
+							</ul>
 						</li>
 					<?php endif; ?>
 				</ul>
