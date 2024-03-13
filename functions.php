@@ -107,6 +107,35 @@ function with_basic($url) {
   return substr_replace($url, "autocall:password@", $a, 0);
 }
 
+function store_number_csv($fp, $number_list_id) {
+  [$success, $error, $dup] = [0, 0, 0];
+  $numbers = [];
+  while($line = fgetcsv($fp)){
+    $number = $line[0];
+    if (!preg_match('/^0[789]0-[0-9]{4}-[0-9]{4}$/', $number)) {
+      if ($number[0] !== "0") $number = "0" . $number;
+      if (strlen($number) < 13) $number = substr_replace(substr_replace($number, "-", 3, 0), "-", 8, 0);
+    }
+
+    if (preg_match('/^0[789]0-[0-9]{4}-[0-9]{4}$/', $number)) {
+      if (!Fetch::find2("numbers", [
+        ["number_list_id", "=", $number_list_id],
+        ["number", "=", $number]
+      ])) {
+        $numbers[] = $number;
+        $success++;
+        continue;
+      }
+      $dup++;
+      continue;
+    }
+    $error++;
+  }
+
+  $result = ["success" => $success, "error" => $error, "dup" => $dup];
+  return [$numbers, $result];
+}
+
 /**
  * ーーここまでーー
  */

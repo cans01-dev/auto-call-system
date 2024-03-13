@@ -1,9 +1,7 @@
 <?php 
 
 function survey($vars) {
-  $survey_id = $vars["id"];
-
-  $survey = Fetch::find("surveys", $survey_id);
+  $survey = Fetch::find("surveys", $vars["id"]);
   $survey["endings"] = Fetch::get("endings", $survey["id"], "survey_id");
   $survey["faqs"] = Fetch::get("faqs", $survey["id"], "survey_id", "order_num");
   if (Auth::user()["status"] !== 1) if (!Allow::survey($survey)) abort(403);
@@ -12,16 +10,22 @@ function survey($vars) {
 }
 
 function calendar($vars) {
-  $survey_id = $vars["id"];
   $month = $_GET["month"] ?? date("n");
   $year = $_GET["year"] ?? date("Y");
+  $c_mode = @$_GET["calendar"] ?? "month";
 
-  $survey = Fetch::find("surveys", $survey_id);
-  $survey["reserves"] = Fetch::reservesBySurveyIdAndYearMonth($survey["id"], $month, $year);
+  $survey = Fetch::find("surveys", $vars["id"]);
+  $survey["reserves"] = Fetch::query(
+    "SELECT *, r.status as status, r.id as id FROM reserves as r
+    WHERE r.survey_id = {$survey["id"]}
+    AND MONTH(r.date) = {$month}
+    AND YEAR(r.date) = {$year}
+    ORDER BY r.date DESC",
+    "fetchAll"
+  );
   $survey["favorites"] = Fetch::get("favorites", $survey["id"], "survey_id");
   if (Auth::user()["status"] !== 1) if (!Allow::survey($survey)) abort(403);
 
-  # calendar
   $schedules = [];
   foreach ($survey["reserves"] as $reserve) {
     $reserve["areas"] = Fetch::areasByReserveId($reserve["id"]);

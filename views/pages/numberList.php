@@ -66,131 +66,47 @@
     </section>
     <?= Components::hr(4) ?>
     <section id="numbers">
-      <?= Components::h3("電話番号") ?>
-      <div class="card p-2 mb-4">
-        <form id="params">
-          <table class="table table-borderless mb-0">
-            <tbody>
-              <tr>
-                <td>ステータス</td>
-                <td class="d-flex gap-4">
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="call_status"
-                      value=""
-                      id="callStatusNull"
-                      onchange="submit(this.form)"
-                      <?= @$_GET["call_status"] ? "" : "checked" ?>
-                    >
-                    <label class="form-check-label" for="callStatusNull">
-                      未コール
-                    </label>
-                  </div>
-                  <?php foreach (CALL_STATUS as $key => $value): ?>
-                    <div class="form-check">
-                      <input
-                        class="form-check-input"
-                        type="radio"
-                        value="<?= $key ?>"
-                        name="call_status"
-                        id="callStatus<?= $key ?>"
-                        onchange="submit(this.form)"
-                        <?= @$_GET["call_status"] == $key ? "checked" : "" ?>
-                      >
-                      <label class="form-check-label" for="callStatus<?= $key ?>">
-                        <span class="badge bg-<?= $value["bg"] ?>"><?= $value["text"] ?></span>
-                      </label>
-                    </div>
-                  <?php endforeach; ?>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </form>
-      </div>
-      <p><?= "{$pgnt["current"]} / {$pgnt["last_page"]}ページ目 - {$pgnt["current_start"]}~{$pgnt["current_end"]} / {$pgnt["sum"]}件表示中" ?></p>
-      <div class="calls-table-container">
-        <table class="table table-sm">
-          <thead>
+      <?= Components::h3("統計") ?>
+      <div class="card bg-light mb-3">
+        <div class="card-body">
+          <?php $stats = $number_list["stats"] ?>
+          <table class="table table-light table-sm mb-0">
             <tr>
-              <th>電話番号</th>
-              <th>コールのステータス</th>
-              <th>操作</th>
+              <th>進捗率</th>
+              <td>
+                <?= round($stats["all_calls"] / $stats["all_numbers"] * 100) ?>%<br>
+                (<?= number_format($stats["all_calls"]) ?> / <?= number_format($stats["all_numbers"]) ?>)
+              </td>
+              <th>応答率</th>
+              <td>
+                <?= round($stats["responsed_calls"] / $stats["all_calls"] * 100) ?>%<br>
+                (<?= number_format($stats["responsed_calls"]) ?> / <?= number_format($stats["all_calls"]) ?>)
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            <?php foreach ($numbers as $number): ?>
-              <tr>
-                <td><?= $number["number"] ?></td>
-                <td><?= $number["call_status"] ? CALL_STATUS[$number["call_status"]]["text"] : "-" ?></td>
-                <td>
-                  <form action="/numbers/<?= $number["id"] ?>" method="post">
-                    <?= csrf() ?>
-                    <?= method("DELETE") ?>
-                    <button type="submit" class="btn btn-sm btn-outline-dark">
-                      削除
-                    </button>
-                  </form>
-                </td>
-              </tr>
-            <?php endforeach; ?>
-          </tbody>
-        </table>
+            <tr>
+              <th>成功率</th>
+              <td>
+                <?= round($stats["success_calls"] / $stats["responsed_calls"] * 100) ?>%<br>
+                (<?= $stats["success_calls"] ?> / <?= number_format($stats["responsed_calls"]) ?>)
+              </td>
+              <th>平均アクション数</th>
+              <td><?= round($stats["all_actions"] / $stats["responsed_calls"], 2) ?>回</td>
+            </tr>
+            <tr>
+              <th>アクション率</th>
+              <td>
+                <?= round($stats["action_calls"] / $stats["responsed_calls"] * 100) ?>%<br>
+                (<?= number_format($stats["action_calls"]) ?> / <?= number_format($stats["responsed_calls"]) ?>)
+              </td>
+              <th>料金</th>
+              <td>
+                \<?= number_format(round($stats["total_duration"] * PRICE_PER_SECOND)) ?><br>
+                (<?= number_format($stats["total_duration"]) ?>秒 x \<?= PRICE_PER_SECOND ?>)
+              </td>
+            </tr>
+          </table>
+        </div>
       </div>
-      <ul class="pagination mb-0 mt-4" style="justify-content: center;">
-        <form id="params"></form>
-        <?php if ($pgnt["first"]): ?>
-          <li class="page-item">
-            <button name="page" value="<?= $pgnt["first"] ?>" form="params" class="page-link" href="#">
-              <i class="fa-solid fa-angles-left"></i>
-            </button>
-          </li>
-        <?php endif; ?>
-        <?php if ($pgnt["pprev"]): ?>
-          <li class="page-item">
-            <button name="page" value="<?= $pgnt["pprev"]  ?>" form="params" class="page-link" href="#">
-              <?= $pgnt["pprev"] ?>
-            </button>
-          </li>
-        <?php endif; ?>
-        <?php if ($pgnt["prev"]): ?>
-          <li class="page-item">
-            <button name="page" value="<?= $pgnt["prev"]  ?>" form="params" class="page-link" href="#">
-              <?= $pgnt["prev"] ?>
-            </button>
-          </li>
-        <?php endif; ?>
-        <?php if ($pgnt["current"]): ?>
-          <li class="page-item">
-            <button name="page" value="<?= $pgnt["current"] ?>" form="params" class="page-link active" href="#">
-              <?= $pgnt["current"] ?>
-            </button>
-          </li>
-        <?php endif; ?>
-        <?php if ($pgnt["next"]): ?>
-          <li class="page-item">
-            <button name="page" value="<?= $pgnt["next"]  ?>" form="params" class="page-link" href="#">
-              <?= $pgnt["next"] ?>
-            </button>
-          </li>
-        <?php endif; ?>
-        <?php if ($pgnt["nnext"]): ?>
-          <li class="page-item">
-            <button name="page" value="<?= $pgnt["nnext"]  ?>" form="params" class="page-link" href="#">
-              <?= $pgnt["nnext"] ?>
-            </button>
-          </li>
-        <?php endif; ?>
-        <?php if ($pgnt["last"]): ?>
-          <li class="page-item">
-            <button name="page" value="<?= $pgnt["last"]  ?>" form="params" class="page-link" href="#">
-              <i class="fa-solid fa-angles-right"></i>
-            </button>
-          </li>
-        <?php endif; ?>
-      </ul>
     </section>
   </div>
   <div class="flex-shrink-0 sticky-aside" style="width: 300px;">
@@ -203,6 +119,10 @@
             <?= method("PUT") ?>
             <label class="form-label">マイリストのタイトル</label>
             <input type="text" name="title" class="form-control" value="<?= $number_list["title"] ?>">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">マイリストの電話番号数</label>
+            <span class="badge bg-primary fs-6"><?= number_format($stats["all_numbers"]) ?>件</span>
           </div>
           <div class="text-end">
             <button type="submit" class="btn btn-dark">更新</button>

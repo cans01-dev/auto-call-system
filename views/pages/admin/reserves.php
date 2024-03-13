@@ -71,7 +71,9 @@
           <td><?= substr($reserve["start"], 0, -3) . " ~ " . substr($reserve["end"], 0, -3) ?></td>
           <td>
             <?php if ($reserve["number_list_id"]): ?>
-              <?= Fetch::find("number_lists", $reserve["number_list_id"])["title"] ?>
+              <a href="/number_lists/<?= $reserve["number_list_id"] ?>">
+                <?= Fetch::find("number_lists", $reserve["number_list_id"])["title"] ?>
+              </a>
             <?php endif; ?>
           </td>
           <td>
@@ -196,17 +198,24 @@
         </table>
         <?= Components::hr(3) ?>
         <h6>結果ファイルをインポート</h6>
-        <div style="max-width: 320px;">
-          <form action="/admin/reserves/<?= $reserve["id"] ?>/forward_collected" method="post" enctype="multipart/form-data">
-            <?= csrf() ?>
-            <div class="mb-3">
-              <label class="form-label">結果ファイル</label>
-              <input type="file" name="file" class="form-control" required>
+        <div class="row align-items-end">
+          <div class="col">
+            <div style="max-width: 320px;">
+              <form action="/admin/reserves/<?= $reserve["id"] ?>/forward_collected" method="post" enctype="multipart/form-data">
+                <?= csrf() ?>
+                <div class="mb-3">
+                  <label class="form-label">結果ファイル</label>
+                  <input type="file" name="file" class="form-control" required>
+                </div>
+                <div class="text-end">
+                  <button type="submit" class="btn btn-success">実行</button>
+                </div>
+              </form>
             </div>
-            <div class="text-end">
-              <button type="submit" class="btn btn-success">実行</button>
-            </div>
-          </form>
+          </div>
+          <div class="col ">
+            <a class="btn btn-link" style="font-size: 14px;" href="/dev/pse_api/receive_and_gen_result.php">【テスト用】予約ファイルからサンプル結果ファイルを生成</a>
+          </div>
         </div>
       </div>
     </div>

@@ -87,7 +87,5 @@
 <?php else: ?>
   <?= Components::noContent("該当するデータがありません、検索条件を変更して再検索してください") ?>
 <?php endif; ?>
-<?= Components::hr(3) ?>
-<a class="btn btn-link" href="/dev/pse_api/receive_and_gen_result.php">【テスト用】予約ファイルから結果ファイルを生成</a>
 
 <?php require './views/templates/footer.php'; ?>

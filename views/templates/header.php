@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="<?= url("/assets/css/style.css") ?>">
 	<script src="https://kit.fontawesome.com/285c1d0655.js" crossorigin="anonymous"></script>
 	<script src="<?= url("/assets/script/dist/main.js") ?>" defer></script>
-<body>
+<body class="">
 <header class="sticky-top" id="header-navber">
 	<nav class="navbar navbar-expand-md bg-body-tertiary">
 		<div class="container-fluid">
@@ -130,7 +130,7 @@
 			</h1>
 			<hr>
 			<nav id="navbar-example2" class="mb-auto">
-				<ul class="nav nav-pills vstack gap-2">
+				<ul class="nav nav-pills vstack gap-1">
 					<li class="nav-item">
 						<a
 						class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/home" ? "active" : "link-body-emphasis" ?>"

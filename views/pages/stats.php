@@ -32,7 +32,7 @@
       <div class="mb-4">
         <?php foreach ($my_lists as $number_list): ?>
           <a class="btn btn-dark btn-sm mb-1" href="/number_lists/<?= $number_list["id"] ?>">
-            <?= $area["title"] ?>
+            <?= $number_list["title"] ?>
           </a>
         <?php endforeach; ?>
       </div>
@@ -42,27 +42,27 @@
       <?= Components::h3("料金") ?>
       <p>ここで表示される料金は概算であり、実際の請求と異なる場合があります</p>
       <?php if (@$survey["billings"]): ?>
-        <div class="accordion accordion-flush border" id="accordionFlushExample">
-          <?php foreach ($survey["billings"] as $i => $billing): ?>
-            <div class="accordion-item">
-              <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse<?= $i ?>" aria-expanded="false" aria-controls="flush-collapse<?= $i ?>">
-                  <?= date("Y年 n月", $billing["timestamp"]) ?> 料金
-                </button>
-              </h2>
-              <div id="flush-collapse<?= $i ?>" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                <div class="accordion-body">
-                  <dl>
-                    <dt>通話成立時間(秒)</dt>
-                    <dd><?= $billing["total_duration"] ?></dd>
-                    <dt>料金<span class="badge bg-secondary ms-2">通話成立時間(秒) x <?= PRICE_PER_SECOND ?>円</span></dt>
-                    <dd>\<?= round($billing["total_duration"] * PRICE_PER_SECOND) ?></dd>
-                  </dl>
-                </div>
-              </div>
+        <?php foreach ($survey["billings"] as $i => $billing): ?>
+          <div class="card">
+            <div class="card-header">
+              <?= date("Y年 n月", $billing["timestamp"]) ?> 料金
             </div>
-          <?php endforeach; ?>
-        </div>
+            <div class="card-body">
+              <dl class="mb-0">
+                <div class="row">
+                  <div class="col">
+                    <dt>合計通話成立時間</dt>
+                    <dd><?= number_format($billing["total_duration"]) ?>秒</dd>
+                  </div>
+                  <div class="col">
+                    <dt>料金<span class="badge bg-secondary ms-2">通話成立時間(秒) x <?= PRICE_PER_SECOND ?>円</span></dt>
+                    <dd>\<?= number_format(round($billing["total_duration"] * PRICE_PER_SECOND)) ?></dd>
+                  </div>
+                </div>
+              </dl>
+            </div>
+          </div>
+        <?php endforeach; ?>
       <?php else: ?>
         <?= Components::noContent("データがありません") ?>
       <?php endif; ?>
@@ -75,24 +75,24 @@
           <table class="table table-light mb-0">
             <tr>
               <th>集計済の予約数</th>
-              <td><?= $stats["collected_reserves"] ?>件</td>
+              <td><?= number_format($stats["collected_reserves"]) ?>件</td>
             </tr>
             <tr>
               <th>総コール数</th>
-              <td><?= $stats["all_calls"] ?>件</td>
+              <td><?= number_format($stats["all_calls"]) ?>件</td>
             </tr>
             <tr>
               <th>応答率</th>
               <td>
                 <?= round($stats["responsed_calls"] / $stats["all_calls"] * 100) ?>%<br>
-                (<?= $stats["responsed_calls"] ?> / <?= $stats["all_calls"] ?>)
+                (<?= number_format($stats["responsed_calls"]) ?> / <?= number_format($stats["all_calls"]) ?>)
               </td>
             </tr>
             <tr>
               <th>成功率</th>
               <td>
                 <?= round($stats["success_calls"] / $stats["responsed_calls"] * 100) ?>%<br>
-                (<?= $stats["success_calls"] ?> / <?= $stats["responsed_calls"] ?>)
+                (<?= number_format($stats["success_calls"]) ?> / <?= number_format($stats["responsed_calls"]) ?>)
               </td>
             </tr>
             <tr>
@@ -103,7 +103,7 @@
               <th>アクション率</th>
               <td>
                 <?= round($stats["action_calls"] / $stats["responsed_calls"] * 100) ?>%<br>
-                (<?= $stats["action_calls"] ?> / <?= $stats["responsed_calls"] ?>)
+                (<?= number_format($stats["action_calls"]) ?> / <?= number_format($stats["responsed_calls"]) ?>)
               </td>
             </tr>
           </table>

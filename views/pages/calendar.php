@@ -12,97 +12,143 @@
   <div class="w-100">
     <section id="calendar">
       <div class="text-center mb-4">
-        <form action="" id="prevForm">
-          <input type="hidden" name="month" value="<?= date("m", $calendar->getPrev()) ?>">
-          <input type="hidden" name="year" value="<?= date("Y", $calendar->getPrev()) ?>">
-        </form>
-        <form action="" id="nextForm">
-          <input type="hidden" name="month" value="<?= date("m", $calendar->getNext()) ?>">
-          <input type="hidden" name="year" value="<?= date("Y", $calendar->getNext()) ?>">
-        </form>
         <div class="btn-group">
-          <button class="btn btn-outline-dark px-3" form="prevForm">
+          <a href="<?= url_param_change(["month" => date("m", $calendar->getPrev()), "year" => date("Y", $calendar->getPrev())]) ?>" class="btn btn-outline-dark px-3">
             <i class="fa-solid fa-angle-left fa-xl"></i>
-          </button>
+          </a>
           <button class="btn btn-dark px-5">
             <span class="fw-bold">
               <?= date("Y", $calendar->getCurrent()) ?>年 <?= date("n", $calendar->getCurrent()) ?>月
             </span>
           </button>
-          <button class="btn btn-outline-dark px-3" form="nextForm">
+          <a href="<?= url_param_change(["month" => date("m", $calendar->getNext()), "year" => date("Y", $calendar->getNext())]) ?>" class="btn btn-outline-dark px-3">
             <i class="fa-solid fa-angle-right fa-xl"></i>
-          </button>
+          </a>
         </div>
       </div>
-      <table class="calendar-table table table-sm table-bordered">
-        <thead class="text-center">
-          <tr>
-            <?php foreach (range(0, 6) as $w): ?>
-              <th scope="col"><?= Calendar::jweek($w)  ?></th>
-            <?php endforeach; ?>
-          </tr>
-        </thead>
-        <tbody>
-          <?php foreach ($calendar->getCalendar() as $week): ?>
+      <?php if ($c_mode === "month"): ?>
+        <table class="calendar-table table table-sm table-bordered">
+          <thead class="text-center">
             <tr>
-              <?php foreach ($week as $day): ?>
-                <td class="position-relative" style="height: 100px;">
-                  <?php if ($day): ?>
-                    <div class="text-center mb-1">
-                      <span class="<?= $day->today ? "text-bg-primary badge" : ""; ?>">
-                        <?= date("j", $day->timestamp); ?>
-                      </span>
-                    </div>
-                    <?php if ($reserve = $day->schedule): ?>
-                      <a
-                      class="badge lh-sm text-bg-<?= RESERVATION_STATUS[$reserve["status"]]["bg"] ?> bg-gradient text-wrap w-100" style="text-decoration: none;"
-                      href="/reserves/<?= $reserve["id"] ?>"
-                      >
-                        <?= date("H:i", strtotime($reserve["start"])) ?> - <?= date("H:i", strtotime($reserve["end"])) ?>
-                        <?php if ($myList = Fetch::find("number_lists", $reserve["number_list_id"])): ?>
-                          マイリスト: <?= $myList["title"] ?>
-                        <?php elseif (count($reserve["areas"]) === 0): ?>
-                          <div class="text-danger py-2">
-                            <span href="#" data-bs-toggle="tooltip" data-bs-title="エリアが指定されていません">
-                              <i class="fa-solid fa-circle-exclamation fa-2xl"></i>
-                            </span>
-                          </div>
-                        <?php elseif (count($reserve["areas"]) < 4): ?>
-                          <?php foreach ($reserve["areas"] as $area): ?>
-                            <?= $area["title"] ?>
-                          <?php endforeach; ?>
-                        <?php else: ?>
-                          <?= count($reserve["areas"]) ?>件のエリア
-                        <?php endif; ?>
-                      </a>
-                    <?php else: ?>
-                      <?php if (time() < $day->timestamp + RESERVATION_DEADLINE_HOUR * 3600): ?>
-                        <button
-                        type="button"
-                        class="day-modal-button"
-                        data-bs-toggle="modal"
-                        data-bs-target="#dayModal"
-                        data-bs-whatever="<?= $day->timestamp ?>"
-                        >
-                          <i class="fa-solid fa-plus fa-2xl"></i>
-                        </button>
-                      <?php endif; ?>
-                    <?php endif; ?>
-                  <?php endif; ?>
-                </td>
+              <?php foreach (range(0, 6) as $w): ?>
+                <th scope="col"><?= Calendar::jweek($w)  ?></th>
               <?php endforeach; ?>
             </tr>
-          <?php endforeach; ?>
-        </tbody>
-      </table>
-      <div class="form-text">
-        <div class="d-flex align-items-center gap-2">
-          ステータスの凡例: 
-          <?php foreach (RESERVATION_STATUS as $status): ?>
-            <span class="badge text-bg-<?= $status["bg"] ?> bg-gradient" style="font-size: 14px;">
-              <?= $status["text"] ?>
-            </span>
-          <?php endforeach; ?>
+          </thead>
+          <tbody>
+            <?php foreach ($calendar->getCalendar() as $week): ?>
+              <tr>
+                <?php foreach ($week as $day): ?>
+                  <td class="position-relative" style="height: 100px;">
+                    <?php if ($day): ?>
+                      <div class="text-center mb-1">
+                        <span class="<?= $day->today ? "text-bg-primary badge" : ""; ?>">
+                          <?= date("j", $day->timestamp); ?>
+                        </span>
+                      </div>
+                      <?php if ($reserve = $day->schedule): ?>
+                        <a
+                        class="badge lh-sm text-bg-<?= RESERVATION_STATUS[$reserve["status"]]["bg"] ?> bg-gradient text-wrap w-100" style="text-decoration: none;"
+                        href="/reserves/<?= $reserve["id"] ?>"
+                        >
+                          <?= date("H:i", strtotime($reserve["start"])) ?> - <?= date("H:i", strtotime($reserve["end"])) ?>
+                          <?php if ($myList = Fetch::find("number_lists", $reserve["number_list_id"])): ?>
+                            マイリスト: <?= $myList["title"] ?>
+                          <?php elseif (count($reserve["areas"]) === 0): ?>
+                            <div class="text-danger py-2">
+                              <span href="#" data-bs-toggle="tooltip" data-bs-title="エリアが指定されていません">
+                                <i class="fa-solid fa-circle-exclamation fa-2xl"></i>
+                              </span>
+                            </div>
+                          <?php elseif (count($reserve["areas"]) < 4): ?>
+                            <?php foreach ($reserve["areas"] as $area): ?>
+                              <?= $area["title"] ?>
+                            <?php endforeach; ?>
+                          <?php else: ?>
+                            <?= count($reserve["areas"]) ?>件のエリア
+                          <?php endif; ?>
+                        </a>
+                      <?php else: ?>
+                        <?php if (time() < $day->timestamp + RESERVATION_DEADLINE_HOUR * 3600): ?>
+                          <button
+                          type="button"
+                          class="day-modal-button"
+                          data-bs-toggle="modal"
+                          data-bs-target="#dayModal"
+                          data-bs-whatever="<?= $day->timestamp ?>"
+                          >
+                            <i class="fa-solid fa-plus fa-2xl"></i>
+                          </button>
+                        <?php endif; ?>
+                      <?php endif; ?>
+                    <?php endif; ?>
+                  </td>
+                <?php endforeach; ?>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      <?php elseif ($c_mode === "schedule"): ?>
+        <?php if ($reserves = $survey["reserves"]): ?>
+          <div class="calls-table-container mb-3">
+            <table class="table mb-0">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>日付</th>
+                  <th>開始・終了時間</th>
+                  <th>マイリスト</th>
+                  <th>ステータス</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($reserves as $reserve): ?>
+                  <tr>
+                    <th><?= $reserve["id"] ?></th>
+                    <td><a href="/reserves/<?= $reserve['id'] ?>"><?= $reserve["date"] ?></a></td>
+                    <td><?= substr($reserve["start"], 0, -3) . " ~ " . substr($reserve["end"], 0, -3) ?></td>
+                    <td>
+                      <?php if ($reserve["number_list_id"]): ?>
+                        <a href="/number_lists/<?= $reserve["number_list_id"] ?>">
+                          <?= Fetch::find("number_lists", $reserve["number_list_id"])["title"] ?>
+                        </a>
+                      <?php endif; ?>
+                    </td>
+                    <td>
+                      <span class="badge text-bg-<?= RESERVATION_STATUS[$reserve["status"]]["bg"] ?> bg-gradient fs-6 me-1">
+                        <?= RESERVATION_STATUS[$reserve["status"]]["text"] ?>
+                      </span>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+        <?php else: ?>
+          <?= Components::noContent("該当するデータがありません、検索条件を変更して再検索してください") ?>
+        <?php endif; ?>
+
+      <?php endif; ?>
+      <div class="row justify-content-between">
+        <div class="col-8 form-text">
+          <div class="d-flex align-items-center gap-2">
+            ステータスの凡例: 
+            <?php foreach (RESERVATION_STATUS as $status): ?>
+              <span class="badge text-bg-<?= $status["bg"] ?> bg-gradient" style="font-size: 14px;">
+                <?= $status["text"] ?>
+              </span>
+            <?php endforeach; ?>
+          </div>
+        </div>
+        <div class="col-4 btn-group" role="group" aria-label="Basic outlined example">
+          <a href="<?= url_param_change(["calendar" => "month"]) ?>"
+          class="btn btn-outline-primary <?= $c_mode === "month" ? "active" : "" ?>">
+            <i class="fa-solid fa-calendar fa-lg" aria-hidden="true"></i>
+          </a>
+          <a href="<?= url_param_change(["calendar" => "schedule"]) ?>"
+          class="btn btn-outline-primary <?= $c_mode === "schedule" ? "active" : "" ?>">
+            <i class="fa-solid fa-table-list fa-lg" aria-hidden="true"></i>
+          </a>
         </div>
       </div>
     </section>

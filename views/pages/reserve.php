@@ -202,33 +202,43 @@
         <?= Components::hr(4) ?>
         <section id="result">
           <?= Components::h3("結果") ?>
-          <?php if ($calls): ?>
-            <dl class="container mb-2">
-              <div class="row">
-                <div class="col">
-                  <dt>応答率(応答コール数 / 総コール数)</dt>
-                  <dd>
-                    <?= round($survey["response_rate"] * 100) ?>% (<?= $survey["responsed_numbers"] ?> / <?= $survey["called_numbers"] ?>)
-                  </dd>
-                </div>
-                <div class="col">
-                  <dt>成功率(成功数 / 応答コール数)</dt>
-                  <dd>
-                    <?= round($survey["success_rate"] * 100) ?>% (<?= $survey["success_numbers"] ?> / <?= $survey["responsed_numbers"] ?>)
-                  </dd>
-                </div>
+          <?php if ($calls && $stats = $reserve["stats"]): ?>
+            <div class="card bg-light mb-3">
+              <div class="card-body">
+                <table class="table table-light table-sm mb-0">
+                  <tr>
+                    <th>総コール数</th>
+                    <td><?= number_format($stats["all_calls"]) ?>件</td>
+                    <th>応答率</th>
+                    <td>
+                      <?= round($stats["responsed_calls"] / $stats["all_calls"] * 100) ?>%<br>
+                      (<?= number_format($stats["responsed_calls"]) ?> / <?= number_format($stats["all_calls"]) ?>)
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>成功率</th>
+                    <td>
+                      <?= round($stats["success_calls"] / $stats["responsed_calls"] * 100) ?>%<br>
+                      (<?= number_format($stats["success_calls"]) ?> / <?= number_format($stats["responsed_calls"]) ?>)
+                    </td>
+                    <th>平均アクション数</th>
+                    <td><?= round($stats["all_actions"] / $stats["responsed_calls"], 2) ?>回</td>
+                  </tr>
+                  <tr>
+                    <th>アクション率</th>
+                    <td>
+                      <?= round($stats["action_calls"] / $stats["responsed_calls"] * 100) ?>%<br>
+                      (<?= number_format($stats["action_calls"]) ?> / <?= number_format($stats["responsed_calls"]) ?>)
+                    </td>
+                    <th>料金</th>
+                    <td>
+                      \<?= number_format(round($stats["total_duration"] * PRICE_PER_SECOND)) ?><br>
+                      (<?= number_format($stats["total_duration"]) ?>秒 x \<?= PRICE_PER_SECOND ?>)
+                    </td>
+                  </tr>
+                </table>
               </div>
-              <div class="row">
-                <div class="col">
-                  <dt>平均アクション数(聞き直しを除く)</dt>
-                  <dd><?= round($survey["action_avg"], 2) . " / " . count($survey["faqs"]) ?></dd>
-                </div>
-                <div class="col">
-                  <dt>アクション率<br><small>(最低一回でもアクションがあった率 / 応答コール数)</small></dt>
-                  <dd><?= round($survey["action_rate"] * 100) ?>% (<?= $survey["action_numbers"] ?> / <?= $survey["responsed_numbers"] ?>)</dd>
-                </div>
-              </div>
-            </dl>
+            </div>
             <div class="mb-3">
               <a
                 href="/surveys/<?= $survey["id"] ?>/calls?start=<?= $reserve["date"] ?>&end=<?= $reserve["date"] ?>"
@@ -273,7 +283,7 @@
                                 <span class="badge bg-dark-subtle text-black"><?= $option["next_ending"]["title"] ?></span>
                               <?php endif; ?>
                           </td>
-                          <td class="table-primary" style="text-align: right;"><?= $option["count"] ?></td>
+                          <td class="table-primary" style="text-align: right;"><?= number_format($option["count"]) ?></td>
                         </tr>
                         <?php endforeach; ?>
                       </tbody>

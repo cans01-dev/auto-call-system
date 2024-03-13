@@ -3,38 +3,68 @@
 function numberList($vars) {
   $number_list = Fetch::find("number_lists", $vars["id"]);
   $survey = Fetch::find("surveys", $number_list["survey_id"]);
-
-  $page = @$_GET["page"] ?? 1;
-  $limit = 50;
-  $offset = (($page) - 1) * $limit;
-
-  $call_status = @$_GET["call_status"] ?? null;
-  $and_c_status = $call_status ? "AND c.status = {$call_status}" : "";
-
-  // 3/12 ステータス選択によるパフォーマンス低下を改善
-  $sql = "SELECT COUNT(*) FROM numbers as n
-          LEFT OUTER JOIN (
-                    SELECT c.id as call_id, c.number, c.status FROM calls as c
-                    JOIN reserves as r ON c.reserve_id = r.id
-                    WHERE r.survey_id = {$survey["id"]}
-                  ) as c ON n.number = c.number
-          WHERE n.number_list_id = {$number_list["id"]}
-          {$and_c_status}";
-  $pgnt = pagenation($limit, Fetch::query($sql, "fetchColumn"), $page);
-
-  $sql = "SELECT *, n.id as id, n.number as number, c.status as call_status
-          FROM numbers as n
-          LEFT OUTER JOIN (
-            SELECT c.id as call_id, c.number, c.status FROM calls as c
-            JOIN reserves as r ON c.reserve_id = r.id
-            WHERE r.survey_id = {$survey["id"]}
-          ) as c ON n.number = c.number
-          WHERE n.number_list_id = {$number_list["id"]}
-          {$and_c_status}
-          LIMIT {$limit} OFFSET {$offset}";
-  $numbers = Fetch::query($sql, "fetchAll");
-
   if (Auth::user()["status"] !== 1) if (!Allow::survey($survey)) abort(403);
+
+  $stats["all_numbers"] = Fetch::query(
+    "SELECT COUNT(*) FROM numbers as n
+    WHERE number_list_id = {$number_list["id"]}",
+    "fetchColumn"
+  );
+
+  $stats["all_calls"] = Fetch::query(
+    "SELECT COUNT(*) FROM calls as c
+    JOIN reserves as r ON c.reserve_id = r.id
+    WHERE r.number_list_id = {$number_list["id"]}",
+    "fetchColumn"
+  );
+
+  $stats["responsed_calls"] = Fetch::query(
+    "SELECT COUNT(*) FROM calls as c
+    JOIN reserves as r ON c.reserve_id = r.id
+    WHERE r.number_list_id = {$number_list["id"]}
+    AND c.status = 1",
+    "fetchColumn"
+  );
+
+  $stats["success_calls"] = Fetch::query(
+    "SELECT COUNT(*) FROM answers as a JOIN calls as c ON a.call_id = c.id
+    JOIN reserves as r ON c.reserve_id = r.id
+    WHERE r.number_list_id = {$number_list["id"]}
+    AND a.option_id IN (
+      SELECT o.id FROM options as o JOIN faqs as f ON o.faq_id = f.id
+      WHERE f.survey_id = {$survey["id"]} AND o.next_ending_id = {$survey["success_ending_id"]}
+    )",
+    "fetchColumn"
+  );
+
+  $stats["all_actions"] = Fetch::query(
+    "SELECT COUNT(*) FROM answers as a
+    JOIN options as o ON a.option_id = o.id
+    JOIN calls as c ON a.call_id = c.id
+    JOIN reserves as r ON c.reserve_id = r.id
+    WHERE r.number_list_id = {$number_list["id"]}
+    AND (o.next_faq_id <> o.faq_id OR o.next_ending_id IS NOT NULL)",
+    "fetchColumn"
+  );
+
+  $stats["action_calls"] = count(Fetch::query(
+    "SELECT * FROM answers as a
+    JOIN calls as c ON a.call_id = c.id
+    JOIN reserves as r ON c.reserve_id = r.id
+    WHERE r.number_list_id = {$number_list["id"]}
+    GROUP BY c.id
+    HAVING COUNT(*) > 0",
+    "fetchAll"
+  ));
+
+  $stats["total_duration"] = Fetch::query(
+    "SELECT SUM(c.duration) as total_duration FROM calls as c
+    JOIN reserves as r ON c.reserve_id = r.id
+    WHERE r.number_list_id = {$number_list["id"]}",
+    "fetchColumn"
+  );
+
+  $number_list["stats"] = $stats;
 
   require "./views/pages/numberList.php";
 }
@@ -50,19 +80,23 @@ function storeNumberList($vars) {
 
   if (!$file_path = upload_file($_FILES["file"])) exit("ファイルのアップロードに失敗しました");
   $fp = fopen($file_path, "r");
-  $count = 0;
-  while($line = fgetcsv($fp)){
-    if (preg_match('/^0[789]0-[0-9]{4}-[0-9]{4}$/', $number = $line[0])) {
-      DB::insert("numbers", [
-        "number_list_id" => $number_list_id,
-        "number" => $number
-      ]);
-      $count++;
-    }
-  }
+  [$numbers, $result] = store_number_csv($fp, $number_list_id);
   fclose($fp);
 
-  Session::set("toast", ["success", "{$count}件の電話番号をマイリストを登録しました"]);
+  foreach (array_chunk($numbers, 10000) as $chunk) {
+    $insert_values = array_str(
+      array_map(
+        function ($number) use ($number_list_id) {
+          return "({$number_list_id}, '{$number}')";
+        },
+        $chunk
+      )
+    );
+    DB::query("INSERT INTO numbers (number_list_id, number) VALUES {$insert_values}");
+  }
+
+  Session::set("storeNumberCsvResult", $result);
+  Session::set("toast", ["success", "{$result["success"]}件の電話番号をマイリストを登録しました"]);
   back();
 }
 
@@ -90,7 +124,6 @@ function storeNumber($vars) {
   $number_list = Fetch::find("number_lists", $vars["id"]);
   if (!Allow::number_list($number_list)) abort(403);
 
-  # 電話番号の整形
   $number = $_POST["number"];
   if (!preg_match('/^0[789]0-[0-9]{4}-[0-9]{4}$/', $number)) {
     if ($number[0] !== "0") $number = "0" . $number;
@@ -118,41 +151,25 @@ function storeNumberCsv($vars) {
   if (!Allow::number_list($number_list)) abort(403);
 
   if (!$file_path = upload_file($_FILES["file"])) exit("ファイルのアップロードに失敗しました");
-  $fp = fopen($file_path, "r");
-  [$success, $error, $dup] = [0, 0, 0];
-  while($line = fgetcsv($fp)){
-    # 電話番号の整形
-    $number = $line[0];
-    if (!preg_match('/^0[789]0-[0-9]{4}-[0-9]{4}$/', $number)) {
-      if ($number[0] !== "0") $number = "0" . $number;
-      if (strlen($number) < 13) $number = substr_replace(substr_replace($number, "-", 3, 0), "-", 8, 0);
-    }
 
-    if (preg_match('/^0[789]0-[0-9]{4}-[0-9]{4}$/', $number)) {
-      if (!Fetch::find2("numbers", [
-        ["number_list_id", "=", $number_list["id"]],
-        ["number", "=", $number]
-      ])) {
-        DB::insert("numbers", [
-          "number_list_id" => $number_list["id"],
-          "number" => $number
-        ]);
-        $success++;
-        continue;
-      }
-      $dup++;
-      continue;
-    }
-    $error++;
-  }
+  $fp = fopen($file_path, "r");
+  [$numbers, $result] = store_number_csv($fp, $number_list["id"]);
   fclose($fp);
 
-  Session::set("storeNumberCsvResult", [
-    "success" => $success,
-    "error" => $error,
-    "dup" => $dup
-  ]);
-  Session::set("toast", ["success", "成功: {$success}件の電話番号を追加しました"]);
+  foreach (array_chunk($numbers, 10000) as $chunk) {
+    $insert_values = array_str(
+      array_map(
+        function ($number) use ($number_list) {
+          return "({$number_list["id"]}, '{$number}')";
+        },
+        $chunk
+      )
+    );
+    DB::query("INSERT INTO numbers (number_list_id, number) VALUES {$insert_values}");
+  }
+
+  Session::set("storeNumberCsvResult", $result);
+  Session::set("toast", ["success", "成功: {$result["success"]}件の電話番号を追加しました"]);
   back();
 }
 
