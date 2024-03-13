@@ -23,7 +23,7 @@
 				<ul class="navbar-nav">
 					<li class="nav-item">
 						<a class="nav-link" href="/home">
-							<span class="text-center d-inline-block me-1" style="width: 24px;">
+							<span class="text-center d-inline-block me-1" style="width: 20px;">
 								<i class="fa-solid fa-house"></i>
 							</span>ホーム
 						</a>
@@ -31,30 +31,37 @@
 					<?php if ($sv = Fetch::find("surveys", Auth::user()["id"], "user_id")): ?>
 						<li class="nav-item">
 							<a class="nav-link" href="/surveys/<?= $sv["id"] ?>">
-								<span class="text-center d-inline-block me-1" style="width: 24px;">
+								<span class="text-center d-inline-block me-1" style="width: 20px;">
 									<i class="fa-solid fa-comments"></i>
 								</span>会話と音声
 							</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="/surveys/<?= $sv["id"] ?>/calendar">
-								<span class="text-center d-inline-block me-1" style="width: 24px;">
+								<span class="text-center d-inline-block me-1" style="width: 20px;">
 									<i class="fa-solid fa-calendar"></i>
 								</span>カレンダー
 							</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="/surveys/<?= $sv["id"] ?>/stats">
-								<span class="text-center d-inline-block me-1" style="width: 24px;">
+								<span class="text-center d-inline-block me-1" style="width: 20px;">
 									<i class="fa-solid fa-chart-simple"></i>
 								</span>統計
 							</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="/surveys/<?= $sv["id"] ?>/calls">
-								<span class="text-center d-inline-block me-1" style="width: 24px;">
+								<span class="text-center d-inline-block me-1" style="width: 20px;">
 									<i class="fa-solid fa-phone"></i>
 								</span>コール一覧
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="/support" class="nav-link">
+								<span class="text-center d-inline-block me-1" style="width: 20px;">
+									<i class="fa-solid fa-circle-question"></i>
+								</span>ドキュメント
 							</a>
 						</li>
 					<?php endif; ?>
@@ -66,28 +73,28 @@
 							<ul class="dropdown-menu">
 								<li class="dropdown-item">
 									<a href="/admin/users" class="nav-link">
-										<span class="text-center d-inline-block me-2" style="width: 24px;">
+										<span class="text-center d-inline-block me-2" style="width: 20px;">
 											<i class="fa-solid fa-users"></i>
 										</span>ユーザー管理
 									</a>
 								</li>
 								<li class="dropdown-item">
 									<a href="/admin/reserves" class="nav-link">
-										<span class="text-center d-inline-block me-2" style="width: 24px;">
+										<span class="text-center d-inline-block me-2" style="width: 20px;">
 											<i class="fa-solid fa-table-list fa-lg"></i>
 										</span>全ての予約
 									</a>
 								</li>
 								<li class="dropdown-item">
 									<a href="/admin/gen_reserve_log" class="nav-link">
-										<span class="text-center d-inline-block me-2" style="width: 24px;">
+										<span class="text-center d-inline-block me-2" style="width: 20px;">
 											<i class="fa-solid fa-file-arrow-up fa-lg"></i>
 										</span>予約情報ファイル生成ログ
 									</a>
 								</li>
 								<li class="dropdown-item">
 									<a href="/admin/receive_result_log" class="nav-link">
-										<span class="text-center d-inline-block me-2" style="width: 24px;">
+										<span class="text-center d-inline-block me-2" style="width: 20px;">
 											<i class="fa-solid fa-file-arrow-down fa-lg"></i>
 										</span>結果ファイル受信ログ
 									</a>
@@ -95,13 +102,6 @@
 							</ul>
 						</li>
 					<?php endif; ?>
-					<li class="nav-item">
-						<a href="/support" class="nav-link">
-							<span class="text-center d-inline-block me-1" style="width: 24px;">
-								<i class="fa-solid fa-circle-question"></i>
-							</span>ドキュメント
-						</a>
-					</li>
 					<li class="nav-item dropdown">
 						<button class="nav-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
 							<?= Auth::user()["email"] ?>

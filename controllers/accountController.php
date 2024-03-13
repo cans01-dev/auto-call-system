@@ -16,9 +16,10 @@ function sendEmail($vars) {
   require_once "./views/pages/sendEmail.php";
 }
 
-function updateEmail() {
+function updateAccount() {
   DB::update("users", Auth::user()["id"], [
-    "email" => $_POST["email"]
+    "email" => $_POST["email"],
+    "name" => $_POST["name"]
   ]);
   Session::set("toast", ["success", "メールアドレスを変更しました"]);
   back();

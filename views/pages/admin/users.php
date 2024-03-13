@@ -7,6 +7,7 @@
   <thead>
     <tr>
       <th>ID</th>
+      <th>ユーザー名</th>
       <th>メールアドレス</th>
       <th>ステータス</th>
       <th>回線数</th>
@@ -17,6 +18,7 @@
     <?php foreach ($users as $user): ?>
       <tr>
         <th><?= $user["id"] ?></th>
+        <td><?= $user["name"] ?></td>
         <td><a href="/users/<?= $user["id"] ?>"><?= $user["email"] ?></a></td>
         <td>
           <span class="badge bg-<?= USER_STATUS[$user["status"]]["bg"] ?>">
@@ -150,6 +152,10 @@
         <option value="0">一般</option>
         <option value="1">管理</option>
       </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">ユーザー名</label>
+      <input type="text" name="name" class="form-control" required>
     </div>
     <div class="mb-3">
       <label class="form-label">回線数</label>

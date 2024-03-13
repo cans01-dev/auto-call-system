@@ -11,7 +11,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("POST", "/logout", "logout");
 
 	$r->addRoute("GET", "/users/{id:\d+}", "account");
-	$r->addRoute("PUT", "/users/{id:\d+}/email", "updateEmail");
+	$r->addRoute("PUT", "/users/{id:\d+}", "updateAccount");
 	$r->addRoute("PUT", "/users/{id:\d+}/password", "updatePassword");
 	$r->addRoute("POST", "/users/{id:\d+}/send-emails", "storeSendEmail");
 

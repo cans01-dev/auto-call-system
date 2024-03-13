@@ -12,7 +12,7 @@
     <section id="summary">
       <?= Components::h3("設定"); ?>
       <div style="max-width: 480px;">
-        <form action="/account/email" method="post">
+        <form action="/users/<?= $user["id"] ?>" method="post">
           <?= csrf() ?>
           <?= method('PUT') ?>
           <div class="mb-3">
@@ -22,6 +22,10 @@
                 <?= USER_STATUS[$user["status"]]["text"]; ?>
               </span>
             </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">ユーザー名</label>
+            <input type="text" name="name" class="form-control" value="<?= $user["name"] ?>">
           </div>
           <div class="mb-3">
             <label class="form-label">メールアドレス</label>

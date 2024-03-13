@@ -70,45 +70,49 @@
   </div>
   <div class="flex-shrink-0 sticky-aside" style="width: 300px;">
     <div class="sticky-top">
-      <div class="card bg-light">
-        <div class="card-body">
-          <table class="table table-light mb-0">
-            <tr>
-              <th>集計済の予約数</th>
-              <td><?= number_format($stats["collected_reserves"]) ?>件</td>
-            </tr>
-            <tr>
-              <th>総コール数</th>
-              <td><?= number_format($stats["all_calls"]) ?>件</td>
-            </tr>
-            <tr>
-              <th>応答率</th>
-              <td>
-                <?= round($stats["responsed_calls"] / $stats["all_calls"] * 100) ?>%<br>
-                (<?= number_format($stats["responsed_calls"]) ?> / <?= number_format($stats["all_calls"]) ?>)
-              </td>
-            </tr>
-            <tr>
-              <th>成功率</th>
-              <td>
-                <?= round($stats["success_calls"] / $stats["responsed_calls"] * 100) ?>%<br>
-                (<?= number_format($stats["success_calls"]) ?> / <?= number_format($stats["responsed_calls"]) ?>)
-              </td>
-            </tr>
-            <tr>
-              <th>平均アクション数</th>
-              <td><?= round($stats["all_actions"] / $stats["responsed_calls"], 2) ?>回</td>
-            </tr>
-            <tr>
-              <th>アクション率</th>
-              <td>
-                <?= round($stats["action_calls"] / $stats["responsed_calls"] * 100) ?>%<br>
-                (<?= number_format($stats["action_calls"]) ?> / <?= number_format($stats["responsed_calls"]) ?>)
-              </td>
-            </tr>
-          </table>
+      <?php if ($stats["all_calls"]): ?>
+        <div class="card bg-light">
+          <div class="card-body">
+            <table class="table table-light mb-0">
+              <tr>
+                <th>集計済の予約数</th>
+                <td><?= number_format($stats["collected_reserves"]) ?>件</td>
+              </tr>
+              <tr>
+                <th>総コール数</th>
+                <td><?= number_format($stats["all_calls"]) ?>件</td>
+              </tr>
+              <tr>
+                <th>応答率</th>
+                <td>
+                  <?= round($stats["responsed_calls"] / $stats["all_calls"] * 100) ?>%<br>
+                  (<?= number_format($stats["responsed_calls"]) ?> / <?= number_format($stats["all_calls"]) ?>)
+                </td>
+              </tr>
+              <tr>
+                <th>成功率</th>
+                <td>
+                  <?= round($stats["success_calls"] / $stats["responsed_calls"] * 100) ?>%<br>
+                  (<?= number_format($stats["success_calls"]) ?> / <?= number_format($stats["responsed_calls"]) ?>)
+                </td>
+              </tr>
+              <tr>
+                <th>平均アクション数</th>
+                <td><?= round($stats["all_actions"] / $stats["responsed_calls"], 2) ?>回</td>
+              </tr>
+              <tr>
+                <th>アクション率</th>
+                <td>
+                  <?= round($stats["action_calls"] / $stats["responsed_calls"] * 100) ?>%<br>
+                  (<?= number_format($stats["action_calls"]) ?> / <?= number_format($stats["responsed_calls"]) ?>)
+                </td>
+              </tr>
+            </table>
+          </div>
         </div>
-      </div>
+      <?php else: ?>
+        <?= Components::noContent("データがありません") ?>
+      <?php endif; ?>
     </div>
   </div>
 </div>

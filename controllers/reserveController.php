@@ -111,17 +111,15 @@ function storeReserve() {
     redirect("/surveys/{$_POST["survey_id"]}/calendar?month={$month}&year={$year}");
 
   } else {
-    $start = $_POST["start"];
-    $end = $_POST["end"];
-    if (strtotime($start) + 3600 > strtotime($end)) {
+    if (strtotime($_POST["start"]) + 3600 > strtotime($_POST["end"])) {
       Session::set("toast", ["danger", "エラー！<br>開始・終了時間は".(MIN_INTERVAL / 3600)."時間以上の間隔をあけてください"]);
       redirect("/surveys/{$_POST["survey_id"]}/calendar");
     }
     DB::insert("reserves", [
       "survey_id" => $_POST["survey_id"],
       "date" => $_POST["date"],
-      "start" => $start,
-      "end" => $end
+      "start" => $_POST["start"],
+      "end" => $_POST["end"]
     ]);
     $reserve_id = DB::lastInsertId();
   }

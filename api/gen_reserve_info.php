@@ -1,7 +1,7 @@
 <?php
 
 # コマンドラインから実行
-require "./vendor/autoload.php";
+require dirname(__DIR__)."/vendor/autoload.php";
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__))->load();
 
 require dirname(__DIR__)."/config.php";

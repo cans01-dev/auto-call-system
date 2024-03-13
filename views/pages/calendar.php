@@ -89,45 +89,47 @@
           </tbody>
         </table>
       <?php elseif ($c_mode === "schedule"): ?>
-        <?php if ($reserves = $survey["reserves"]): ?>
-          <div class="calls-table-container mb-3">
-            <table class="table mb-0">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>日付</th>
-                  <th>開始・終了時間</th>
-                  <th>マイリスト</th>
-                  <th>ステータス</th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php foreach ($reserves as $reserve): ?>
+        <div class="mb-3">
+          <?php if ($reserves = $survey["reserves"]): ?>
+            <div class="calls-table-container mb-4">
+              <table class="table mb-0">
+                <thead>
                   <tr>
-                    <th><?= $reserve["id"] ?></th>
-                    <td><a href="/reserves/<?= $reserve['id'] ?>"><?= $reserve["date"] ?></a></td>
-                    <td><?= substr($reserve["start"], 0, -3) . " ~ " . substr($reserve["end"], 0, -3) ?></td>
-                    <td>
-                      <?php if ($reserve["number_list_id"]): ?>
-                        <a href="/number_lists/<?= $reserve["number_list_id"] ?>">
-                          <?= Fetch::find("number_lists", $reserve["number_list_id"])["title"] ?>
-                        </a>
-                      <?php endif; ?>
-                    </td>
-                    <td>
-                      <span class="badge text-bg-<?= RESERVATION_STATUS[$reserve["status"]]["bg"] ?> bg-gradient fs-6 me-1">
-                        <?= RESERVATION_STATUS[$reserve["status"]]["text"] ?>
-                      </span>
-                    </td>
+                    <th>ID</th>
+                    <th>日付</th>
+                    <th>開始・終了時間</th>
+                    <th>マイリスト</th>
+                    <th>ステータス</th>
                   </tr>
-                <?php endforeach; ?>
-              </tbody>
-            </table>
-          </div>
-        <?php else: ?>
-          <?= Components::noContent("該当するデータがありません、検索条件を変更して再検索してください") ?>
-        <?php endif; ?>
-
+                </thead>
+                <tbody>
+                  <?php foreach ($reserves as $reserve): ?>
+                    <tr>
+                      <th><?= $reserve["id"] ?></th>
+                      <td><a href="/reserves/<?= $reserve['id'] ?>"><?= $reserve["date"] ?></a></td>
+                      <td><?= substr($reserve["start"], 0, -3) . " ~ " . substr($reserve["end"], 0, -3) ?></td>
+                      <td>
+                        <?php if ($reserve["number_list_id"]): ?>
+                          <a href="/number_lists/<?= $reserve["number_list_id"] ?>">
+                            <?= Fetch::find("number_lists", $reserve["number_list_id"])["title"] ?>
+                          </a>
+                        <?php endif; ?>
+                      </td>
+                      <td>
+                        <span class="badge text-bg-<?= RESERVATION_STATUS[$reserve["status"]]["bg"] ?> bg-gradient fs-6 me-1">
+                          <?= RESERVATION_STATUS[$reserve["status"]]["text"] ?>
+                        </span>
+                      </td>
+                    </tr>
+                  <?php endforeach; ?>
+                </tbody>
+              </table>
+            </div>
+          <?php else: ?>
+            <?= Components::noContent("該当するデータがありません、検索条件を変更して再検索してください") ?>
+          <?php endif; ?>
+          <?= Components::modalOpenButton("createReserveModal"); ?>
+        </div>
       <?php endif; ?>
       <div class="row justify-content-between">
         <div class="col-8 form-text">
@@ -218,7 +220,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body pb-5">
-        <?= Components::h4("予約パターンから自動で予約") ?>
+        <?= Components::h4("予約パターンから予約") ?>
         <?php foreach ($survey["favorites"] as $favorite): ?>
           <div class="card mb-2">
             <div class="card-body">
@@ -264,7 +266,7 @@
           </div>
         <?php endforeach; ?>
         <?= Components::hr(4) ?>
-        <?= Components::h4("手動で個別に予約") ?>
+        <?= Components::h4("手動で予約") ?>
         <form action="/reserves" method="post">
           <?= csrf() ?>
           <div class="mb-3">
@@ -292,6 +294,53 @@
           <div class="text-end">
             <input type="hidden" name="survey_id" value="<?= $survey["id"] ?>">
             <input type="hidden" name="date" class="date-input">
+            <button type="submit" class="btn btn-secondary">ページを移動してエリアを設定</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- createReserveModal -->
+<div class="modal fade" id="createReserveModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">予約</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pb-5">
+        <form action="/reserves" method="post">
+          <?= csrf() ?>
+          <div class="mb-3">
+            <label class="form-label">日付</label>
+            <input type="date" name="date" class="form-control" min="<?= date("Y-m-d", strtotime("+1 day")) ?>" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">開始時間・終了時間</label>
+            <div class="input-group">
+              <select name="start" class="form-select" required>
+                <option value="">選択してください</option>
+                <?php foreach (make_times(MIN_TIME, MAX_TIME, TIME_STEP) as $ts): ?>
+                <option value="<?= date("H:i", $ts) ?>">
+                  <?= date("H:i", $ts) ?>
+                </option>
+                <?php endforeach; ?>
+              </select>
+              <span class="input-group-text">~</span>
+              <select name="end" class="form-select" required>
+                <option value="">選択してください</option>
+                <?php foreach (make_times(MIN_TIME, MAX_TIME, TIME_STEP) as $ts): ?>
+                <option value="<?= date("H:i", $ts) ?>">
+                  <?= date("H:i", $ts) ?>
+                </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+          </div>
+          <div class="text-end">
+            <input type="hidden" name="survey_id" value="<?= $survey["id"] ?>">
             <button type="submit" class="btn btn-secondary">ページを移動してエリアを設定</button>
           </div>
         </form>

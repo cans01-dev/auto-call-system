@@ -37,11 +37,17 @@ function storeUser() {
     back();
   }
 
+  if (Fetch::find("users", $_POST["email"], "email")) {
+    Session::set("toast", ["danger", "このメールアドレスは既に使用されています"]);
+    back();  
+  }
+
   DB::insert("users", [
     "email" => $_POST["email"],
     "password" => password_hash($_POST["password"], PASSWORD_DEFAULT),
     "status" => $_POST["status"],
-    "number_of_lines" => $_POST["number_of_lines"]
+    "number_of_lines" => $_POST["number_of_lines"],
+    "name" => $_POST["name"]
   ]);
   $user_id = DB::lastInsertId();
 
@@ -89,7 +95,7 @@ function storeUser() {
     "area_id" => 1
   ]);
   
-  $dirname = dirname(__DIR__) . "/storage/users/{$user_id}";
+  $dirname = dirname(__DIR__, 2) . "/storage/users/{$user_id}";
   mkdir($dirname);
   
   $survey = Fetch::find("surveys", $survey_id);
