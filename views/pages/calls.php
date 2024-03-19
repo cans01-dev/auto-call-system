@@ -86,8 +86,37 @@
     </div>
   </form>
 </div>
-<p><?= "{$pgnt["current"]} / {$pgnt["last_page"]}ページ目 - {$pgnt["current_start"]}~{$pgnt["current_end"]} / {$pgnt["sum"]}件表示中" ?></p>
 <?php if ($calls): ?>
+  <p class="mb-1"><?= "{$pgnt["current"]} / {$pgnt["last_page"]}ページ目 - {$pgnt["current_start"]}~{$pgnt["current_end"]} / {$pgnt["sum"]}件表示中" ?></p>
+  <div class="card bg-light mb-3">
+    <div class="card-body">
+      <table class="table table-light table-sm mb-0">
+        <tr>
+          <th>総コール数</th>
+          <td><?= number_format($stats["all_calls"]) ?>件</td>
+          <th>平均アクション数</th>
+          <td><?= round($stats["all_actions"] / $stats["responsed_calls"], 2) ?>回</td>
+          <th>応答率</th>
+          <td>
+            <?= round($stats["responsed_calls"] / $stats["all_calls"] * 100, 2) ?>%<br>
+            (<?= number_format($stats["responsed_calls"]) ?> / <?= number_format($stats["all_calls"]) ?>)
+          </td>
+        </tr>
+        <tr>
+          <th>アクション率</th>
+          <td>
+            <?= round($stats["action_calls"] / $stats["responsed_calls"] * 100) ?>%<br>
+            (<?= number_format($stats["action_calls"]) ?> / <?= number_format($stats["responsed_calls"]) ?>)
+          </td>
+          <th>成功率</th>
+          <td>
+            <?= round($stats["success_calls"] / $stats["responsed_calls"] * 100) ?>%<br>
+            (<?= number_format($stats["success_calls"]) ?> / <?= number_format($stats["responsed_calls"]) ?>)
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
   <div class="calls-table-container">
     <table class="table table-bordered table-hover calls-table">
       <thead class="sticky-top">

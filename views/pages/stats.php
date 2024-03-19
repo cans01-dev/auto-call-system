@@ -107,6 +107,13 @@
                   (<?= number_format($stats["action_calls"]) ?> / <?= number_format($stats["responsed_calls"]) ?>)
                 </td>
               </tr>
+              <tr>
+                <th>料金</th>
+                <td>
+                  \<?= number_format(round($stats["total_duration"] * PRICE_PER_SECOND)) ?><br>
+                  (<?= number_format($stats["total_duration"]) ?>秒 x \<?= PRICE_PER_SECOND ?>)
+                </td>
+              </tr>
             </table>
           </div>
         </div>

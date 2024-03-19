@@ -50,7 +50,12 @@ function stats($vars) {
     HAVING COUNT(*) > 0",
     "fetchAll"
   ));
-
+  $stats["total_duration"] = Fetch::query(
+    "SELECT SUM(c.duration) as total_duration FROM calls as c
+    JOIN reserves as r ON c.reserve_id = r.id
+    WHERE r.survey_id = {$survey["id"]}",
+    "fetchColumn"
+  );
 
   # area
   $def_areas = Fetch::query(
@@ -88,7 +93,9 @@ function stats($vars) {
       "timestamp" => $ts,
       "total_duration" => $total_duration
     ];
-  }  
+  }
+
+  Session::set("referer", ["link" => $_SERVER["REQUEST_URI"], "text" => "統計"]);
   require_once "./views/pages/stats.php";
 }
 

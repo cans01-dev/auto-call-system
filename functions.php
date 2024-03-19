@@ -182,6 +182,15 @@ function back($hash=null) {
 
 function abort($code) {
   switch ($code) {
+    case 404:
+      header("HTTP/1.1 404 Not Found");
+      require_once "./views/pages/404.php";
+      exit;
+    case 405:
+      header("HTTP/1.1 405 Method Not Allowed");
+      $allowedMethods = $routeInfo[1];
+		  require_once "./views/pages/405.php";
+      exit;
     case 419:
       header("HTTP/1.1 419 Page Expired");
       exit;

@@ -3,11 +3,11 @@
   <form action="/login" method="post">
     <h1 class="h3 mb-3 fw-normal">ログインしてください</h1>
     <div class="form-floating">
-      <input type="email" class="form-control" name="email" placeholder="name@example.com">
+      <input type="email" class="form-control" name="email" placeholder="name@example.com" required>
       <label for="floatingInput">メールアドレス</label>
     </div>
     <div class="form-floating mb-3">
-      <input type="password" class="form-control" name="password" placeholder="Password">
+      <input type="password" class="form-control" name="password" placeholder="Password" required>
       <label for="floatingPassword">パスワード</label>
     </div>
     <?= csrf() ?>

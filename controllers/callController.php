@@ -44,6 +44,73 @@ function calls($vars) {
           GROUP BY c.id
           HAVING COUNT(a.id) >= {$action_count}";
   $pgnt = pagenation($limit, count(Fetch::query($sql, "fetchAll")), $page);
+  
+    $stats["all_calls"] = count(Fetch::query($sql, "fetchAll"));
+
+    $stats["responsed_calls"] = count(Fetch::query(
+      "SELECT * FROM calls as c
+      JOIN reserves as r ON c.reserve_id = r.id
+      LEFT OUTER JOIN answers as a ON c.id = a.call_id
+      WHERE r.survey_id = {$survey["id"]}
+      AND r.date BETWEEN '{$start}' AND '{$end}'
+      AND c.status = 1
+      AND c.number LIKE '{$number}'
+      GROUP BY c.id
+      HAVING COUNT(a.id) >= {$action_count}",
+      "fetchAll"
+    ));
+    $stats["success_calls"] = count(Fetch::query(
+      "SELECT * FROM calls as c
+      JOIN reserves as r ON c.reserve_id = r.id
+      LEFT OUTER JOIN answers as a ON c.id = a.call_id
+      WHERE r.survey_id = {$survey["id"]}
+      AND r.date BETWEEN '{$start}' AND '{$end}'
+      AND c.status IN({$status})
+      AND c.number LIKE '{$number}'
+      AND a.option_id IN (
+        SELECT o.id FROM options as o JOIN faqs as f ON o.faq_id = f.id
+        WHERE f.survey_id = {$survey["id"]} AND o.next_ending_id = {$survey["success_ending_id"]}
+      )
+      GROUP BY c.id
+      HAVING COUNT(a.id) >= {$action_count}",
+      "fetchAll"
+    ));
+    $stats["all_actions"] = array_sum(array_column(Fetch::query(
+      "SELECT COUNT(a.id) as count FROM calls as c
+      JOIN answers as a ON c.id = a.call_id
+      JOIN options as o ON a.option_id = o.id
+      JOIN reserves as r ON c.reserve_id = r.id
+      WHERE r.survey_id = {$survey["id"]}
+      AND (o.next_faq_id <> o.faq_id OR o.next_ending_id IS NOT NULL)
+      AND r.date BETWEEN '{$start}' AND '{$end}'
+      AND c.number LIKE '{$number}'
+      GROUP BY c.id
+      HAVING COUNT(a.id) >= {$action_count}",
+      "fetchAll"
+    ), "count"));
+    $stats["action_calls"] = count(Fetch::query(
+      "SELECT * FROM calls as c
+      JOIN answers as a ON c.id = a.call_id
+      JOIN reserves as r ON c.reserve_id = r.id
+      WHERE r.survey_id = {$survey["id"]}
+      AND r.date BETWEEN '{$start}' AND '{$end}'
+      AND c.number LIKE '{$number}'
+      GROUP BY c.id
+      HAVING COUNT(a.id) >= {$action_count} AND COUNT(a.id) > 0",
+      "fetchAll"
+    ));
+    $stats["total_duration"] = Fetch::query(
+      "SELECT SUM(c.duration) as total_duration FROM calls as c
+      JOIN reserves as r ON c.reserve_id = r.id
+      LEFT OUTER JOIN answers as a ON c.id = a.call_id
+      WHERE r.survey_id = {$survey["id"]}
+      AND r.date BETWEEN '{$start}' AND '{$end}'
+      AND c.status IN({$status})
+      AND c.number LIKE '{$number}'
+      GROUP BY c.id
+      HAVING COUNT(a.id) >= {$action_count}",
+      "fetchColumn"
+    );
 
   $sql = "SELECT *,
             c.id as id,

@@ -3,7 +3,8 @@
 <nav aria-label="breadcrumb" class="breadcrumb-nav">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">ホーム</a></li>
-    <li class="breadcrumb-item active"><?= $survey["title"] ?></li>
+    <li class="breadcrumb-item"><a href="/surveys/<?= $survey["id"] ?>"><?= $survey["title"] ?></a></li>
+    <li class="breadcrumb-item active">会話と音声</li>
   </ol>
 </nav>
 <?= Components::h2("{$survey["title"]}: 会話と音声") ?>
@@ -20,17 +21,9 @@
           <h5 class="card-title mb-3"><span class="badge bg-secondary-subtle text-black me-3">グリーティング</span></h5>
           <p class="card-text mb-0"><?= $survey["greeting"] ?></p>
           <div class="position-absolute top-0 end-0 p-3">
-            <button type="button" class="btn btn-outline-dark me-2" data-bs-toggle="modal" data-bs-target="#greetingModal">設定</button>
-            <button
-              type="button"
-              class="btn btn-outline-primary"
-              data-bs-toggle="modal"
-              data-bs-target="#audioModal"
-              data-bs-whatever="<?= url("/storage/users/{$survey["user_id"]}/{$survey["greeting_voice_file"]}") ?>"
-              <?= $survey["greeting_voice_file"] ? "" : "disabled"; ?>
-            >
+            <button type="button" class="btn btn-outline-dark icon-link me-2" data-bs-toggle="modal" data-bs-target="#greetingModal">
               <i class="fa-solid fa-volume-high"></i>
-              音声
+              設定と音声
             </button>
           </div>
           <?php if (!$survey["greeting_voice_file"]): ?>
@@ -54,17 +47,9 @@
                   <?php if ($survey["success_ending_id"] === $ending["id"]): ?>
                     <span class="badge bg-success me-2">成功</span>
                   <?php endif; ?>
-                  <button type="button" class="btn btn-outline-dark me-2" data-bs-toggle="modal" data-bs-target="#endingModal<?= $ending["id"] ?>">設定</button>
-                  <button
-                    type="button"
-                    class="btn btn-outline-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#audioModal"
-                    data-bs-whatever="<?= url("/storage/users/{$survey["user_id"]}/{$ending["voice_file"]}") ?>"
-                    <?= $ending["voice_file"] ? "" : "disabled"; ?>
-                  >
+                  <button type="button" class="btn btn-outline-dark icon-link me-2" data-bs-toggle="modal" data-bs-target="#endingModal<?= $ending["id"] ?>">
                     <i class="fa-solid fa-volume-high"></i>
-                    音声
+                    設定と音声
                   </button>
                 </div>
                 <?php if (!$ending["voice_file"]): ?>
@@ -161,18 +146,10 @@
                       <i class="fa-solid fa-angle-down"></i>
                     </button>
                   </div>
-                  <a href="/faqs/<?= $faq["id"] ?>" class="btn btn-primary">設定</a>
-                  <button
-                    type="button"
-                    class="btn btn-outline-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#audioModal"
-                    data-bs-whatever="<?= url("/storage/users/{$survey["user_id"]}/{$faq["voice_file"]}") ?>"
-                    <?= $faq["voice_file"] ? "" : "disabled"; ?>
-                  >
+                  <a href="/faqs/<?= $faq["id"] ?>" class="btn btn-outline-dark icon-link me-2">
                     <i class="fa-solid fa-volume-high"></i>
-                    音声
-                  </button>
+                    設定と音声
+                  </a>
                 </div>
               </div>
             </div>
@@ -275,7 +252,11 @@ EOL); ?>
   </form>
 EOL); ?>
 
+<?php $greeting_voice_file_url = url("/storage/users/{$survey["user_id"]}/{$survey["greeting_voice_file"]}") ?>
 <?= Components::modal("greetingModal", "グリーティングを編集", <<<EOL
+  <div class="text-center mb-3">
+    <audio controls src="{$greeting_voice_file_url}"></audio>
+  </div>
   <form action="/surveys/{$survey["id"]}/greeting" method="post">
     CSRF
     METHOD_PUT

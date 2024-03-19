@@ -25,12 +25,10 @@ function reserve($vars) {
       "SELECT COUNT(*) FROM calls WHERE reserve_id = {$reserve["id"]}",
       "fetchColumn"
     );
-  
     $stats["responsed_calls"] = Fetch::query(
       "SELECT COUNT(*) FROM calls WHERE reserve_id = {$reserve["id"]} AND status = 1",
       "fetchColumn"
     );
-  
     $stats["success_calls"] = Fetch::query(
       "SELECT COUNT(*) FROM answers as a JOIN calls as c ON a.call_id = c.id
       WHERE c.reserve_id = {$reserve["id"]} AND a.option_id IN (
@@ -39,7 +37,6 @@ function reserve($vars) {
       )",
       "fetchColumn"
     );
-  
     $stats["all_actions"] = Fetch::query(
       "SELECT COUNT(*) FROM answers as a
       JOIN options as o ON a.option_id = o.id
@@ -48,7 +45,6 @@ function reserve($vars) {
       AND (o.next_faq_id <> o.faq_id OR o.next_ending_id IS NOT NULL)",
       "fetchColumn"
     );
-
     $stats["action_calls"] = count(Fetch::query(
       "SELECT * FROM answers as a
       JOIN calls as c ON a.call_id = c.id
@@ -57,7 +53,6 @@ function reserve($vars) {
       HAVING COUNT(*) > 0",
       "fetchAll"
     ));
-
     $stats["total_duration"] = Fetch::query(
       "SELECT SUM(c.duration) as total_duration FROM calls as c
       WHERE c.reserve_id = {$reserve["id"]}",
@@ -81,6 +76,7 @@ function reserve($vars) {
     }
   }
 
+  Session::set("referer", ["link" => $_SERVER["REQUEST_URI"], "text" => "予約: {$reserve["date"]}"]);
   require_once "./views/pages/reserve.php";
 }
 

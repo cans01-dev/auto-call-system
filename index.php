@@ -76,11 +76,10 @@ $publicHandlers = ["login", "loginPost"];
 # ルーティングの実行
 switch ($routeInfo[0]) {
 	case FastRoute\Dispatcher::NOT_FOUND:
-		require_once "./views/pages/404.php";
+		abort(404);
 		break;
 	case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
-		$allowedMethods = $routeInfo[1];
-		require_once "./views/pages/405.php";
+		abort(405);
 		break;
 	case FastRoute\Dispatcher::FOUND:
 		$handler = $routeInfo[1];

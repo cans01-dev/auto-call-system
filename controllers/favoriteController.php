@@ -20,6 +20,7 @@ function favorite($vars) {
     = Fetch::query("SELECT COUNT(*) FROM numbers WHERE number_list_id = {$number_list["id"]}", "fetchColumn");
 
   $reserve = $favorite;
+  Session::set("referer", ["link" => $_SERVER["REQUEST_URI"], "text" => "予約パターン: {$favorite["title"]}"]);
   require_once "./views/pages/reserve.php";
 }
 

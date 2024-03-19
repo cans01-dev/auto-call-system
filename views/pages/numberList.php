@@ -4,6 +4,9 @@
   <ol class="breadcrumb">
   <li class="breadcrumb-item"><a href="/">ホーム</a></li>
     <li class="breadcrumb-item"><a href="/surveys/<?= $survey["id"] ?>/calendar"><?= $survey["title"] ?></a></li>
+    <?php if ($referer = Session::get("referer")): ?>
+      <li class="breadcrumb-item"><a href="<?= $referer["link"] ?>"><?= $referer["text"] ?></a></li>
+    <?php endif; ?>
     <li class="breadcrumb-item active">マイリスト: <?= $number_list["title"] ?></li>
   </ol>
 </nav>
@@ -67,9 +70,10 @@
     <?= Components::hr(4) ?>
     <section id="numbers">
       <?= Components::h3("統計") ?>
+      <?php $stats = $number_list["stats"] ?>
+      <?php if ($stats["all_calls"]): ?>
       <div class="card bg-light mb-3">
         <div class="card-body">
-          <?php $stats = $number_list["stats"] ?>
           <table class="table table-light table-sm mb-0">
             <tr>
               <th>進捗率</th>
@@ -107,6 +111,10 @@
           </table>
         </div>
       </div>
+      <?php else: ?>
+        <?= Components::noContent("データがありません") ?>
+        <?= $stats["all_numbers"] ?> 件の電話番号
+      <?php endif; ?>
     </section>
   </div>
   <div class="flex-shrink-0 sticky-aside" style="width: 300px;">

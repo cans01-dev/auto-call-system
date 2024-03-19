@@ -6,6 +6,9 @@
     <?php if ($survey): ?>
       <li class="breadcrumb-item"><a href="/surveys/<?= $survey["id"] ?>/calendar"><?= $survey["title"] ?></a></li>
     <?php endif; ?>
+    <?php if ($referer = Session::get("referer")): ?>
+      <li class="breadcrumb-item"><a href="<?= $referer["link"] ?>"><?= $referer["text"] ?></a></li>
+    <?php endif; ?>
     <li class="breadcrumb-item active">マイエリア: <?= $area["title"] ?></li>
   </ol>
 </nav>
