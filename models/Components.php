@@ -20,9 +20,9 @@ class Components
     EOM;
   }
 
-  public static function hr($my=5) {
+  public static function hr($my=5, $opacity=0.25) {
     return <<<EOM
-      <hr class="my-{$my}">
+      <hr class="my-{$my}" style="opacity: {$opacity};">
     EOM;
   }
 

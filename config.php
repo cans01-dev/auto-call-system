@@ -4,6 +4,7 @@ define("MODE_DEVELOPMENT", 1);
 define("MODE_PRODUCT", 2);
 
 define("PAGE_TITLE", "AutoCallシステム");
+define("BACKGROUND_COLOR", "#ececec");
 
 # 予約の締め切り
 define("RESERVATION_DEADLINE_HOUR", 0);

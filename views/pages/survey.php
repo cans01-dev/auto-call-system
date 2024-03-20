@@ -98,14 +98,18 @@
                         <td>
                           <?php if ($option["next_faq"] = Fetch::find2("faqs", [["id", "=", $option["next_faq_id"]]])): ?>
                             <?php if ($option["next_faq"]["id"] !== $faq["id"]): ?>
-                              <a href="/faqs/<?= $option["next_faq"]["id"] ?>" class="badge bg-primary-subtle text-black" style="text-decoration: none;">
+                              <a
+                                href="/faqs/<?= $option["next_faq"]["id"] ?>"
+                                class="badge bg-primary-subtle text-black fw-normal"
+                                style="text-decoration: none;"
+                              >
                                 <?= $option["next_faq"]["title"]; ?>
                               </a>
                             <?php else: ?>
-                              <span class="badge bg-info-subtle text-black">聞き直し</span>
+                              <span class="badge bg-info-subtle text-black fw-normal">聞き直し</span>
                             <?php endif; ?>
                             <?php elseif ($option["next_ending"] = Fetch::find2("endings", [["id", "=", $option["next_ending_id"]]])): ?>
-                              <span class="badge bg-dark-subtle text-black"><?= $option["next_ending"]["title"] ?></span>
+                              <span class="badge bg-dark-subtle text-black fw-normal"><?= $option["next_ending"]["title"] ?></span>
                             <?php endif; ?>
                         </td>
                       </tr>

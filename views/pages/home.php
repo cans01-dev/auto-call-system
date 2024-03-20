@@ -159,21 +159,4 @@
   </div>
 </div>
 
-<?= Components::modal("surveysCreateModal", "アンケートを新規作成", <<<EOM
-  <form action="/surveys" method="post">
-    CSRF
-    <div class="mb-3">
-      <label class="form-label">アンケートのタイトル</label>
-      <input type="text" name="title" class="form-control" placeholder="〇〇のアンケート"  required>
-    </div>
-    <div class="mb-3">
-      <label class="form-label">アンケートの説明（任意）</label>
-      <textarea class="form-control" name="note" rows="3"></textarea>
-    </div>
-    <div class="text-end">
-      <button type="submit" class="btn btn-primary">作成</button>
-    </div>
-  </form>
-EOM); ?>
-
 <?php require './views/templates/footer.php'; ?>

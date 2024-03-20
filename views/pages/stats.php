@@ -51,12 +51,12 @@
               <dl class="mb-0">
                 <div class="row">
                   <div class="col">
-                    <dt>合計通話成立時間</dt>
+                    <dt>合計通話時間</dt>
                     <dd><?= number_format($billing["total_duration"]) ?>秒</dd>
                   </div>
                   <div class="col">
                     <dt>料金<span class="badge bg-secondary ms-2">通話成立時間(秒) x <?= PRICE_PER_SECOND ?>円</span></dt>
-                    <dd>\<?= number_format(round($billing["total_duration"] * PRICE_PER_SECOND)) ?></dd>
+                    <dd>¥<?= number_format(round($billing["total_duration"] * PRICE_PER_SECOND)) ?></dd>
                   </div>
                 </div>
               </dl>
@@ -110,8 +110,8 @@
               <tr>
                 <th>料金</th>
                 <td>
-                  \<?= number_format(round($stats["total_duration"] * PRICE_PER_SECOND)) ?><br>
-                  (<?= number_format($stats["total_duration"]) ?>秒 x \<?= PRICE_PER_SECOND ?>)
+                  ¥<?= number_format(round($stats["total_duration"] * PRICE_PER_SECOND)) ?><br>
+                  (<?= number_format($stats["total_duration"]) ?>秒 x ¥<?= PRICE_PER_SECOND ?>)
                 </td>
               </tr>
             </table>

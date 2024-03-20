@@ -3,15 +3,13 @@
 <nav aria-label="breadcrumb" class="breadcrumb-nav">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">ホーム</a></li>
+    <li class="breadcrumb-item"><a href="/surveys/<?= $survey["id"] ?>"><?= $survey["title"] ?></a></li>
+    <?php if ($referer = Session::get("referer")): ?>
+      <li class="breadcrumb-item"><a href="<?= $referer["link"] ?>"><?= $referer["text"] ?></a></li>
+    <?php endif; ?>
     <?php if (@$favorite): ?>
-      <li class="breadcrumb-item"><a href="/surveys/<?= $survey["id"] ?>/calendar"><?= $survey["title"] ?></a></li>
       <li class="breadcrumb-item active">予約パターン: <?= $favorite["title"] ?></li>
     <?php else: ?>
-      <li class="breadcrumb-item">
-        <a href="/surveys/<?= $survey["id"] ?>/calendar?month=<?= date("n", $reserve["date_ts"]) ?>&year=<?= date("Y", $reserve["date_ts"]) ?>">
-          <?= $survey["title"] ?>
-        </a>
-      </li>
       <li class="breadcrumb-item active">予約: <?= date("n月d日", strtotime($reserve["date"])) ?></li>
     <?php endif; ?>
   </ol>
@@ -73,7 +71,7 @@
           <div>
             <div class="card mb-2">
               <div class="card-header">
-                マイエリア
+                局番選定（マイエリア）
               </div>
               <?php if ($survey["areas"]): ?>
                 <ul class="list-group list-group-flush area-list-group">
@@ -113,7 +111,7 @@
           </div>
           <div class="card">
             <div class="card-header">
-              <div class="">デフォルトのエリア</div>
+              <div class="">エリア選定（システムが地域毎にランダムで生成）</div>
             </div>
             <div class="p-2 bg-white text-bg-light">
               <p>地域名を入力してまとめて選択</p>
@@ -232,8 +230,8 @@
                     </td>
                     <th>料金</th>
                     <td>
-                      \<?= number_format(round($stats["total_duration"] * PRICE_PER_SECOND)) ?><br>
-                      (<?= number_format($stats["total_duration"]) ?>秒 x \<?= PRICE_PER_SECOND ?>)
+                      ¥<?= number_format(round($stats["total_duration"] * PRICE_PER_SECOND)) ?><br>
+                      (<?= number_format($stats["total_duration"]) ?>秒 x ¥<?= PRICE_PER_SECOND ?>)
                     </td>
                   </tr>
                 </table>

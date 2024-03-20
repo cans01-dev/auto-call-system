@@ -76,8 +76,8 @@ function reserve($vars) {
     }
   }
 
-  Session::set("referer", ["link" => $_SERVER["REQUEST_URI"], "text" => "予約: {$reserve["date"]}"]);
   require_once "./views/pages/reserve.php";
+  Session::set("referer2", ["link" => $_SERVER["REQUEST_URI"], "text" => "予約: {$reserve["date"]}"]);
 }
 
 function storeReserve() {

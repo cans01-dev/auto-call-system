@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="<?= url("/assets/css/style.css") ?>">
 	<script src="https://kit.fontawesome.com/285c1d0655.js" crossorigin="anonymous"></script>
 	<script src="<?= url("/assets/script/dist/main.js") ?>" defer></script>
-<body class="">
+<body style="background-color: <?= BACKGROUND_COLOR ?>;">
 <header class="sticky-top" id="header-navber">
 	<nav class="navbar navbar-expand-md bg-body-tertiary">
 		<div class="container-fluid">
@@ -55,6 +55,13 @@
 								<span class="text-center d-inline-block me-1" style="width: 20px;">
 									<i class="fa-solid fa-phone"></i>
 								</span>コール一覧
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/surveys/<?= $sv["id"] ?>/asset">
+								<span class="text-center d-inline-block me-1" style="width: 20px;">
+									<i class="fa-solid fa-bookmark"></i>
+								</span>アセット
 							</a>
 						</li>
 						<li class="nav-item">
@@ -174,6 +181,16 @@
 						</li>
 						<li class="nav-item">
 							<a
+								class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/surveys/{$sv["id"]}/asset" ? "active" : "link-body-emphasis" ?>"
+								href="/surveys/<?= $sv["id"] ?>/asset"
+							>
+								<span class="text-center d-inline-block me-2" style="width: 24px;">
+									<i class="fa-solid fa-bookmark fa-lg"></i>
+								</span>アセット
+							</a>
+						</li>
+						<li class="nav-item">
+							<a
 								class="nav-link <?= $_SERVER["REDIRECT_URL"] === "/surveys/{$sv["id"]}/calls" ? "active" : "link-body-emphasis" ?>"
 								href="/surveys/<?= $sv["id"] ?>/calls"
 							>
@@ -185,7 +202,9 @@
 					<?php else: ?>
 						<div class="px-3 py-2 text-center">
 							<p>アンケートがありません</p>
-							<a class="btn btn-outline-info" href="/home#create">アンケートを作成する</a>
+							<button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#surveysCreateModal">
+								アンケートを作成する
+							</button>
 						</div>
 					<?php endif; ?>
 					<li class="nav-item">
@@ -261,3 +280,20 @@
 	</header>
 <main>
 <div class="main-container position-relative">
+
+<?= Components::modal("surveysCreateModal", "アンケートを新規作成", <<<EOM
+  <form action="/surveys" method="post">
+    CSRF
+    <div class="mb-3">
+      <label class="form-label">アンケートのタイトル</label>
+      <input type="text" name="title" class="form-control" placeholder="〇〇のアンケート"  required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">アンケートの説明（任意）</label>
+      <textarea class="form-control" name="note" rows="3"></textarea>
+    </div>
+    <div class="text-end">
+      <button type="submit" class="btn btn-primary">作成</button>
+    </div>
+  </form>
+EOM); ?>

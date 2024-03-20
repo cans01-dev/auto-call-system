@@ -4,7 +4,7 @@
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">ホーム</a></li>
     <li class="breadcrumb-item"><a href="/surveys/<?= $survey["id"] ?>"><?= $survey["title"] ?></a></li>
-    <li class="breadcrumb-item active">カレンダー</li>
+    <li class="breadcrumb-item active">カレンダー <?= $year ?>年 <?= $month ?>月</li>
   </ol>
 </nav>
 <?= Components::h2("{$survey["title"]}: カレンダー") ?>

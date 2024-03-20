@@ -15,13 +15,13 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 	$r->addRoute("PUT", "/users/{id:\d+}/password", "updatePassword");
 	$r->addRoute("POST", "/users/{id:\d+}/send-emails", "storeSendEmail");
 
-	$r->addRoute("GET", "/send-emails/{id:\d+}", "sendEmail");
 	$r->addRoute("PUT", "/send-emails/{id:\d+}", "updateSendEmail");
 	$r->addRoute("DELETE", "/send-emails/{id:\d+}", "deleteSendEmail");
 
 	$r->addRoute("POST", "/surveys", "storeSurvey");
 	$r->addRoute("GET", "/surveys/{id:\d+}", "survey");
 	$r->addRoute("PUT", "/surveys/{id:\d+}", "updateSurvey");
+	$r->addRoute("GET", "/surveys/{id:\d+}/asset", "surveyAsset");
 	$r->addRoute("GET", "/surveys/{id:\d+}/calendar", "calendar");
 	$r->addRoute("GET", "/surveys/{id:\d+}/calls", "calls");
 	$r->addRoute("GET", "/surveys/{id:\d+}/stats", "stats");

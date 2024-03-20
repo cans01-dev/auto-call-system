@@ -95,8 +95,8 @@ function stats($vars) {
     ];
   }
 
-  Session::set("referer", ["link" => $_SERVER["REQUEST_URI"], "text" => "統計"]);
   require_once "./views/pages/stats.php";
+  Session::set("referer", ["link" => $_SERVER["REQUEST_URI"], "text" => "統計"]);
 }
 
 function statsArea($vars) {

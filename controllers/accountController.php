@@ -61,7 +61,7 @@ function updateSendEmail($vars) {
     "email" => $_POST["email"],
     "enabled" => $_POST["enabled"]
   ]);
-  Session::set("toast", ["success", "送信先メールアドレスを変更しました{$_POST["enabled"]}"]);
+  Session::set("toast", ["success", "送信先メールアドレスを変更しました"]);
   back();
 }
 
@@ -71,5 +71,5 @@ function deleteSendEmail($vars) {
   if (!Allow::sendEmail($sendEmail)) abort(403);
   DB::delete("send_emails", $id);
   Session::set("toast", ["info", "送信先メールアドレスを削除しました"]);
-  redirect("/account");
+  back();
 }

@@ -62,7 +62,9 @@
                   <span class="badge text-bg-secondary">無効</span>
                 <?php endif; ?>
                 <div class="position-absolute top-0 end-0 p-3">
-                  <a href="/send-emails/<?= $sendEmail["id"] ?>" class="card-link">編集</a>
+                  <button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#editSendEmail<?= $sendEmail["id"] ?>Modal">
+                    編集
+                  </button>
                 </div>
               </div>
             </div>
@@ -113,6 +115,43 @@ EOL); ?>
     </div>
   </form>
 EOL); ?>
+
+<?php foreach ($user["sendEmails"] as $sendEmail): ?>
+  <div class="modal fade" id="editSendEmail<?= $sendEmail["id"] ?>Modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel"><?= $sendEmail["email"] ?></h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/send-emails/<?= $sendEmail["id"] ?>" method="post">
+            <?= csrf() ?>
+            <?= method("PUT") ?>
+            <div class="mb-3">
+              <label class="form-label">メールアドレス</label>
+              <input type="email" name="email" class="form-control" value="<?= $sendEmail["email"] ?>">
+            </div>
+            <div class="form-check form-switch mb-3">
+              <label class="form-label">無効 / 有効</label>
+              <input class="form-check-input" type="checkbox" value="1" name="enabled" <?= $sendEmail["enabled"] ? "checked" : ""; ?>>
+            </div>
+            <div class="text-end">
+              <button type="submit" class="btn btn-dark">更新</button>
+            </div>
+          </form>
+          <form action="/send-emails/<?= $sendEmail["id"] ?>" method="post" onsubmit="return window.confirm('本当に削除しますか？')">
+            <?= csrf() ?>
+            <?= method("DELETE") ?>
+            <div class="text-end">
+              <input type="submit" class="btn btn-link" value="この送信先メールアドレスを削除">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div> 
+<?php endforeach; ?>
 
 <?= Auth::user()["id"] !== $user["id"]? Components::watchOnAdmin("管理者として閲覧専用でこのページを閲覧しています") : "" ?>
 

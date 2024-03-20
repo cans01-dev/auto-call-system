@@ -9,6 +9,23 @@ function survey($vars) {
   require_once "./views/pages/survey.php";
 }
 
+function surveyAsset($vars) {
+  $survey = Fetch::find("surveys", $vars["id"]);
+
+  $survey["favorites"] = Fetch::get("favorites", $survey["id"], "survey_id");
+
+  $survey["areas"] = Fetch::get("areas", $survey["id"], "survey_id");
+  foreach ($survey["areas"] as $k => $myArea) $survey["areas"][$k]["stations"]
+    = Fetch::query("SELECT * FROM stations WHERE area_id = {$myArea["id"]}", "fetchAll");
+
+  $survey["number_lists"] = Fetch::get("number_lists", $survey["id"], "survey_id");
+  foreach ($survey["number_lists"] as $k => $number_list) $survey["number_lists"][$k]["numbers"]
+    = Fetch::query("SELECT * FROM numbers WHERE number_list_id = {$number_list["id"]}", "fetchAll");
+
+  require_once "./views/pages/asset.php";
+  Session::set("referer", ["link" => $_SERVER["REQUEST_URI"], "text" => "アセット"]);
+}
+
 function calendar($vars) {
   $month = $_GET["month"] ?? date("n");
   $year = $_GET["year"] ?? date("Y");
@@ -35,6 +52,7 @@ function calendar($vars) {
   $calendar = new Calendar($month, $year, $schedules);
 
   require_once "./views/pages/calendar.php";
+  Session::set("referer", ["link" => $_SERVER["REQUEST_URI"], "text" => "カレンダー {$year}年 {$month}月"]);
 }
 
 function storeSurvey() {

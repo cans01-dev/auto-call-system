@@ -1,4 +1,4 @@
-/* @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap"); */
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap");
 
 html {
   height: 100%;
@@ -6,7 +6,7 @@ html {
   scroll-padding: 48px;
 }
 body {
-  /* font-family: "Noto Sans JP"; */
+  font-family: "Noto Sans JP";
 }
 .flex-container {
   display: flex;
@@ -71,7 +71,7 @@ main {
 .breadcrumb {
   margin-bottom: 0;
   padding: 12px 0 8px;
-  background-color: #fff;
+  background-color: #ececec;
 }
 .sticky-aside {
   > div {
@@ -87,6 +87,9 @@ main {
   font-size: 0.875em;
   height: 100%;
   max-height: 800px;
+}
+.calls-table-container table {
+  margin-bottom: 0;
 }
 .area-list-group {
   max-height: 440px;
