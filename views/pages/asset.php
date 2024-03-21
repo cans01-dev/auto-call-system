@@ -62,11 +62,11 @@
       <?php else: ?>
         <?= Components::noContent("予約パターンがありません") ?>
       <?php endif; ?>
-      <?= Components::modalOpenButton("favoritesCreateModal"); ?>
+      <?= Components::modalOpenButton("favoritesCreateModal", count($survey["favorites"]) > 4); ?>
     </section>
     <?= Components::hr(4, 0) ?>
     <section id="area">
-      <?= Components::h3("マイエリア") ?>
+      <?= Components::h3("マイエリア（局番リスト）") ?>
       <?php if ($survey["areas"]): ?>
         <div class="row row-cols-2 g-2 mb-2">
           <?php foreach ($survey["areas"] as $area): ?>
@@ -107,7 +107,7 @@
     </section>
     <?= Components::hr(4, 0) ?>
     <section id="mylist">
-      <?= Components::h3("マイリスト") ?>
+      <?= Components::h3("マイリスト（CSVインポート）") ?>
       <?php if ($survey["number_lists"]): ?>
         <div class="row row-cols-2 g-2 mb-2">
           <?php foreach ($survey["number_lists"] as $myList): ?>
@@ -312,15 +312,8 @@ EOL); ?>
       <label class="form-label">マイリストのタイトル</label>
       <input type="text" name="title" class="form-control" placeholder="〇〇のリスト" required>
     </div>
-    <div class="mb-3">
-      <label class="form-label">インポートするファイル</label>
-      <input type="file" name="file" class="form-control" accept="text/csv" required>
-    </div>
     <div class="text-end">
       <button type="submit" class="btn btn-primary">登録</button>
-    </div>
-    <div class="form-text">
-      一列目がハイフン有りの電話番号になっているCSVファイルを指定してください
     </div>
   </form>
 EOL); ?>

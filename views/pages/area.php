@@ -144,6 +144,7 @@
           <form method="post" onsubmit="return window.confirm('本当に削除しますか？')">
             <?= csrf() ?>
             <?= method("DELETE") ?>
+            <input type="hidden" name="redirect" value="<?= Session::get("referer2")["link"] ?? Session::get("referer")["link"] ?>">
             <div class="text-end">
               <input type="submit" class="btn btn-link" value="このマイエリアを削除">
             </div>

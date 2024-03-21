@@ -51,17 +51,17 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="/surveys/<?= $sv["id"] ?>/calls">
-								<span class="text-center d-inline-block me-1" style="width: 20px;">
-									<i class="fa-solid fa-phone"></i>
-								</span>コール一覧
-							</a>
-						</li>
-						<li class="nav-item">
 							<a class="nav-link" href="/surveys/<?= $sv["id"] ?>/asset">
 								<span class="text-center d-inline-block me-1" style="width: 20px;">
 									<i class="fa-solid fa-bookmark"></i>
 								</span>アセット
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/surveys/<?= $sv["id"] ?>/calls">
+								<span class="text-center d-inline-block me-1" style="width: 20px;">
+									<i class="fa-solid fa-phone"></i>
+								</span>コール一覧
 							</a>
 						</li>
 						<li class="nav-item">

@@ -78,26 +78,8 @@ function storeNumberList($vars) {
   ]);
   $number_list_id = DB::lastInsertId();
 
-  if (!$file_path = upload_file($_FILES["file"])) exit("ファイルのアップロードに失敗しました");
-  $fp = fopen($file_path, "r");
-  [$numbers, $result] = store_number_csv($fp, $number_list_id);
-  fclose($fp);
-
-  foreach (array_chunk($numbers, 10000) as $chunk) {
-    $insert_values = array_str(
-      array_map(
-        function ($number) use ($number_list_id) {
-          return "({$number_list_id}, '{$number}')";
-        },
-        $chunk
-      )
-    );
-    DB::query("INSERT INTO numbers (number_list_id, number) VALUES {$insert_values}");
-  }
-
-  Session::set("storeNumberCsvResult", $result);
-  Session::set("toast", ["success", "{$result["success"]}件の電話番号をマイリストを登録しました"]);
-  back();
+  Session::set("toast", ["success", "マイリストを作成しました"]);
+  redirect("/number_lists/{$number_list_id}");
 }
 
 function updateNumberList($vars) {
@@ -117,7 +99,7 @@ function deleteNumberList($vars) {
   DB::delete("number_lists", $number_list["id"]);
 
   Session::set("toast", ["info", "マイリストを削除しました"]);
-  redirect("/surveys/{$number_list["survey_id"]}");
+  redirect($_POST["redirect"]);
 }
 
 function storeNumber($vars) {

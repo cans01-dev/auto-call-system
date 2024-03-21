@@ -28,8 +28,12 @@ function storeFavorite() {
   $survey = Fetch::find("surveys", $_POST["survey_id"]);
   if (!Allow::survey($survey)) abort(403);
   if (strtotime($_POST["start"]) + 3600 > strtotime($_POST["end"])) {
-    Session::set("toast", ["danger", "エラー！<br>開始・終了時間は".(MIN_INTERVAL / 3600)."時間以上の間隔をあけてください"]);
-    redirect("/surveys/{$_POST["survey_id"]}/calendar");
+    Session::set("toast", ["danger", "エラー！<br>開始・終了時間は".(MIN_INTERVAL / 60)."分以上の間隔をあけてください"]);
+    back();
+  }
+  if (count(Fetch::get("favorites", $survey["id"], "survey_id")) > 4) {
+    Session::set("toast", ["danger", "エラー！<br>予約パターンは最大５つまでしか登録できません"]);
+    back();
   }
   DB::insert("favorites", [
     "survey_id" => $_POST["survey_id"],
@@ -68,7 +72,7 @@ function deleteFavorite($vars) {
   if (!Allow::favorite($favorite)) abort(403);
   DB::delete("favorites", $id);
   Session::set("toast", ["info", "お気に入り登録を削除しました"]);
-  redirect("/surveys/{$favorite["survey_id"]}");
+  redirect($_POST["redirect"]);
 }
 
 function storeFavoritesAreasByWord($vars) {

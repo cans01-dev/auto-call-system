@@ -24,6 +24,7 @@ function surveyAsset($vars) {
 
   require_once "./views/pages/asset.php";
   Session::set("referer", ["link" => $_SERVER["REQUEST_URI"], "text" => "アセット"]);
+  Session::delete("referer2");
 }
 
 function calendar($vars) {

@@ -28,22 +28,3 @@ if (audioModal) {
     modalAudio.src = recipient;
   })
 }
-
-if (location.pathname === "/home") {
-  console.log('/home');
-  const surveysCreateModalEl = document.getElementById('surveysCreateModal');
-  const surveysCreateModal = new bootstrap.Modal(surveysCreateModalEl);
-  surveysCreateModalEl.addEventListener('hide.bs.modal', function() {
-    location.hash = '';
-  });
-
-  if (location.hash === '#create') {
-    surveysCreateModal.show();
-  }
-
-  window.addEventListener('hashchange', function() {
-    if (location.hash === '#create') {
-      surveysCreateModal.show();
-    }
-  });
-}

@@ -24,19 +24,8 @@
   <div class="w-100">
     <?php if (@$favorite || $reserve["status"] === 0): ?>
       <section id="number_list">
-        <?= Components::h3("エリアモード") ?>
+        <?= Components::h3("架電リスト選択") ?>
         <ul class="list-group mb-2">
-          <li class="list-group-item">
-            <input
-            class="form-check-input me-1" name="number_list_id" type="radio" id="firstCheckbox"
-            onchange="submit(this.form)" value=""
-            form="updateReserveForm"
-            <?= $reserve["number_list_id"] ? "" : "checked" ?>
-            >
-            <label class="form-check-label" for="firstCheckbox">
-              <b>デフォルト（指定されたエリアからランダムに電話番号が生成されます）</b>
-            </label>
-          </li>
           <?php foreach ($survey["number_lists"] as $myList): ?>
             <li class="list-group-item">
               <div class="d-flex justify-content-between">
@@ -58,104 +47,119 @@
               </div>
             </li>
           <?php endforeach; ?>
+          <li class="list-group-item p-0">
+            <a href="/surveys/<?= $survey["id"] ?>/asset#area" class="btn btn-link">マイリストを編集</a>
+          </li>
+          <li class="list-group-item">
+            <div>
+              <input
+              class="form-check-input me-1" name="number_list_id" type="radio" id="firstCheckbox"
+              onchange="submit(this.form)" value=""
+              form="updateReserveForm"
+              <?= $reserve["number_list_id"] ? "" : "checked" ?>
+              >
+              <label class="form-check-label" for="firstCheckbox">
+                <b>モンスターコールから作成（地域指定）</b>
+              </label>
+            </div>
+            <!-- 効かない👇のopacity -->
+            <section id="area" class="mt-3" <?= $reserve["number_list_id"] ? "opacity-50 pe-none" : "" ?>>
+              <div class="form-text mb-2">
+                指定されたエリアからランダムで電話番号が指定されコールされます
+              </div>
+              <div class="vstack gap-4">
+                <div>
+                  <div class="card mb-2">
+                    <div class="card-header">
+                      マイエリア（局番リスト）
+                    </div>
+                    <?php if ($survey["areas"]): ?>
+                      <ul class="list-group list-group-flush area-list-group">
+                        <?php foreach ($survey["areas"] as $area): ?>
+                          <li class="list-group-item d-flex align-items-center justify-content-between">
+                            <div>
+                              <?= $area["title"] ?>
+                              <span class="badge bg-secondary"><?= $area["count"] ?>件の局番</span>
+                            </div>
+                            <div>
+                              <a href="/areas/<?= $myArea["id"] ?>" class="card-link me-2">編集</a>
+                              <div class="d-inline-block">
+                                <?php if (@$favorite): ?>
+                                  <form action="/favorites/<?= $favorite["id"] ?>/areas" method="post">
+                                <?php else: ?>
+                                  <form action="/reserves/<?= $reserve["id"] ?>/areas" method="post">
+                                <?php endif; ?>
+                                  <?= csrf() ?>
+                                  <input type="hidden" name="area_id" value="<?= $area["id"] ?>">
+                                  <button
+                                    type="submit" class="btn btn-primary"
+                                    <?= in_array($area["id"], array_column($reserve["areas"], "id")) ? "disabled" : "" ?>
+                                  >
+                                    追加
+                                  </button>
+                                </form>
+                              </div>
+                            </div>
+                          </li>
+                        <?php endforeach; ?>
+                      </ul>
+                    <?php else: ?>
+                      <div class="text-center py-3">マイエリアが登録されていません</div>
+                    <?php endif; ?>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header">
+                    <div class="">地域指定</div>
+                  </div>
+                  <div class="p-2 bg-white text-bg-light">
+                    <p>地域名を入力してまとめて選択</p>
+                    <?php if (@$favorite): ?>
+                      <form action="/favorites/<?= $favorite["id"] ?>/areas_by_word" method="post">
+                    <?php else: ?>
+                      <form action="/reserves/<?= $reserve["id"] ?>/areas_by_word" method="post">
+                    <?php endif; ?>
+                      <?= csrf() ?>
+                      <div class="input-group" style="max-width: 320px;">
+                        <input type="text" class="form-control" name="word" placeholder="関東、中部などと入力して実行" required>
+                        <button type="submit" class="btn btn-outline-secondary">実行</button>
+                      </div>
+                    </form>
+                  </div>
+                  <ul class="list-group list-group-flush area-list-group">
+                    <?php foreach (Fetch::query("SELECT * FROM areas WHERE survey_id IS NULL", "fetchAll") as $area): ?>
+                      <li class="list-group-item d-flex align-items-center justify-content-between">
+                        <div>
+                          <?= $area["title"] ?>
+                          <a href="/areas/<?= $area["id"] ?>" class="text-body-tertiary">
+                            <i class="fa-solid fa-circle-info"></i>
+                          </a>
+                        </div>
+                        <?php if (@$favorite): ?>
+                          <form action="/favorites/<?= $favorite["id"] ?>/areas" method="post">
+                        <?php else: ?>
+                          <form action="/reserves/<?= $reserve["id"] ?>/areas" method="post">
+                        <?php endif; ?>
+                          <?= csrf() ?>
+                          <input type="hidden" name="area_id" value="<?= $area["id"] ?>">
+                          <button
+                            type="submit" class="btn btn-primary"
+                            <?= in_array($area["id"], array_column($reserve["areas"], "id")) ? "disabled" : "" ?>
+                          >
+                            追加
+                          </button>
+                        </form>
+                      </li>
+                    <?php endforeach; ?>
+                  </ul>
+                </div>
+              </div>
+            </section>
+          </li>
         </ul>
-        <?= Components::modalOpenButton("numberListCreateModal"); ?>
+        <a href="/surveys/<?= $survey["id"] ?>/asset#myList" class="btn btn-link">マイリストを編集</a>
       </section>
       <?= Components::hr(4) ?>
-      <section id="area" class="<?= $reserve["number_list_id"] ? "opacity-50 pe-none" : "" ?>">
-        <?= Components::h3("エリア設定"); ?>
-        <div class="form-text mb-2">
-          指定されたエリアからランダムで電話番号が指定されコールされます
-        </div>
-        <div class="vstack gap-4">
-          <div>
-            <div class="card mb-2">
-              <div class="card-header">
-                局番選定（マイエリア）
-              </div>
-              <?php if ($survey["areas"]): ?>
-                <ul class="list-group list-group-flush area-list-group">
-                  <?php foreach ($survey["areas"] as $area): ?>
-                    <li class="list-group-item d-flex align-items-center justify-content-between">
-                      <div>
-                        <?= $area["title"] ?>
-                        <span class="badge bg-secondary"><?= $area["count"] ?>件の局番</span>
-                      </div>
-                      <div>
-                        <a href="/areas/<?= $myArea["id"] ?>" class="card-link me-2">編集</a>
-                        <div class="d-inline-block">
-                          <?php if (@$favorite): ?>
-                            <form action="/favorites/<?= $favorite["id"] ?>/areas" method="post">
-                          <?php else: ?>
-                            <form action="/reserves/<?= $reserve["id"] ?>/areas" method="post">
-                          <?php endif; ?>
-                            <?= csrf() ?>
-                            <input type="hidden" name="area_id" value="<?= $area["id"] ?>">
-                            <button
-                              type="submit" class="btn btn-primary"
-                              <?= in_array($area["id"], array_column($reserve["areas"], "id")) ? "disabled" : "" ?>
-                            >
-                              追加
-                            </button>
-                          </form>
-                        </div>
-                      </div>
-                    </li>
-                  <?php endforeach; ?>
-                </ul>
-              <?php else: ?>
-                <div class="text-center py-3">マイエリアが登録されていません</div>
-              <?php endif; ?>
-            </div>
-            <?= Components::modalOpenButton("areaCreateModal"); ?>
-          </div>
-          <div class="card">
-            <div class="card-header">
-              <div class="">エリア選定（システムが地域毎にランダムで生成）</div>
-            </div>
-            <div class="p-2 bg-white text-bg-light">
-              <p>地域名を入力してまとめて選択</p>
-              <?php if (@$favorite): ?>
-                <form action="/favorites/<?= $favorite["id"] ?>/areas_by_word" method="post">
-              <?php else: ?>
-                <form action="/reserves/<?= $reserve["id"] ?>/areas_by_word" method="post">
-              <?php endif; ?>
-                <?= csrf() ?>
-                <div class="input-group" style="max-width: 320px;">
-                  <input type="text" class="form-control" name="word" placeholder="関東、中部などと入力して実行" required>
-                  <button type="submit" class="btn btn-outline-secondary">実行</button>
-                </div>
-              </form>
-            </div>
-            <ul class="list-group list-group-flush area-list-group">
-              <?php foreach (Fetch::query("SELECT * FROM areas WHERE survey_id IS NULL", "fetchAll") as $area): ?>
-                <li class="list-group-item d-flex align-items-center justify-content-between">
-                  <div>
-                    <?= $area["title"] ?>
-                    <a href="/areas/<?= $area["id"] ?>" class="text-body-tertiary">
-                      <i class="fa-solid fa-circle-info"></i>
-                    </a>
-                  </div>
-                  <?php if (@$favorite): ?>
-                    <form action="/favorites/<?= $favorite["id"] ?>/areas" method="post">
-                  <?php else: ?>
-                    <form action="/reserves/<?= $reserve["id"] ?>/areas" method="post">
-                  <?php endif; ?>
-                    <?= csrf() ?>
-                    <input type="hidden" name="area_id" value="<?= $area["id"] ?>">
-                    <button
-                      type="submit" class="btn btn-primary"
-                      <?= in_array($area["id"], array_column($reserve["areas"], "id")) ? "disabled" : "" ?>
-                    >
-                      追加
-                    </button>
-                  </form>
-                </li>
-              <?php endforeach; ?>
-            </ul>
-          </div>
-        </div>
-      </section>
     <?php else: ?>
       <section id="file">
         <?= Components::h3("ファイル"); ?>
@@ -399,6 +403,7 @@
           <form method="post" onsubmit="return window.confirm('本当に削除しますか？')">
             <?= csrf() ?>
             <?= method("DELETE") ?>
+            <input type="hidden" name="redirect" value="<?= Session::get("referer")["link"] ?>">
             <div class="text-end">
               <input
                 type="submit" class="btn btn-link"
@@ -435,15 +440,8 @@ EOL); ?>
       <label class="form-label">マイリストのタイトル</label>
       <input type="text" name="title" class="form-control" placeholder="〇〇のリスト" required>
     </div>
-    <div class="mb-3">
-      <label class="form-label">インポートするファイル</label>
-      <input type="file" name="file" class="form-control" accept="text/csv" required>
-    </div>
     <div class="text-end">
       <button type="submit" class="btn btn-primary">登録</button>
-    </div>
-    <div class="form-text">
-      一列目がハイフン有りの電話番号になっているCSVファイルを指定してください
     </div>
   </form>
 EOL); ?>

@@ -26,9 +26,10 @@ class Components
     EOM;
   }
 
-  public static function modalOpenButton($id) {
+  public static function modalOpenButton($id, $isDisabled=false) {
+    $disabled = $isDisabled ? "disabled" : "";
     return <<<EOM
-      <button type="button" class="btn btn-outline-dark w-100" data-bs-toggle="modal" data-bs-target="#{$id}">
+      <button type="button" class="btn btn-outline-dark w-100" data-bs-toggle="modal" data-bs-target="#{$id}" {$disabled}>
         <i class="fa-solid fa-plus"></i>
       </button>
     EOM;

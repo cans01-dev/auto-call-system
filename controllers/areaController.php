@@ -43,7 +43,7 @@ function deleteArea($vars) {
   DB::delete("areas", $area["id"]);
 
   Session::set("toast", ["info", "マイエリアを削除しました"]);
-  redirect("/surveys/{$area["survey_id"]}");
+  redirect($_POST["redirect"]);
 }
 
 function storeStation($vars) {

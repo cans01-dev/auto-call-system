@@ -229,12 +229,6 @@
   </div>
 </div>
 
-<?= Components::modal("audioModal", "読み上げ音声を再生", <<<EOL
-  <div class="text-center py-2">
-    <audio controls></audio>
-  </div>
-EOL); ?>
-
 <?= Components::modal("faqsCreateModal", "質問を新規作成", <<<EOL
   <form action="/faqs" method="post">
     CSRF

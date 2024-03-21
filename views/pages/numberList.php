@@ -65,7 +65,10 @@
               <input type="file" name="file" class="form-control" accept="text/csv" required>
               <button type="submit" class="btn btn-outline-secondary">登録</button>
             </div>
-            <div class="form-text">※ハイフンの有無問わず、先頭のゼロ省略可能</div>
+            <div class="form-text">
+              ※ハイフンの有無問わず、先頭のゼロ省略可能<br>
+              この操作には時間がかかることがあります、登録を押した後ブラウザを閉じないでください。
+            </div>
           </form>
         </div>
       </div>
@@ -142,7 +145,10 @@
         <form onsubmit="return window.confirm('本当に削除しますか？')" method="post">
           <?= csrf() ?>
           <?= method("DELETE") ?>
-          <button class="btn btn-link">削除</button>
+          <input type="hidden" name="redirect" value="<?= Session::get("referer2")["link"] ?? Session::get("referer")["link"] ?>">
+          <div class="text-end">
+            <button class="btn btn-link">マリイストを削除</button>
+          </div>
         </form>
       </section>
     </div>
