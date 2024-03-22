@@ -72,6 +72,10 @@ function numberList($vars) {
 function storeNumberList($vars) {
   $survey = Fetch::find("surveys", $vars["id"]);
   if (!Allow::survey($survey)) abort(403);
+  if (count(Fetch::get("number_lists", $survey["id"], "survey_id")) > 9) {
+    Session::set("toast", ["danger", "エラー！<br>予約パターンは最大10個までしか登録できません"]);
+    back();
+  }
   DB::insert("number_lists", [
     "title" => $_POST["title"],
     "survey_id" => $survey["id"]
@@ -135,7 +139,7 @@ function storeNumberCsv($vars) {
   if (!$file_path = upload_file($_FILES["file"])) exit("ファイルのアップロードに失敗しました");
 
   $fp = fopen($file_path, "r");
-  [$numbers, $result] = store_number_csv($fp, $number_list["id"]);
+  [$numbers, $error_numbers, $dup_numbers] = store_number_csv($fp, $number_list["id"]);
   fclose($fp);
 
   foreach (array_chunk($numbers, 10000) as $chunk) {
@@ -150,8 +154,9 @@ function storeNumberCsv($vars) {
     DB::query("INSERT INTO numbers (number_list_id, number) VALUES {$insert_values}");
   }
 
-  Session::set("storeNumberCsvResult", $result);
-  Session::set("toast", ["success", "成功: {$result["success"]}件の電話番号を追加しました"]);
+  $success_count = count($numbers);
+  Session::set("storeNumberCsvResult", [$numbers, $error_numbers, $dup_numbers]);
+  Session::set("toast", ["success", "成功: {$success_count}件の電話番号を追加しました"]);
   back();
 }
 

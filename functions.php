@@ -8,6 +8,9 @@ use PHPMailer\PHPMailer\SMTP;
  */
 function array_str($array, $delimiter=", ") {
   $str = "";
+  if (empty($array)) {
+    return $str;
+  }
   $last = array_slice($array, -1)[0];
   foreach ($array as $item) {
     $str .= $item;
@@ -108,8 +111,9 @@ function with_basic($url) {
 }
 
 function store_number_csv($fp, $number_list_id) {
-  [$success, $error, $dup] = [0, 0, 0];
   $numbers = [];
+  $error_numbers = [];
+  $dup_numbers = [];
   while($line = fgetcsv($fp)){
     $number = $line[0];
     if (!preg_match('/^0[789]0-[0-9]{4}-[0-9]{4}$/', $number)) {
@@ -123,17 +127,15 @@ function store_number_csv($fp, $number_list_id) {
         ["number", "=", $number]
       ])) {
         $numbers[] = $number;
-        $success++;
         continue;
       }
-      $dup++;
+      $dup_numbers[] = $number;
       continue;
     }
-    $error++;
+    $error_numbers[] = $number;
   }
 
-  $result = ["success" => $success, "error" => $error, "dup" => $dup];
-  return [$numbers, $result];
+  return [$numbers, $error_numbers, $dup_numbers];
 }
 
 /**

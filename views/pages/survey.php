@@ -320,7 +320,11 @@ EOL); ?>
 
 <!-- endingModals -->
 <?php foreach ($survey["endings"] as $ending): ?>
+  <?php $ending["voice_file_url"] = url("/storage/users/{$survey["user_id"]}/{$ending["voice_file"]}") ?>
   <?= Components::modal("endingModal{$ending["id"]}", "エンディングを編集", <<<EOM
+    <div class="text-center mb-3">
+      <audio controls src="{$ending["voice_file_url"]}"></audio>
+    </div>
     <form action="/endings/{$ending["id"]}" method="post">
       CSRF
       METHOD_PUT

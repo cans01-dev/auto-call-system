@@ -205,7 +205,7 @@
         <?php else: ?>
           <?= Components::noContent("予約パターンがありません") ?>
         <?php endif; ?>
-        <?= Components::modalOpenButton("favoritesCreateModal"); ?>
+        <a href="/surveys/<?= $survey["id"] ?>/asset#favorite" class="btn btn-link">予約パターンを編集</a>
       </section>
     </div>
   </div>

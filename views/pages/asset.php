@@ -12,9 +12,10 @@
   <div class="w-100">
     <section id="favorite">
       <?= Components::h3("予約パターン"); ?>
-      <div class="form-text mb-2 vstack gap-1">
+      <div class="form-text mb-2">
         <span>開始・終了時間やエリア設定のテンプレートを利用してスムーズに予約の指定ができます。</span>
         <span>予約パターンの適用後に各日付ごとに設定を変更することも可能です。</span>
+        <span>最大5個まで登録できます。</span>
       </div>
       <?php if ($survey["favorites"]): ?>
         <div class="row row-cols-2 g-2 mb-2">
@@ -67,6 +68,10 @@
     <?= Components::hr(4, 0) ?>
     <section id="area">
       <?= Components::h3("マイエリア（局番リスト）") ?>
+      <div class="form-text mb-2">
+        <span>局番を指定してオリジナルの地域を登録できます。</span>
+        <span>何個でも登録ですます。</span>
+      </div>
       <?php if ($survey["areas"]): ?>
         <div class="row row-cols-2 g-2 mb-2">
           <?php foreach ($survey["areas"] as $area): ?>
@@ -108,6 +113,10 @@
     <?= Components::hr(4, 0) ?>
     <section id="mylist">
       <?= Components::h3("マイリスト（CSVインポート）") ?>
+      <div class="form-text mb-2">
+        <span>CSVファイルから架電リストを登録できます。</span>
+        <span>最大10個まで登録できます。</span>
+      </div>
       <?php if ($survey["number_lists"]): ?>
         <div class="row row-cols-2 g-2 mb-2">
           <?php foreach ($survey["number_lists"] as $myList): ?>
@@ -144,7 +153,7 @@
       <?php else: ?>
         <?= Components::noContent("マイリストが登録されていません") ?>
       <?php endif; ?>
-      <?= Components::modalOpenButton("numberListCreateModal"); ?>
+      <?= Components::modalOpenButton("numberListCreateModal", count($survey["number_lists"]) > 9); ?>
     </section>
   </div>
   <div class="flex-shrink-0 sticky-aside" style="width: 300px;">

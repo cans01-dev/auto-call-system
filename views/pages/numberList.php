@@ -19,20 +19,23 @@
     <?php if ($result = @$_SESSION["storeNumberCsvResult"]): ?>
       <div class="alert alert-info">
         <h4>CSVファイルインポート結果</h4>
-        <dl class="mb-0 row">
-          <div class="col">
-            <dt>成功</dt>
-            <dd><?= $result["success"] ?>行</dd>
-          </div>
-          <div class="col">
-            <dt>エラー</dt>
-            <dd><?= $result["error"] ?>行</dd>
-          </div>
-          <div class="col">
-            <dt>重複</dt>
-            <dd><?= $result["dup"] ?>行</dd>
-          </div>
-        </dl>
+        <div class="accordion" id="accordionExample">
+          <?php foreach ($result as $idx => $r): ?>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<?= $idx ?>" aria-controls="collapse<?= $idx ?>">
+                  <?= $idx === 0 ? "成功" : ($idx === 1 ? "エラー" : "重複"); ?>
+                  : <?= count($r) ?>行
+                </button>
+              </h2>
+              <div id="collapse<?= $idx ?>" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  <?= array_str($r, ", ") ?>
+                </div>
+              </div>
+            </div>
+          <?php endforeach; ?>
+        </div>
       </div>
       <?= Components::hr(4) ?>
     <?php endif; ?>

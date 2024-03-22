@@ -47,8 +47,8 @@
               </div>
             </li>
           <?php endforeach; ?>
-          <li class="list-group-item p-0">
-            <a href="/surveys/<?= $survey["id"] ?>/asset#area" class="btn btn-link">マイリストを編集</a>
+          <li class="list-group-item py-0">▶
+            <a href="/surveys/<?= $survey["id"] ?>/asset#area" class="btn btn-link ps-1">マイリストを編集</a>
           </li>
           <li class="list-group-item">
             <div>
@@ -63,7 +63,7 @@
               </label>
             </div>
             <!-- 効かない👇のopacity -->
-            <section id="area" class="mt-3" <?= $reserve["number_list_id"] ? "opacity-50 pe-none" : "" ?>>
+            <section id="area" class="mt-3 <?= $reserve["number_list_id"] ? "opacity-50 pe-none" : "" ?>">
               <div class="form-text mb-2">
                 指定されたエリアからランダムで電話番号が指定されコールされます
               </div>
