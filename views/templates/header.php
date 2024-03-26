@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title><?= PAGE_TITLE ?></title>
+	<link rel="shortcut icon" href="<?= url("/assets/logos/favicon.ico") ?>" type="image/x-icon">
 	<link rel="stylesheet" href="<?= url("/assets/css/bootstrap.css") ?>">
 	<link rel="stylesheet" href="<?= url("/assets/css/markdown.css") ?>">
 	<link rel="stylesheet" href="<?= url("/assets/css/style.css") ?>">
@@ -133,7 +134,9 @@
 	<header class="border-end border-2 text-bg-white" id="header-sideber">
 		<div class="sticky-top container vh-100 p-3 d-flex flex-column">
 			<h1 class="fs-3 fw-bold mb-0">
-				<a href="/home" class="text-black" style="text-decoration: none;"><?= PAGE_TITLE ?></a>
+				<a href="/home" class="text-black" style="text-decoration: none;">
+					<img src="<?= url("/assets/logos/logo_yoko.png") ?>" alt="" style="width: 240px;">
+				</a>
 			</h1>
 			<hr>
 			<nav id="navbar-example2" class="mb-auto">

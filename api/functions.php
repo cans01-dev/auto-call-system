@@ -96,15 +96,19 @@ function gen_reserve_info($reserve) {
 
   # numbers
   if ($reserve["number_list_id"]) {
-    $numbers = Fetch::get("numbers", $reserve["number_list_id"], "number_list_id");
-    foreach ($numbers as $number) {
-      $same_number = Fetch::query("
-        SELECT * FROM calls as c JOIN reserves as r ON c.reserve_id = r.id
-        WHERE r.survey_id = {$survey["id"]} AND number = {$number["number"]}
-      ", "fetch");
-      if ($same_number) continue;
-      $array["numbers"][] = $number["number"];
-    }
+    $called_numbers = Fetch::query(
+      "SELECT * FROM calls as c
+      JOIN reserves as r ON c.reserve_id = r.id
+      WHERE r.survey_id = {$survey["id"]}",
+      "fetchAll"
+    );
+
+    $all_numbers = Fetch::query(
+      "SELECT number FROM numbers WHERE number_list_id = {$reserve["number_list_id"]}",
+      "fetchAll"
+    );
+
+    $array["numbers"] = array_diff(array_column($all_numbers, "number"), array_column($called_numbers, "number"));
   } else {
     $areas = Fetch::areasByReserveId($reserve["id"]);
     $numbers_length = round((strtotime($reserve["end"]) - strtotime($reserve["start"])) / 3600 * NUMBERS_PER_HOUR * $user["number_of_lines"]);

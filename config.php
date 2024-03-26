@@ -3,7 +3,7 @@
 define("MODE_DEVELOPMENT", 1);
 define("MODE_PRODUCT", 2);
 
-define("PAGE_TITLE", "AutoCallシステム");
+define("PAGE_TITLE", "Monster Call");
 define("BACKGROUND_COLOR", "#ececec");
 
 # 予約の締め切り
