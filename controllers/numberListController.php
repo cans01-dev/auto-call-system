@@ -133,10 +133,7 @@ function storeNumber($vars) {
 }
 
 function storeNumberCsv($vars) {
-  $number_list = Fetch::find("number_lists", $vars["id"]);
-  if (!Allow::number_list($number_list)) abort(403);
 
-  if (!$file_path = upload_file($_FILES["file"])) exit("ファイルのアップロードに失敗しました");
 
   $fp = fopen($file_path, "r");
   [$numbers, $error_numbers, $dup_numbers] = store_number_csv($fp, $number_list["id"]);

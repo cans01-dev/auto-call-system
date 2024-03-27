@@ -1,8 +1,8 @@
 <?php require './views/templates/headerLogin.php'; ?>
 <main class="w-100 container text-center">
-  <div class="row justify-content-center">
+  <div class="row justify-content-center align-items-center">
     <div class="col form-signin me-5">
-      <img src="<?= url("/assets/logos/logo_tate.png") ?>" alt="" style="width: 100%;">
+      <img src="<?= url("/assets/logos/logo_tate.png") ?>" alt="" style="width: 75%;">
     </div>
     <div class="col form-signin card">
       <form action="/login" method="post">
