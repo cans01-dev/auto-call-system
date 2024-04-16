@@ -67,4 +67,4 @@ define("USER_STATUS_ADMIN", 1);
 define("COLOR_PALLET", ["#DCF2F1", "#7FC7D9", "#365486", "#0F1035"]);
 
 # 課金表示画面に適用される秒数あたりの料金
-define("PRICE_PER_SECOND", 0.138);
+define("PRICE_PER_SECOND", 0.120);

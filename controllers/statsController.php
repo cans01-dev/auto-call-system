@@ -105,7 +105,7 @@ function statsArea($vars) {
   $area["stations"] = Fetch::get("stations", $area["id"], "area_id");
   if (Auth::user()["status"] !== 1) if (!Allow::survey($survey)) abort(403);
 
-  $stats["all_numbers"] = count($area["stations"]) * 10000;
+  $stats["all_numbers"] = count($area["stations"]) * 100000;
   $stats["called_numbers"] = 0;
   $stats["responsed_numbers"] = 0;
   foreach ($area["stations"] as $station) {
